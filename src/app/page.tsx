@@ -45,12 +45,6 @@ function Navbar() {
               <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
             </svg>
           </button>
-          {/* Wishlist */}
-          <Link href="/wishlist" aria-label={t.nav.wishlist} className="text-text-dark hover:text-gold transition-colors">
-            <svg className="w-[18px] h-[18px]" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
-            </svg>
-          </Link>
           {/* Cart / Bag → wishlist */}
           <Link href="/wishlist" aria-label={t.nav.cart} className="text-text-dark hover:text-gold transition-colors">
             <svg className="w-[18px] h-[18px]" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24">
@@ -105,11 +99,6 @@ function Navbar() {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
               </svg>
             </button>
-            <Link href="/wishlist" aria-label={t.nav.wishlist} className="text-text-dark hover:text-gold transition-colors" onClick={() => setMobileOpen(false)}>
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
-            </svg>
-            </Link>
             <Link href="/wishlist" aria-label={t.nav.cart} className="text-text-dark hover:text-gold transition-colors" onClick={() => setMobileOpen(false)}>
               <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
@@ -432,72 +421,6 @@ function LifestyleShowcase() {
   );
 }
 
-/* ─────────────── TESTIMONIALS ─────────────── */
-const testimonials = [
-  {
-    name: "Sophia L.",
-    location: "New York",
-    avatar: "https://i.pravatar.cc/100?img=47",
-    text: "The diamond necklace from Mymy is simply breathtaking. The quality and sparkle are an absolute 5 stars!",
-  },
-  {
-    name: "Priya R.",
-    location: "Dubai",
-    avatar: "https://i.pravatar.cc/100?img=45",
-    text: "I purchased my bridal set and the workmanship... The intricate detailing and shine make it truly special.",
-  },
-  {
-    name: "Isabella M.",
-    location: "London",
-    avatar: "https://i.pravatar.cc/100?img=44",
-    text: "Mymy's pearl collection is exquisite. The pieces are all of elegance and beauty. I'm a fan!",
-  },
-];
-
-function Stars() {
-  return (
-    <div className="flex items-center justify-center gap-0.5 mb-3">
-      {Array.from({ length: 5 }).map((_, i) => (
-        <svg key={i} className="w-4 h-4 text-gold" fill="currentColor" viewBox="0 0 20 20">
-          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-        </svg>
-      ))}
-    </div>
-  );
-}
-
-function Testimonials() {
-  const { t } = useI18n();
-  return (
-    <section className="w-full bg-cream py-16 lg:py-20">
-      <div className="max-w-7xl mx-auto px-6 text-center">
-        <h2 className="font-playfair text-3xl sm:text-4xl font-bold text-text-dark mb-12 tracking-wide">
-          {t.testimonials.title}
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {testimonials.map((tm) => (
-            <div
-              key={tm.name}
-              className="bg-warm-white rounded-2xl p-8 shadow-sm flex flex-col items-center text-center transition-transform duration-300 hover:-translate-y-1 hover:shadow-md"
-            >
-              <div className="relative w-16 h-16 rounded-full overflow-hidden mb-4 ring-2 ring-gold/30">
-                <Image src={tm.avatar} alt={tm.name} fill className="object-cover" sizes="64px" />
-              </div>
-              <Stars />
-              <p className="font-cormorant text-base italic text-text-muted leading-relaxed mb-6">
-                &ldquo;{tm.text}&rdquo;
-              </p>
-              <p className="font-montserrat text-xs font-bold tracking-[0.15em] uppercase text-text-dark">
-                {tm.name}, {tm.location}
-              </p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
 /* ─────────────── FOOTER ─────────────── */
 function Footer() {
   const { t } = useI18n();
@@ -581,7 +504,6 @@ export default function Home() {
         <div className="reveal"><Craftsmanship /></div>
         <div className="reveal"><SpecialCollections /></div>
         <div className="reveal"><LifestyleShowcase /></div>
-        <div className="reveal"><Testimonials /></div>
       </main>
       <Footer />
     </div>

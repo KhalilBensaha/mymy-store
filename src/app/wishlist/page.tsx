@@ -106,17 +106,6 @@ export default function WishlistPage() {
                 <path d="M10 10a4 4 0 100-8 4 4 0 000 8zm-7 8a7 7 0 1114 0H3z" />
               </svg>
             </button>
-            {/* Wishlist – active */}
-            <Link href="/wishlist" aria-label={t.nav.wishlist} className="relative text-[#8b6914]">
-              <svg className="h-4.5 w-4.5" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" />
-              </svg>
-              {items.length > 0 && (
-                <span className="absolute -top-1.5 -end-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-[#8b6914] font-montserrat text-[0.5rem] font-bold text-white">
-                  {items.length}
-                </span>
-              )}
-            </Link>
             {/* Cart / Bag → wishlist */}
             <Link href="/wishlist" aria-label={t.nav.cart} className="text-[#8b6914] transition-colors hover:text-[#6f5110]">
               <svg className="h-4.5 w-4.5" fill="currentColor" viewBox="0 0 20 20">
@@ -170,11 +159,6 @@ export default function WishlistPage() {
                   <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
                 </svg>
               </button>
-              <Link href="/wishlist" aria-label={t.nav.wishlist} className="text-[#8b6914]" onClick={() => setMobileOpen(false)}>
-                <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" />
-                </svg>
-              </Link>
               <Link href="/wishlist" aria-label={t.nav.cart} className="text-[#8b6914] transition-colors hover:text-[#6f5110]" onClick={() => setMobileOpen(false)}>
                 <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
@@ -241,7 +225,7 @@ export default function WishlistPage() {
                     type="button"
                     onClick={() => remove(item.id)}
                     aria-label={`${t.wishlist.removeFromWishlist} ${item.name}`}
-                    className="absolute end-2.5 top-2.5 flex h-6 w-6 items-center justify-center bg-white/90 text-[#5e564d] shadow-sm transition-colors hover:bg-white hover:text-[#c0392b]"
+                    className="absolute inset-e-2.5 top-2.5 flex h-6 w-6 items-center justify-center bg-white/90 text-[#5e564d] shadow-sm transition-colors hover:bg-white hover:text-[#c0392b]"
                   >
                     <svg className="h-3 w-3" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -264,13 +248,6 @@ export default function WishlistPage() {
                   </span>
                 </div>
 
-                {/* Add to cart */}
-                <button
-                  type="button"
-                  className="mt-4 w-full bg-[#4a3a16] py-2.5 font-montserrat text-[0.6rem] uppercase tracking-[0.2em] text-white transition-colors hover:bg-[#3b2e12]"
-                >
-                  {t.product.addToCart}
-                </button>
               </div>
             ))}
           </div>
