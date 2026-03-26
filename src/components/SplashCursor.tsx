@@ -1141,7 +1141,7 @@ export default function SplashCursor({
         { r: 160, g: 120, b: 40  }, // warm amber
       ];
       const pick = palette[Math.floor(Math.random() * palette.length)];
-      const intensity = 0.12 + Math.random() * 0.08;
+      const intensity = 0.3 + Math.random() * 0.08;
       return {
         r: (pick.r / 255) * intensity,
         g: (pick.g / 255) * intensity,

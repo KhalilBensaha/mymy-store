@@ -30,7 +30,7 @@ function CategoryModal({
   if (!category) return null;
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 px-4">
+    <div className="fixed inset-0 z-100 flex items-center justify-center bg-black/50 px-4">
       <div className="w-full max-w-md rounded-xl bg-white shadow-2xl">
         <div className="flex items-center justify-between border-b border-[#e5e7eb] p-5">
           <h2 className="text-lg font-bold font-playfair">
