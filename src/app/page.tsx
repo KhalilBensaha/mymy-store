@@ -18,7 +18,7 @@ function Navbar() {
     { label: t.nav.pearls, href: "#pearls" },
     { label: t.nav.collections, href: "#collections" },
     { label: t.nav.bridal, href: "#bridal" },
-    { label: t.nav.contact, href: "#contact" },
+    { label: t.nav.contact, href: "/contact" },
   ];
   return (
     <header className="w-full bg-warm-white border-b border-cream-dark/40 sticky top-0 z-50">

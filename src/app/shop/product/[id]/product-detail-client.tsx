@@ -3,8 +3,29 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import type { Product } from "../../product-data";
 import { useI18n } from "../../../i18n/provider";
+
+/* ─── DB-compatible product type ─── */
+type DBProduct = {
+  id: number;
+  name: string;
+  subtitle: string;
+  price: number;
+  image: string;
+  gallery: string[] | null;
+  categoryId: number;
+  categoryName: string | null;
+  categorySlug: string | null;
+  materials: string[] | null;
+  badge: string | null;
+  description: string | null;
+  story: string | null;
+  specs: { label: string; value: string }[] | null;
+  variants: string[] | null;
+  ratingScore: number | null;
+  ratingCount: number | null;
+  createdAt: Date;
+};
 
 function formatPrice(price: number) {
   return new Intl.NumberFormat("en-US", {
@@ -20,8 +41,8 @@ export default function ProductDetailClient({
   product,
   recommended,
 }: {
-  product: Product;
-  recommended: Product[];
+  product: DBProduct;
+  recommended: DBProduct[];
 }) {
   const { t } = useI18n();
   const [activeImageIdx, setActiveImageIdx] = useState(0);
@@ -29,7 +50,7 @@ export default function ProductDetailClient({
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState<Tab>("description");
 
-  const gallery = product.gallery.length > 0 ? product.gallery : [product.image];
+  const gallery = product.gallery && product.gallery.length > 0 ? product.gallery : [product.image];
 
   const tabs: { id: Tab; label: string }[] = [
     { id: "description", label: t.product.descriptionTab },
@@ -135,7 +156,7 @@ export default function ProductDetailClient({
                 </button>
               </div>
               <div className="flex flex-wrap gap-2.5">
-                {product.variants.map((variant, idx) => (
+                {(product.variants ?? []).map((variant, idx) => (
                   <button
                     key={variant}
                     type="button"
@@ -266,7 +287,7 @@ export default function ProductDetailClient({
                 </p>
               </div>
               <div>
-                {product.specs.map((spec, idx) => (
+                {(product.specs ?? []).map((spec, idx) => (
                   <div key={spec.label}>
                     {idx > 0 && <div className="border-t border-[#ede7dd]" />}
                     <div className="flex items-start justify-between py-5">
@@ -336,7 +357,7 @@ export default function ProductDetailClient({
                 <div className="pt-4">
                   <h3 className="font-playfair text-xl text-text-dark">{rec.name}</h3>
                   <p className="mt-1 font-montserrat text-[0.58rem] uppercase tracking-[0.18em] text-[#a89c87]">
-                    {rec.category}
+                    {rec.categoryName}
                   </p>
                   <p className="mt-2 font-montserrat text-[0.93rem] text-[#6f6458]">
                     {formatPrice(rec.price)}

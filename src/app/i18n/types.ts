@@ -147,6 +147,38 @@ export type Messages = {
     exploreCollection: string;
     removeFromWishlist: string;
   };
+  /* ── Contact ── */
+  contact: {
+    title: string;
+    subtitle: string;
+    nameLabel: string;
+    namePlaceholder: string;
+    emailLabel: string;
+    emailPlaceholder: string;
+    phoneLabel: string;
+    phonePlaceholder: string;
+    subjectLabel: string;
+    messageLabel: string;
+    messagePlaceholder: string;
+    send: string;
+    sending: string;
+    successTitle: string;
+    successMessage: string;
+    sendAnother: string;
+    visitUs: string;
+    address: string;
+    callUs: string;
+    phone: string;
+    emailUs: string;
+    emailAddress: string;
+    hours: string;
+    hoursValue: string;
+    subjectGeneral: string;
+    subjectOrder: string;
+    subjectCustom: string;
+    subjectReturns: string;
+    subjectCare: string;
+  };
   /* ── Language ── */
   lang: {
     label: string;

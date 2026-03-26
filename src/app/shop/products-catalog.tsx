@@ -4,28 +4,50 @@ import Image from "next/image";
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { useI18n } from "../i18n/provider";
-import {
-  type Category,
-  categoryOptions,
-  getCategoryFromSlug,
-  getCategoryHref,
-  getCategoryDescription,
-} from "./category-utils";
-import { type Material, type Product, PRODUCTS } from "./product-data";
 
-const materialOptions: Material[] = ["18K Yellow Gold", "Sterling Silver", "VS Diamonds"];
+/* ─── Types matching DB query shape ─── */
+export type CatalogProduct = {
+  id: number;
+  name: string;
+  subtitle: string;
+  price: number;
+  image: string;
+  gallery: string[] | null;
+  categoryId: number;
+  categoryName: string | null;
+  categorySlug: string | null;
+  materials: string[] | null;
+  badge: string | null;
+  description: string | null;
+  story: string | null;
+  specs: { label: string; value: string }[] | null;
+  variants: string[] | null;
+  ratingScore: number | null;
+  ratingCount: number | null;
+  createdAt: Date;
+};
+
+export type CatalogCategory = {
+  id: number;
+  name: string;
+  slug: string;
+  description: string | null;
+  image: string | null;
+};
+
+const materialOptions = ["18K Yellow Gold", "Sterling Silver", "VS Diamonds"];
 const MAX_PRICE = 10000;
 const PAGE_SIZE = 6;
 
 export type ProductsCatalogProps = {
+  products: CatalogProduct[];
+  categories: CatalogCategory[];
   eyebrow?: string;
   title?: string;
   description?: string;
-  initialCategory?: Category | null;
+  initialCategory?: string | null;
   lockCategory?: boolean;
 };
-
-export { getCategoryFromSlug, getCategoryHref, getCategoryDescription };
 
 function formatPrice(price: number) {
   return new Intl.NumberFormat("en-US", {
@@ -35,7 +57,7 @@ function formatPrice(price: number) {
   }).format(price);
 }
 
-function ProductCard({ product }: { product: Product }) {
+function ProductCard({ product }: { product: CatalogProduct }) {
   return (
     <article className="group">
       <Link href={`/shop/product/${product.id}`} className="block">
@@ -65,6 +87,8 @@ function ProductCard({ product }: { product: Product }) {
 }
 
 export default function ProductsCatalog({
+  products,
+  categories,
   eyebrow,
   title,
   description,
@@ -75,23 +99,23 @@ export default function ProductsCatalog({
   const resolvedEyebrow = eyebrow ?? t.shop.curatedSelection;
   const resolvedTitle = title ?? t.shop.coreCollection;
   const resolvedDescription = description ?? t.shop.coreCollectionDesc;
-  const [activeCategory, setActiveCategory] = useState<Category | null>(initialCategory);
-  const [selectedMaterials, setSelectedMaterials] = useState<Material[]>(["VS Diamonds"]);
+  const [activeCategory, setActiveCategory] = useState<string | null>(initialCategory);
+  const [selectedMaterials, setSelectedMaterials] = useState<string[]>(["VS Diamonds"]);
   const [maxPrice, setMaxPrice] = useState(5500);
   const [page, setPage] = useState(0);
 
   const filteredProducts = useMemo(() => {
-    return PRODUCTS.filter((product) => {
-      const categoryMatch = activeCategory ? product.category === activeCategory : true;
+    return products.filter((product) => {
+      const categoryMatch = activeCategory ? product.categoryName === activeCategory : true;
       const materialMatch =
         selectedMaterials.length > 0
-          ? selectedMaterials.every((material) => product.materials.includes(material))
+          ? selectedMaterials.every((material) => product.materials?.includes(material))
           : true;
       const priceMatch = product.price <= maxPrice;
 
       return categoryMatch && materialMatch && priceMatch;
     });
-  }, [activeCategory, selectedMaterials, maxPrice]);
+  }, [activeCategory, selectedMaterials, maxPrice, products]);
 
   const totalPages = Math.max(1, Math.ceil(filteredProducts.length / PAGE_SIZE));
   const safePage = Math.min(page, totalPages - 1);
@@ -100,7 +124,7 @@ export default function ProductsCatalog({
     safePage * PAGE_SIZE + PAGE_SIZE
   );
 
-  const toggleMaterial = (material: Material) => {
+  const toggleMaterial = (material: string) => {
     setPage(0);
     setSelectedMaterials((current) =>
       current.includes(material)
@@ -138,31 +162,31 @@ export default function ProductsCatalog({
                 {t.shop.category}
               </p>
               <ul className="mt-5 space-y-3">
-                {categoryOptions.map((category) => {
-                  const isActive = activeCategory === category;
+                {categories.map((cat) => {
+                  const isActive = activeCategory === cat.name;
                   return (
-                    <li key={category}>
+                    <li key={cat.id}>
                       {lockCategory ? (
                         <Link
-                          href={getCategoryHref(category)}
+                          href={`/shop/${cat.slug}`}
                           className={`font-montserrat text-start text-[0.96rem] transition-colors ${
                             isActive ? "text-[#8b6914]" : "text-text-dark hover:text-[#8b6914]"
                           }`}
                         >
-                          {category}
+                          {cat.name}
                         </Link>
                       ) : (
                         <button
                           type="button"
                           onClick={() => {
                             setPage(0);
-                            setActiveCategory(isActive ? null : category);
+                            setActiveCategory(isActive ? null : cat.name);
                           }}
                           className={`font-montserrat text-start text-[0.96rem] transition-colors ${
                             isActive ? "text-[#8b6914]" : "text-text-dark hover:text-[#8b6914]"
                           }`}
                         >
-                          {category}
+                          {cat.name}
                         </button>
                       )}
                     </li>

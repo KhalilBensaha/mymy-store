@@ -1,10 +1,8 @@
 import { notFound } from "next/navigation";
-import { PRODUCTS } from "../../product-data";
+import { getProductById, getProducts } from "@/lib/actions/products";
 import ProductDetailClient from "./product-detail-client";
 
-export function generateStaticParams() {
-  return PRODUCTS.map((p) => ({ id: String(p.id) }));
-}
+export const revalidate = 0;
 
 export default async function ProductPage({
   params,
@@ -12,18 +10,19 @@ export default async function ProductPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const product = PRODUCTS.find((p) => p.id === Number(id));
+  const product = await getProductById(Number(id));
 
   if (!product) {
     notFound();
   }
 
   // Up to 3 from same category, falling back to others if needed
-  const sameCategory = PRODUCTS.filter(
-    (p) => p.id !== product.id && p.category === product.category
+  const allProducts = await getProducts();
+  const sameCategory = allProducts.filter(
+    (p) => p.id !== product.id && p.categoryId === product.categoryId
   );
-  const others = PRODUCTS.filter(
-    (p) => p.id !== product.id && p.category !== product.category
+  const others = allProducts.filter(
+    (p) => p.id !== product.id && p.categoryId !== product.categoryId
   );
   const recommended = [...sameCategory, ...others].slice(0, 3);
 

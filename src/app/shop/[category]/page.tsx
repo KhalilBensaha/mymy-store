@@ -1,18 +1,9 @@
 import { notFound } from "next/navigation";
+import { getProducts } from "@/lib/actions/products";
+import { getCategories } from "@/lib/actions/categories";
 import ProductsCatalog from "../products-catalog";
-import {
-  getCategoryDescription,
-  getCategoryFromSlug,
-} from "../category-utils";
 
-export function generateStaticParams() {
-  return [
-    { category: "rings" },
-    { category: "necklaces" },
-    { category: "earrings" },
-    { category: "bracelets" },
-  ];
-}
+export const revalidate = 0;
 
 export default async function CategoryPage({
   params,
@@ -20,7 +11,13 @@ export default async function CategoryPage({
   params: Promise<{ category: string }>;
 }) {
   const { category: slug } = await params;
-  const category = getCategoryFromSlug(slug);
+
+  const [allProducts, allCategories] = await Promise.all([
+    getProducts(),
+    getCategories(),
+  ]);
+
+  const category = allCategories.find((c) => c.slug === slug);
 
   if (!category) {
     notFound();
@@ -28,10 +25,12 @@ export default async function CategoryPage({
 
   return (
     <ProductsCatalog
+      products={allProducts}
+      categories={allCategories}
       eyebrow="Category Selection"
-      title={category}
-      description={getCategoryDescription(category)}
-      initialCategory={category}
+      title={category.name}
+      description={category.description ?? undefined}
+      initialCategory={category.name}
       lockCategory
     />
   );

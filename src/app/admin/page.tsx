@@ -1,11 +1,12 @@
-"use client";
-
 import Link from "next/link";
 import Image from "next/image";
-import { PRODUCTS } from "../shop/product-data";
-import { categoryOptions } from "../shop/category-utils";
+import { db } from "@/lib/db";
+import { products, categories, contactMessages } from "@/lib/db/schema";
+import { sql, eq, desc } from "drizzle-orm";
 
-/* ─── Mock order data ─── */
+export const revalidate = 0;
+
+/* ─── Mock order data (stays mock until orders table exists) ─── */
 const RECENT_ORDERS = [
   { id: "ORD-2401", customer: "Sophia Laurent", email: "sophia@example.com", total: 5560, items: 2, status: "delivered" as const, date: "Mar 24, 2026" },
   { id: "ORD-2400", customer: "Priya Rajesh", email: "priya@example.com", total: 4500, items: 1, status: "shipped" as const, date: "Mar 23, 2026" },
@@ -23,52 +24,54 @@ const STATUS_STYLES: Record<string, string> = {
 };
 
 /* ─── Stats ─── */
-const STATS = [
-  {
-    label: "Total Revenue",
-    value: "$124,580",
-    change: "+12.5%",
-    positive: true,
-    icon: (
-      <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth={1.6} viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-      </svg>
-    ),
-  },
-  {
-    label: "Total Orders",
-    value: "384",
-    change: "+8.2%",
-    positive: true,
-    icon: (
-      <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth={1.6} viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007z" />
-      </svg>
-    ),
-  },
-  {
-    label: "Total Products",
-    value: String(PRODUCTS.length),
-    change: `${categoryOptions.length} categories`,
-    positive: true,
-    icon: (
-      <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth={1.6} viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
-      </svg>
-    ),
-  },
-  {
-    label: "Customers",
-    value: "1,247",
-    change: "+3.1%",
-    positive: true,
-    icon: (
-      <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth={1.6} viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
-      </svg>
-    ),
-  },
-];
+function buildStats(productCount: number, categoryCount: number, messageCount: number) {
+  return [
+    {
+      label: "Total Revenue",
+      value: "$124,580",
+      change: "+12.5%",
+      positive: true,
+      icon: (
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth={1.6} viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      ),
+    },
+    {
+      label: "Total Orders",
+      value: "384",
+      change: "+8.2%",
+      positive: true,
+      icon: (
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth={1.6} viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007z" />
+        </svg>
+      ),
+    },
+    {
+      label: "Total Products",
+      value: String(productCount),
+      change: `${categoryCount} categories`,
+      positive: true,
+      icon: (
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth={1.6} viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
+        </svg>
+      ),
+    },
+    {
+      label: "Messages",
+      value: String(messageCount),
+      change: "Contact inbox",
+      positive: true,
+      icon: (
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth={1.6} viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+        </svg>
+      ),
+    },
+  ];
+}
 
 /* ─── Revenue chart (mini bar chart) ─── */
 const REVENUE_DATA = [
@@ -98,11 +101,10 @@ function MiniChart() {
 }
 
 /* ─── Top selling products ─── */
-function TopProducts() {
-  const top = [...PRODUCTS].sort((a, b) => b.price - a.price).slice(0, 5);
+function TopProducts({ topProducts }: { topProducts: { id: number; name: string; image: string; price: number; categoryName: string | null }[] }) {
   return (
     <div className="space-y-3">
-      {top.map((p, i) => (
+      {topProducts.map((p, i) => (
         <div key={p.id} className="flex items-center gap-3">
           <span className="text-[11px] font-bold text-[#9ca3af] w-5">#{i + 1}</span>
           <div className="relative h-10 w-10 rounded-lg overflow-hidden bg-[#f4f5f7] shrink-0">
@@ -110,7 +112,7 @@ function TopProducts() {
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-[13px] font-semibold truncate">{p.name}</p>
-            <p className="text-[11px] text-[#9ca3af]">{p.category}</p>
+            <p className="text-[11px] text-[#9ca3af]">{p.categoryName}</p>
           </div>
           <p className="text-[13px] font-semibold text-[#1e1e2d]">${p.price.toLocaleString()}</p>
         </div>
@@ -120,7 +122,31 @@ function TopProducts() {
 }
 
 /* ─── Page ─── */
-export default function AdminDashboard() {
+export default async function AdminDashboard() {
+  /* Fetch counts from DB */
+  const [productCountResult] = await db.select({ count: sql<number>`count(*)` }).from(products);
+  const [categoryCountResult] = await db.select({ count: sql<number>`count(*)` }).from(categories);
+  const [messageCountResult] = await db.select({ count: sql<number>`count(*)` }).from(contactMessages);
+
+  const productCount = Number(productCountResult?.count ?? 0);
+  const categoryCount = Number(categoryCountResult?.count ?? 0);
+  const messageCount = Number(messageCountResult?.count ?? 0);
+
+  /* Top products by price */
+  const topProducts = await db
+    .select({
+      id: products.id,
+      name: products.name,
+      image: products.image,
+      price: products.price,
+      categoryName: categories.name,
+    })
+    .from(products)
+    .leftJoin(categories, eq(products.categoryId, categories.id))
+    .orderBy(desc(products.price))
+    .limit(5);
+
+  const STATS = buildStats(productCount, categoryCount, messageCount);
   return (
     <div className="space-y-8">
       {/* Header */}
@@ -186,7 +212,7 @@ export default function AdminDashboard() {
         {/* Top products */}
         <div className="rounded-xl border border-[#e5e7eb] bg-white p-6">
           <h2 className="text-[15px] font-bold mb-4">Top Products</h2>
-          <TopProducts />
+          <TopProducts topProducts={topProducts} />
         </div>
       </div>
 
