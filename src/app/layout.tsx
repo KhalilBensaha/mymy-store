@@ -1,7 +1,11 @@
 import type { Metadata } from "next";
-import { Playfair_Display, Cormorant_Garamond, Montserrat, Nunito } from "next/font/google";
+import { Playfair_Display, Cormorant_Garamond, Montserrat, Nunito, Geist } from "next/font/google";
 import "./globals.css";
 import { I18nProvider } from "./i18n/provider";
+import { cn } from "@/lib/utils";
+import SplashCursor from "@/components/SplashCursor";
+
+const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
 const playfair = Playfair_Display({
   variable: "--font-playfair",
@@ -76,9 +80,19 @@ export default function RootLayout({
     <html
       suppressHydrationWarning
       lang="en"
-      className={`${playfair.variable} ${cormorant.variable} ${montserrat.variable} ${nunito.variable} h-full antialiased`}
+      className={cn("h-full", "antialiased", playfair.variable, cormorant.variable, montserrat.variable, nunito.variable, "font-sans", geist.variable)}
     >
       <body className="min-h-full flex flex-col">
+        <SplashCursor
+          SPLAT_RADIUS={0.07}
+          SPLAT_FORCE={5000}
+          DENSITY_DISSIPATION={3}
+          VELOCITY_DISSIPATION={2}
+          COLOR_UPDATE_SPEED={6}
+          CURL={4}
+          BACK_COLOR={{ r: 0, g: 0, b: 0 }}
+          TRANSPARENT={true}
+        />
         <I18nProvider>{children}</I18nProvider>
       </body>
     </html>
