@@ -35,7 +35,7 @@ function getInitialLocale(): Locale {
     const saved = localStorage.getItem("mymy-locale") as Locale | null;
     if (saved && messages[saved]) return saved;
   }
-  return "en";
+  return "ar";
 }
 
 export function I18nProvider({ children }: { children: ReactNode }) {

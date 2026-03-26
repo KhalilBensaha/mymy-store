@@ -28,6 +28,9 @@ export default function ShopLayout({ children }: Readonly<{ children: React.Reac
             <Link href="/#our-story" className="font-montserrat text-sm text-text-dark transition-colors hover:text-[#8b6914]">
               {t.nav.ourStory}
             </Link>
+            <Link href="/contact" className="font-montserrat text-sm text-text-dark transition-colors hover:text-[#8b6914]">
+              {t.nav.contact}
+            </Link>
           </nav>
 
           <div className="hidden items-center gap-5 md:flex">
@@ -45,6 +48,11 @@ export default function ShopLayout({ children }: Readonly<{ children: React.Reac
             <Link href="/wishlist" aria-label={t.nav.cart} className="text-[#8b6914] transition-colors hover:text-[#6f5110]">
               <svg className="h-4.5 w-4.5" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M3 1a1 1 0 000 2h1l.4 2M7 13h7l3-8H5.4m1.6 8L5.4 5m1.6 8l-1.35 2.7A1 1 0 006.55 17h8.9a1 1 0 100-2H7.42l.93-2zM7 18a1 1 0 100-2 1 1 0 000 2zm8 0a1 1 0 100-2 1 1 0 000 2z" />
+              </svg>
+            </Link>
+            <Link href="/admin" aria-label={t.nav.admin} className="text-[#8b6914] transition-colors hover:text-[#6f5110]">
+              <svg className="h-4.5 w-4.5" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
               </svg>
             </Link>
           </div>
@@ -87,6 +95,9 @@ export default function ShopLayout({ children }: Readonly<{ children: React.Reac
               <Link href="/#our-story" onClick={() => setMobileOpen(false)} className="font-montserrat text-[0.82rem] font-medium tracking-[0.12em] uppercase text-text-dark transition-colors hover:text-[#8b6914]">
                 {t.nav.ourStory}
               </Link>
+              <Link href="/contact" onClick={() => setMobileOpen(false)} className="font-montserrat text-[0.82rem] font-medium tracking-[0.12em] uppercase text-text-dark transition-colors hover:text-[#8b6914]">
+                {t.nav.contact}
+              </Link>
             </div>
             <div className="mt-6 flex items-center gap-5 border-t border-cream-dark/30 pt-5">
               <button aria-label={t.nav.search} className="text-[#8b6914] transition-colors hover:text-[#6f5110]">
@@ -97,6 +108,11 @@ export default function ShopLayout({ children }: Readonly<{ children: React.Reac
               <Link href="/wishlist" aria-label={t.nav.cart} className="text-[#8b6914] transition-colors hover:text-[#6f5110]" onClick={() => setMobileOpen(false)}>
                 <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+                </svg>
+              </Link>
+              <Link href="/admin" aria-label={t.nav.admin} className="text-[#8b6914] transition-colors hover:text-[#6f5110]" onClick={() => setMobileOpen(false)}>
+                <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
                 </svg>
               </Link>
             </div>

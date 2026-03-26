@@ -4,6 +4,11 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* Arabic text uses Cairo; Latin text falls back to existing fonts */
+:lang(ar) {
+  font-family: var(--font-cairo), system-ui, sans-serif;
+}
+
 :root {
   --gold: #b8860b;
   --gold-light: #d4a843;
