@@ -27,6 +27,7 @@
   --font-playfair: var(--font-playfair);
   --font-cormorant: var(--font-cormorant);
   --font-montserrat: var(--font-montserrat);
+  --font-nunito: var(--font-nunito);
 }
 
 body {
@@ -49,6 +50,10 @@ h1, h2, h3, h4, h5, h6 {
 
 .font-montserrat {
   font-family: var(--font-montserrat), Arial, Helvetica, sans-serif;
+}
+
+.font-nunito {
+  font-family: var(--font-nunito), system-ui, sans-serif;
 }
 
 /* Smooth scroll */
@@ -135,4 +140,46 @@ html {
 .reveal.visible {
   opacity: 1;
   transform: translateY(0);
+}
+
+.luxury-range {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 2px;
+  border-radius: 999px;
+  background: linear-gradient(to right, var(--gold) 0%, #d9cfbe 0%);
+  outline: none;
+}
+
+.luxury-range::-webkit-slider-runnable-track {
+  height: 2px;
+  background: #d9cfbe;
+  border-radius: 999px;
+}
+
+.luxury-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 10px;
+  height: 10px;
+  margin-top: -4px;
+  border-radius: 999px;
+  background: var(--gold-dark);
+  border: 0;
+  box-shadow: 0 0 0 4px rgba(184, 134, 11, 0.12);
+}
+
+.luxury-range::-moz-range-track {
+  height: 2px;
+  background: #d9cfbe;
+  border-radius: 999px;
+}
+
+.luxury-range::-moz-range-thumb {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: var(--gold-dark);
+  border: 0;
+  box-shadow: 0 0 0 4px rgba(184, 134, 11, 0.12);
 }
