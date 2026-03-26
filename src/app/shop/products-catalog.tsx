@@ -3,8 +3,14 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useMemo, useState } from "react";
+import {
+  type Category,
+  categoryOptions,
+  getCategoryFromSlug,
+  getCategoryHref,
+  getCategoryDescription,
+} from "./category-utils";
 
-type Category = "Rings" | "Necklaces" | "Earrings" | "Bracelets";
 type Material = "18K Yellow Gold" | "Sterling Silver" | "VS Diamonds";
 
 type Product = {
@@ -101,10 +107,19 @@ const PRODUCTS: Product[] = [
   },
 ];
 
-const categoryOptions: Category[] = ["Rings", "Necklaces", "Earrings", "Bracelets"];
 const materialOptions: Material[] = ["18K Yellow Gold", "Sterling Silver", "VS Diamonds"];
 const MAX_PRICE = 10000;
 const PAGE_SIZE = 6;
+
+export type ProductsCatalogProps = {
+  eyebrow?: string;
+  title?: string;
+  description?: string;
+  initialCategory?: Category | null;
+  lockCategory?: boolean;
+};
+
+export { getCategoryFromSlug, getCategoryHref, getCategoryDescription };
 
 function formatPrice(price: number) {
   return new Intl.NumberFormat("en-US", {
@@ -143,8 +158,14 @@ function ProductCard({ product }: { product: Product }) {
   );
 }
 
-export default function ProductsCatalog() {
-  const [activeCategory, setActiveCategory] = useState<Category | null>(null);
+export default function ProductsCatalog({
+  eyebrow = "Curated Selection",
+  title = "The Core Collection",
+  description = "Sculptural forms and timeless materials. Each piece is hand-finished in our atelier to ensure a lifetime of wear.",
+  initialCategory = null,
+  lockCategory = false,
+}: ProductsCatalogProps) {
+  const [activeCategory, setActiveCategory] = useState<Category | null>(initialCategory);
   const [selectedMaterials, setSelectedMaterials] = useState<Material[]>(["VS Diamonds"]);
   const [maxPrice, setMaxPrice] = useState(5500);
   const [page, setPage] = useState(0);
@@ -179,9 +200,10 @@ export default function ProductsCatalog() {
   };
 
   const clearFilters = () => {
-    setActiveCategory(null);
+    setActiveCategory(initialCategory);
     setSelectedMaterials([]);
     setMaxPrice(5500);
+    setPage(0);
   };
 
   return (
@@ -189,13 +211,13 @@ export default function ProductsCatalog() {
       <div className="mx-auto max-w-7xl px-6 pb-16 pt-12 lg:px-10 lg:pb-20 lg:pt-14">
         <div className="mb-14 max-w-3xl lg:mb-16">
           <p className="font-montserrat text-[0.6rem] uppercase tracking-[0.22em] text-[#a89c87]">
-            Curated Selection
+            {eyebrow}
           </p>
           <h1 className="mt-3 font-playfair text-5xl leading-[1.04] text-text-dark lg:text-[4.25rem]">
-            The Core Collection
+            {title}
           </h1>
           <p className="mt-5 max-w-2xl font-montserrat text-[0.97rem] leading-8 text-[#6f6458] lg:text-[1.02rem]">
-            Sculptural forms and timeless materials. Each piece is hand-finished in our atelier to ensure a lifetime of wear.
+            {description}
           </p>
         </div>
 
@@ -210,18 +232,29 @@ export default function ProductsCatalog() {
                   const isActive = activeCategory === category;
                   return (
                     <li key={category}>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setPage(0);
-                          setActiveCategory(isActive ? null : category);
-                        }}
-                        className={`font-montserrat text-left text-[0.96rem] transition-colors ${
-                          isActive ? "text-[#8b6914]" : "text-text-dark hover:text-[#8b6914]"
-                        }`}
-                      >
-                        {category}
-                      </button>
+                      {lockCategory ? (
+                        <Link
+                          href={getCategoryHref(category)}
+                          className={`font-montserrat text-left text-[0.96rem] transition-colors ${
+                            isActive ? "text-[#8b6914]" : "text-text-dark hover:text-[#8b6914]"
+                          }`}
+                        >
+                          {category}
+                        </Link>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setPage(0);
+                            setActiveCategory(isActive ? null : category);
+                          }}
+                          className={`font-montserrat text-left text-[0.96rem] transition-colors ${
+                            isActive ? "text-[#8b6914]" : "text-text-dark hover:text-[#8b6914]"
+                          }`}
+                        >
+                          {category}
+                        </button>
+                      )}
                     </li>
                   );
                 })}

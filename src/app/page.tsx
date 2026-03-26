@@ -137,21 +137,25 @@ const categories = [
     name: "Diamond Necklace",
     sub: "Certified Brilliance",
     img: "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=600&h=500&fit=crop",
+    href: "/shop/necklaces",
   },
   {
     name: "Gold Bridal Set",
     sub: "Timeless Bridal Jewelry",
     img: "https://images.unsplash.com/photo-1610694955371-d4a3e0ce4b52?w=600&h=500&fit=crop",
+    href: "/shop/bracelets",
   },
   {
     name: "Pearl Earrings",
     sub: "Lustrous Elegance",
     img: "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=600&h=500&fit=crop",
+    href: "/shop/earrings",
   },
   {
     name: "Solitaire Rings",
     sub: "The Perfect Stones",
     img: "https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=600&h=500&fit=crop",
+    href: "/shop/rings",
   },
 ];
 
@@ -166,7 +170,7 @@ function Categories() {
           {categories.map((c) => (
             <Link
               key={c.name}
-              href="#"
+              href={c.href}
               className="group flex flex-col items-center text-center transition-transform duration-300 hover:-translate-y-1"
             >
               <div className="relative w-full rounded-2xl overflow-hidden bg-cream-dark/30 aspect-4/3 mb-5">
