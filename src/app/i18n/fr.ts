@@ -16,6 +16,7 @@ const fr: Messages = {
     pearls: "Perles",
     bridal: "Mariage",
     contact: "Contact",
+    admin: "Panneau Admin",
   },
   hero: {
     craftedFor: "Conçu pour",

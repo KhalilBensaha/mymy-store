@@ -16,6 +16,7 @@ const en: Messages = {
     pearls: "Pearls",
     bridal: "Bridal",
     contact: "Contact",
+    admin: "Admin Panel",
   },
   hero: {
     craftedFor: "Crafted for",

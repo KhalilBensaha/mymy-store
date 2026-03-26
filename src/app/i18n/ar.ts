@@ -16,6 +16,7 @@ const ar: Messages = {
     pearls: "اللؤلؤ",
     bridal: "الزفاف",
     contact: "تواصل",
+    admin: "لوحة التحكم",
   },
   hero: {
     craftedFor: "صُنع من أجل",

@@ -17,6 +17,7 @@ export type Messages = {
     pearls: string;
     bridal: string;
     contact: string;
+    admin: string;
   };
   /* ── Hero ── */
   hero: {
