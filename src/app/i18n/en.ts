@@ -10,6 +10,7 @@ const en: Messages = {
     wishlist: "Wishlist",
     cart: "Cart",
     menu: "Menu",
+    close: "Close",
     diamonds: "Diamonds",
     gold: "Gold",
     pearls: "Pearls",

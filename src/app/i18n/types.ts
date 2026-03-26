@@ -11,6 +11,7 @@ export type Messages = {
     wishlist: string;
     cart: string;
     menu: string;
+    close: string;
     diamonds: string;
     gold: string;
     pearls: string;

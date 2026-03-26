@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
 import ScrollReveal from "./scroll-reveal";
 import { MymyLogo } from "./components/mymy-logo";
 import { LanguageSwitcher } from "./components/language-switcher";
@@ -10,6 +11,7 @@ import { useI18n } from "./i18n/provider";
 /* ─────────────── NAV ─────────────── */
 function Navbar() {
   const { t } = useI18n();
+  const [mobileOpen, setMobileOpen] = useState(false);
   const links = [
     { label: t.nav.diamonds, href: "#diamonds" },
     { label: t.nav.gold, href: "#gold" },
@@ -49,19 +51,72 @@ function Navbar() {
               <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
             </svg>
           </Link>
-          {/* Cart */}
-          <button aria-label={t.nav.cart} className="text-text-dark hover:text-gold transition-colors">
+          {/* Cart / Bag → wishlist */}
+          <Link href="/wishlist" aria-label={t.nav.cart} className="text-text-dark hover:text-gold transition-colors">
             <svg className="w-[18px] h-[18px]" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
             </svg>
+          </Link>
+        </div>
+
+        {/* Mobile: language switcher + hamburger */}
+        <div className="flex items-center gap-3 md:hidden">
+          <LanguageSwitcher />
+          <button
+            className="text-text-dark"
+            aria-label={mobileOpen ? t.nav.close : t.nav.menu}
+            onClick={() => setMobileOpen(!mobileOpen)}
+          >
+            {mobileOpen ? (
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            ) : (
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            )}
           </button>
         </div>
-        {/* Mobile menu button */}
-        <button className="md:hidden text-text-dark" aria-label={t.nav.menu}>
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-          </svg>
-        </button>
+      </div>
+
+      {/* Mobile slide-down menu */}
+      <div
+        className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${
+          mobileOpen ? "max-h-[28rem] opacity-100" : "max-h-0 opacity-0"
+        }`}
+      >
+        <nav className="border-t border-cream-dark/30 bg-warm-white px-6 pb-6 pt-4">
+          <div className="flex flex-col gap-4">
+            {links.map((l) => (
+              <Link
+                key={l.href}
+                href={l.href}
+                onClick={() => setMobileOpen(false)}
+                className="font-montserrat text-[0.82rem] font-medium tracking-[0.12em] uppercase text-text-dark transition-colors hover:text-gold"
+              >
+                {l.label}
+              </Link>
+            ))}
+          </div>
+          <div className="mt-6 flex items-center gap-5 border-t border-cream-dark/30 pt-5">
+            <button aria-label={t.nav.search} className="text-text-dark hover:text-gold transition-colors">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+              </svg>
+            </button>
+            <Link href="/wishlist" aria-label={t.nav.wishlist} className="text-text-dark hover:text-gold transition-colors" onClick={() => setMobileOpen(false)}>
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+            </svg>
+            </Link>
+            <Link href="/wishlist" aria-label={t.nav.cart} className="text-text-dark hover:text-gold transition-colors" onClick={() => setMobileOpen(false)}>
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+              </svg>
+            </Link>
+          </div>
+        </nav>
       </div>
     </header>
   );
@@ -71,69 +126,73 @@ function Navbar() {
 function Hero() {
   const { t } = useI18n();
   return (
-    <section className="w-full bg-warm-white overflow-hidden">
-      <div className="max-w-7xl mx-auto px-6 lg:px-10 grid grid-cols-1 lg:grid-cols-2 items-center py-12 lg:py-16 min-h-[85vh]">
-        {/* Left – Copy */}
-        <div className="relative z-10 animate-fade-up">
-          <h1 className="font-playfair text-[2.5rem] sm:text-[3rem] lg:text-[3.4rem] xl:text-[4rem] font-bold leading-[1.05] mb-6 uppercase">
-            <span className="text-text-dark block">{t.hero.craftedFor}</span>
-            <span className="text-text-dark block">{t.hero.eternity}</span>
-            <span className="text-gold italic font-light block mt-1">{t.hero.designedFor}</span>
-            <span className="text-gold italic font-light block">{t.hero.elegance}</span>
-          </h1>
-          <p className="font-montserrat text-[12px] sm:text-[13px] text-text-muted max-w-sm leading-relaxed mb-8">
-            {t.hero.description}
-          </p>
-          <div className="flex flex-wrap gap-3">
-            <Link
-              href="#diamonds"
-              className="font-montserrat text-[10px] tracking-[0.14em] uppercase font-semibold bg-gold text-white px-6 py-3 rounded-full hover:bg-gold-dark transition-colors"
-            >
-              {t.hero.exploreDiamonds}
-            </Link>
-            <Link
-              href="#gold"
-              className="font-montserrat text-[10px] tracking-[0.14em] uppercase font-semibold border border-text-dark/30 text-text-dark px-6 py-3 rounded-full hover:bg-text-dark hover:text-white transition-colors"
-            >
-              {t.hero.shopGoldPearl}
-            </Link>
-          </div>
-        </div>
+    <section className="relative w-full overflow-hidden" style={{ minHeight: "90vh" }}>
+      {/* ── Background image ── */}
+      <Image
+        src="/bg-image.jpg"
+        alt="Luxury jewelry model"
+        fill
+        className="object-cover object-center"
+        sizes="100vw"
+        priority
+      />
 
-        {/* Right – Overlapping image collage */}
-        <div className="hidden lg:block relative h-[540px] xl:h-[600px]">
-          <div className="absolute -top-2 end-4 w-[260px] h-[260px] xl:w-[300px] xl:h-[300px] rounded-full overflow-hidden shadow-2xl z-10 animate-float ring-4 ring-cream-dark/20">
-            <Image
-              src="/images/hero-ring.jpg"
-              alt="Diamond ring on display"
-              fill
-              className="object-cover scale-110"
-              sizes="300px"
-              priority
-            />
-          </div>
+      {/* ── Gradient overlay: warm cream left → transparent right on desktop, solid on mobile ── */}
+      <div className="absolute inset-0 bg-[#f5f0e8]/80 lg:bg-linear-to-r lg:from-[#f5f0e8]/90 lg:via-[#f5f0e8]/65 lg:to-[#f5f0e8]/10" />
 
-          <div className="absolute top-[130px] start-[5%] w-[210px] h-[310px] xl:w-[230px] xl:h-[340px] rounded-2xl overflow-hidden shadow-2xl z-20 animate-float-slow">
-            <Image
-              src="/images/hero-model.jpg"
-              alt="Model wearing luxury jewelry"
-              fill
-              className="object-cover object-top"
-              sizes="230px"
-            />
-          </div>
+      {/* ── Content ── */}
+      <div className="relative z-10 flex min-h-[90vh] items-center">
+        <div className="max-w-7xl mx-auto w-full px-6 lg:px-10 py-20">
+          <div className="max-w-xl animate-fade-up">
+            {/* Eyebrow */}
+            <p className="font-montserrat text-[0.58rem] uppercase tracking-[0.32em] text-[#8b6914] mb-5">
+              Mymy Atelier · Luxury Jewelry
+            </p>
 
-          <div className="absolute bottom-8 end-[8%] w-[190px] h-[190px] xl:w-[210px] xl:h-[210px] rounded-2xl bg-white shadow-xl z-10 flex flex-col items-start justify-end p-5 animate-fade-up delay-300">
-            <div className="relative w-12 h-12 rounded-lg overflow-hidden mb-2">
-              <Image
-                src="/images/hero-product.jpg"
-                alt="Jewelry detail"
-                fill
-                className="object-cover"
-                sizes="48px"
-              />
+            <h1 className="font-playfair text-[2.6rem] sm:text-[3.2rem] lg:text-[3.8rem] xl:text-[4.4rem] font-bold leading-[1.05] mb-7 uppercase">
+              <span className="text-text-dark block">{t.hero.craftedFor}</span>
+              <span className="text-text-dark block">{t.hero.eternity}</span>
+              <span className="text-[#8b6914] italic font-light block mt-1">{t.hero.designedFor}</span>
+              <span className="text-[#8b6914] italic font-light block">{t.hero.elegance}</span>
+            </h1>
+
+            {/* Gold divider */}
+            <div className="h-px w-14 bg-[#c4a95a] mb-7" />
+
+            <p className="font-montserrat text-[12px] sm:text-[13px] text-text-muted max-w-sm leading-relaxed mb-10">
+              {t.hero.description}
+            </p>
+
+            <div className="flex flex-wrap gap-3">
+              <Link
+                href="#diamonds"
+                className="font-montserrat text-[10px] tracking-[0.14em] uppercase font-semibold bg-[#8b6914] text-white px-7 py-3.5 hover:bg-[#6f5110] transition-colors"
+              >
+                {t.hero.exploreDiamonds}
+              </Link>
+              <Link
+                href="#gold"
+                className="font-montserrat text-[10px] tracking-[0.14em] uppercase font-semibold border border-text-dark/40 text-text-dark px-7 py-3.5 hover:bg-text-dark hover:text-white transition-colors"
+              >
+                {t.hero.shopGoldPearl}
+              </Link>
             </div>
-            <p className="font-playfair text-[13px] italic text-text-dark">Jewelry Detail</p>
+
+            {/* Stats row */}
+            <div className="mt-14 flex gap-10">
+              <div>
+                <p className="font-playfair text-2xl text-text-dark">2,400+</p>
+                <p className="mt-1 font-montserrat text-[0.58rem] uppercase tracking-[0.18em] text-[#a89c87]">Pieces Crafted</p>
+              </div>
+              <div className="border-s border-[#d9cfbe] ps-10">
+                <p className="font-playfair text-2xl text-text-dark">18K</p>
+                <p className="mt-1 font-montserrat text-[0.58rem] uppercase tracking-[0.18em] text-[#a89c87]">Pure Gold</p>
+              </div>
+              <div className="border-s border-[#d9cfbe] ps-10">
+                <p className="font-playfair text-2xl text-text-dark">VS+</p>
+                <p className="mt-1 font-montserrat text-[0.58rem] uppercase tracking-[0.18em] text-[#a89c87]">Diamonds</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>

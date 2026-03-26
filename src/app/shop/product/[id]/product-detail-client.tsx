@@ -50,7 +50,6 @@ export default function ProductDetailClient({
   const [activeVariant, setActiveVariant] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState<Tab>("description");
-  const [wishlisted, setWishlisted] = useState(false);
 
   const gallery = product.gallery.length > 0 ? product.gallery : [product.image];
 
@@ -208,28 +207,6 @@ export default function ProductDetailClient({
                 className="flex flex-1 items-center justify-center bg-[#4a3a16] px-6 py-3 font-montserrat text-[0.65rem] uppercase tracking-[0.2em] text-white transition-colors hover:bg-[#3b2e12]"
               >
                 {t.product.addToCart}
-              </button>
-
-              {/* Wishlist */}
-              <button
-                type="button"
-                onClick={() => setWishlisted(!wishlisted)}
-                aria-label="Add to wishlist"
-                className="flex w-12 items-center justify-center border border-[#d9cfbe] transition-colors hover:border-[#8b6914]"
-              >
-                <svg
-                  className={`h-4.5 w-4.5 transition-colors ${
-                    wishlisted ? "fill-[#8b6914] stroke-[#8b6914]" : "fill-none stroke-text-dark"
-                  }`}
-                  strokeWidth={1.5}
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"
-                  />
-                </svg>
               </button>
             </div>
 

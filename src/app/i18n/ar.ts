@@ -10,6 +10,7 @@ const ar: Messages = {
     wishlist: "المفضلة",
     cart: "السلة",
     menu: "القائمة",
+    close: "إغلاق",
     diamonds: "الألماس",
     gold: "الذهب",
     pearls: "اللؤلؤ",
