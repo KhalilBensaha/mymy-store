@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useMemo, useState } from "react";
+import { useI18n } from "../i18n/provider";
 import {
   type Category,
   categoryOptions,
@@ -10,102 +11,7 @@ import {
   getCategoryHref,
   getCategoryDescription,
 } from "./category-utils";
-
-type Material = "18K Yellow Gold" | "Sterling Silver" | "VS Diamonds";
-
-type Product = {
-  id: number;
-  name: string;
-  subtitle: string;
-  price: number;
-  image: string;
-  category: Category;
-  materials: Material[];
-};
-
-const PRODUCTS: Product[] = [
-  {
-    id: 1,
-    name: "Aurelia Band",
-    subtitle: "18K Yellow Gold",
-    price: 1250,
-    image: "/images/cat-rings.jpg",
-    category: "Rings",
-    materials: ["18K Yellow Gold", "VS Diamonds"],
-  },
-  {
-    id: 2,
-    name: "Lunar Pendant",
-    subtitle: "Sterling Silver",
-    price: 890,
-    image: "/images/best2.jpg",
-    category: "Necklaces",
-    materials: ["Sterling Silver"],
-  },
-  {
-    id: 3,
-    name: "Eos Drop Earrings",
-    subtitle: "18K Yellow Gold",
-    price: 2100,
-    image: "/images/cat-earrings.jpg",
-    category: "Earrings",
-    materials: ["18K Yellow Gold"],
-  },
-  {
-    id: 4,
-    name: "Starlight Bracelet",
-    subtitle: "VS Diamonds",
-    price: 4500,
-    image: "/images/hero-bracelet.jpg",
-    category: "Bracelets",
-    materials: ["VS Diamonds"],
-  },
-  {
-    id: 5,
-    name: "Terra Ring",
-    subtitle: "18K Yellow Gold",
-    price: 1400,
-    image: "/images/best6.jpg",
-    category: "Rings",
-    materials: ["18K Yellow Gold"],
-  },
-  {
-    id: 6,
-    name: "Veritas Choker",
-    subtitle: "Emeralds Gold",
-    price: 3200,
-    image: "/images/best5.jpg",
-    category: "Necklaces",
-    materials: ["18K Yellow Gold", "VS Diamonds"],
-  },
-  {
-    id: 7,
-    name: "Solene Hoops",
-    subtitle: "18K Yellow Gold",
-    price: 1750,
-    image: "/images/best4.jpg",
-    category: "Earrings",
-    materials: ["18K Yellow Gold"],
-  },
-  {
-    id: 8,
-    name: "Celeste Strand",
-    subtitle: "Sterling Silver",
-    price: 980,
-    image: "/images/best3.jpg",
-    category: "Necklaces",
-    materials: ["Sterling Silver"],
-  },
-  {
-    id: 9,
-    name: "Orion Cuff",
-    subtitle: "VS Diamonds",
-    price: 5100,
-    image: "/images/best7.jpg",
-    category: "Bracelets",
-    materials: ["VS Diamonds", "18K Yellow Gold"],
-  },
-];
+import { type Material, type Product, PRODUCTS } from "./product-data";
 
 const materialOptions: Material[] = ["18K Yellow Gold", "Sterling Silver", "VS Diamonds"];
 const MAX_PRICE = 10000;
@@ -132,7 +38,7 @@ function formatPrice(price: number) {
 function ProductCard({ product }: { product: Product }) {
   return (
     <article className="group">
-      <Link href="#" className="block">
+      <Link href={`/shop/product/${product.id}`} className="block">
         <div className="relative aspect-4/5 overflow-hidden bg-[#f7f4ee] shadow-sm transition-transform duration-300 group-hover:-translate-y-1">
           <Image
             src={product.image}
@@ -159,12 +65,16 @@ function ProductCard({ product }: { product: Product }) {
 }
 
 export default function ProductsCatalog({
-  eyebrow = "Curated Selection",
-  title = "The Core Collection",
-  description = "Sculptural forms and timeless materials. Each piece is hand-finished in our atelier to ensure a lifetime of wear.",
+  eyebrow,
+  title,
+  description,
   initialCategory = null,
   lockCategory = false,
 }: ProductsCatalogProps) {
+  const { t } = useI18n();
+  const resolvedEyebrow = eyebrow ?? t.shop.curatedSelection;
+  const resolvedTitle = title ?? t.shop.coreCollection;
+  const resolvedDescription = description ?? t.shop.coreCollectionDesc;
   const [activeCategory, setActiveCategory] = useState<Category | null>(initialCategory);
   const [selectedMaterials, setSelectedMaterials] = useState<Material[]>(["VS Diamonds"]);
   const [maxPrice, setMaxPrice] = useState(5500);
@@ -211,13 +121,13 @@ export default function ProductsCatalog({
       <div className="mx-auto max-w-7xl px-6 pb-16 pt-12 lg:px-10 lg:pb-20 lg:pt-14">
         <div className="mb-14 max-w-3xl lg:mb-16">
           <p className="font-montserrat text-[0.6rem] uppercase tracking-[0.22em] text-[#a89c87]">
-            {eyebrow}
+            {resolvedEyebrow}
           </p>
           <h1 className="mt-3 font-playfair text-5xl leading-[1.04] text-text-dark lg:text-[4.25rem]">
-            {title}
+            {resolvedTitle}
           </h1>
           <p className="mt-5 max-w-2xl font-montserrat text-[0.97rem] leading-8 text-[#6f6458] lg:text-[1.02rem]">
-            {description}
+            {resolvedDescription}
           </p>
         </div>
 
@@ -225,7 +135,7 @@ export default function ProductsCatalog({
           <aside className="space-y-9">
             <div>
               <p className="font-montserrat text-[0.62rem] uppercase tracking-[0.22em] text-[#a89c87]">
-                Category
+                {t.shop.category}
               </p>
               <ul className="mt-5 space-y-3">
                 {categoryOptions.map((category) => {
@@ -235,7 +145,7 @@ export default function ProductsCatalog({
                       {lockCategory ? (
                         <Link
                           href={getCategoryHref(category)}
-                          className={`font-montserrat text-left text-[0.96rem] transition-colors ${
+                          className={`font-montserrat text-start text-[0.96rem] transition-colors ${
                             isActive ? "text-[#8b6914]" : "text-text-dark hover:text-[#8b6914]"
                           }`}
                         >
@@ -248,7 +158,7 @@ export default function ProductsCatalog({
                             setPage(0);
                             setActiveCategory(isActive ? null : category);
                           }}
-                          className={`font-montserrat text-left text-[0.96rem] transition-colors ${
+                          className={`font-montserrat text-start text-[0.96rem] transition-colors ${
                             isActive ? "text-[#8b6914]" : "text-text-dark hover:text-[#8b6914]"
                           }`}
                         >
@@ -263,7 +173,7 @@ export default function ProductsCatalog({
 
             <div>
               <p className="font-montserrat text-[0.62rem] uppercase tracking-[0.22em] text-[#a89c87]">
-                Material
+                {t.shop.material}
               </p>
               <div className="mt-5 space-y-3.5">
                 {materialOptions.map((material) => {
@@ -288,7 +198,7 @@ export default function ProductsCatalog({
 
             <div>
               <p className="font-montserrat text-[0.62rem] uppercase tracking-[0.22em] text-[#a89c87]">
-                Price Range
+                {t.shop.priceRange}
               </p>
               <div className="mt-7">
                 <input
@@ -321,7 +231,7 @@ export default function ProductsCatalog({
               onClick={clearFilters}
               className="font-montserrat text-[0.66rem] uppercase tracking-[0.18em] text-[#a89c87] transition-colors hover:text-[#8b6914]"
             >
-              Clear Filters
+              {t.shop.clearFilters}
             </button>
           </aside>
 
@@ -335,9 +245,9 @@ export default function ProductsCatalog({
             {paginatedProducts.length === 0 ? (
               <div className="flex min-h-75 items-center justify-center rounded-3xl border border-dashed border-[#d9cfbe] bg-[#fcfaf6]">
                 <div className="text-center">
-                  <p className="font-playfair text-3xl text-text-dark">No pieces found</p>
+                  <p className="font-playfair text-3xl text-text-dark">{t.shop.noPiecesFound}</p>
                   <p className="mt-3 font-montserrat text-sm text-[#7d7267]">
-                    Adjust the filters to explore more pieces.
+                    {t.shop.adjustFilters}
                   </p>
                 </div>
               </div>
@@ -351,7 +261,7 @@ export default function ProductsCatalog({
                       key={index}
                       type="button"
                       onClick={() => setPage(index)}
-                      aria-label={`Go to page ${index + 1}`}
+                      aria-label={`${t.shop.goToPage} ${index + 1}`}
                       className={`h-2.5 w-2.5 rounded-full transition-colors ${
                         safePage === index ? "bg-[#8b6914]" : "bg-[#ddd6ca] hover:bg-[#b9a68a]"
                       }`}

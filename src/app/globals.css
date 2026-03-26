@@ -27,6 +27,7 @@
   --font-playfair: var(--font-playfair);
   --font-cormorant: var(--font-cormorant);
   --font-montserrat: var(--font-montserrat);
+  --font-nunito: var(--font-nunito);
 }
 
 body {
@@ -49,6 +50,10 @@ h1, h2, h3, h4, h5, h6 {
 
 .font-montserrat {
   font-family: var(--font-montserrat), Arial, Helvetica, sans-serif;
+}
+
+.font-nunito {
+  font-family: var(--font-nunito), system-ui, sans-serif;
 }
 
 /* Smooth scroll */

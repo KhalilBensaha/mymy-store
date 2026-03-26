@@ -1,0 +1,156 @@
+export type Locale = "en" | "fr" | "ar";
+
+export type Messages = {
+  /* ── Nav ── */
+  nav: {
+    shop: string;
+    collections: string;
+    ourStory: string;
+    search: string;
+    account: string;
+    wishlist: string;
+    cart: string;
+    menu: string;
+    diamonds: string;
+    gold: string;
+    pearls: string;
+    bridal: string;
+    contact: string;
+  };
+  /* ── Hero ── */
+  hero: {
+    craftedFor: string;
+    eternity: string;
+    designedFor: string;
+    elegance: string;
+    description: string;
+    exploreDiamonds: string;
+    shopGoldPearl: string;
+  };
+  /* ── Categories ── */
+  categories: {
+    title: string;
+    diamondNecklace: string;
+    certifiedBrilliance: string;
+    goldBridalSet: string;
+    timelessBridal: string;
+    pearlEarrings: string;
+    lustrousElegance: string;
+    solitaireRings: string;
+    perfectStones: string;
+  };
+  /* ── Best Sellers ── */
+  bestSellers: {
+    title: string;
+  };
+  /* ── Craftsmanship ── */
+  craftsmanship: {
+    title: string;
+    handcrafted: string;
+    masterArtisans: string;
+    certifiedDiamonds: string;
+    giaIgi: string;
+    pureGold: string;
+    hallmarked: string;
+    premiumPearls: string;
+    rareLustrous: string;
+  };
+  /* ── Special Collections ── */
+  specialCollections: {
+    title: string;
+    bridalDiamonds: string;
+    royalGold: string;
+    pearlSignature: string;
+    modernFusion: string;
+  };
+  /* ── Lifestyle ── */
+  lifestyle: {
+    eyebrow: string;
+  };
+  /* ── Testimonials ── */
+  testimonials: {
+    title: string;
+  };
+  /* ── Footer ── */
+  footer: {
+    brandDescription: string;
+    quickLinks: string;
+    customerCare: string;
+    aboutUs: string;
+    diamondCollections: string;
+    goldJewelry: string;
+    pearlJewelry: string;
+    bridalCollections: string;
+    contactUs: string;
+    shippingReturns: string;
+    warrantyInfo: string;
+    ringSizeGuide: string;
+    careInstructions: string;
+    copyright: string;
+    follow: string;
+    instagram: string;
+    pinterest: string;
+    service: string;
+    shipping: string;
+    returns: string;
+  };
+  /* ── Shop / Catalog ── */
+  shop: {
+    curatedSelection: string;
+    coreCollection: string;
+    coreCollectionDesc: string;
+    category: string;
+    material: string;
+    priceRange: string;
+    clearFilters: string;
+    noPiecesFound: string;
+    adjustFilters: string;
+    goToPage: string;
+    mymyAtelier: string;
+    atelierDesc: string;
+    newArrivals: string;
+    bestSellers: string;
+    support: string;
+    newsletter: string;
+    emailPlaceholder: string;
+  };
+  /* ── Product Detail ── */
+  product: {
+    breadcrumbShop: string;
+    breadcrumbCollections: string;
+    selectVariant: string;
+    sizeGuide: string;
+    addToCart: string;
+    freeShipping: string;
+    certified: string;
+    descriptionTab: string;
+    reviewsTab: string;
+    careTab: string;
+    storyTitle: string;
+    reviewsComingSoon: string;
+    careTitle: string;
+    careStorage: string;
+    careAvoid: string;
+    careClean: string;
+    careProfessional: string;
+    completeSet: string;
+    recommended: string;
+    viewAllCollection: string;
+    reviews: string;
+  };
+  /* ── Wishlist ── */
+  wishlist: {
+    privateCollection: string;
+    myWishlist: string;
+    emptyTitle: string;
+    exploreCollection: string;
+    removeFromWishlist: string;
+  };
+  /* ── Language ── */
+  lang: {
+    label: string;
+    en: string;
+    fr: string;
+    ar: string;
+  };
+};
