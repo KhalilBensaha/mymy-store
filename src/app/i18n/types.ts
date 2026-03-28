@@ -179,6 +179,62 @@ export type Messages = {
     subjectCustom: string;
     subjectReturns: string;
     subjectCare: string;
+    howToReach: string;
+    howToReachDesc: string;
+    chatWhatsapp: string;
+    callDirect: string;
+    sendEmail: string;
+    bookVisit: string;
+  };
+  /* ── Cart ── */
+  cart: {
+    title: string;
+    empty: string;
+    emptyDesc: string;
+    continueShopping: string;
+    orderSummary: string;
+    items: string;
+    subtotal: string;
+    total: string;
+    proceedToOrder: string;
+    remove: string;
+    qty: string;
+  };
+  /* ── Checkout ── */
+  checkout: {
+    title: string;
+    subtitle: string;
+    fullName: string;
+    fullNamePlaceholder: string;
+    phone: string;
+    phonePlaceholder: string;
+    email: string;
+    emailPlaceholder: string;
+    address: string;
+    addressPlaceholder: string;
+    notes: string;
+    notesPlaceholder: string;
+    orderSummary: string;
+    placeOrder: string;
+    placing: string;
+    required: string;
+  };
+  /* ── Order Confirmation ── */
+  confirmation: {
+    title: string;
+    subtitle: string;
+    orderNumber: string;
+    thankYou: string;
+    orderDetails: string;
+    continueShopping: string;
+    customerInfo: string;
+    name: string;
+    phone: string;
+    email: string;
+    address: string;
+    notes: string;
+    items: string;
+    total: string;
   };
   /* ── Language ── */
   lang: {

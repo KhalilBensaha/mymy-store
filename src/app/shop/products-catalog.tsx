@@ -143,6 +143,18 @@ export default function ProductsCatalog({
   return (
     <section className="bg-warm-white">
       <div className="mx-auto max-w-7xl px-6 pb-16 pt-12 lg:px-10 lg:pb-20 lg:pt-14">
+        {/* Back to home */}
+        <div className="mb-8">
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2 font-montserrat text-[0.72rem] uppercase tracking-[0.18em] text-[#a89c87] transition-colors hover:text-[#8b6914]"
+          >
+            <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+            </svg>
+            Back to Home
+          </Link>
+        </div>
         <div className="mb-14 max-w-3xl lg:mb-16">
           <p className="font-montserrat text-[0.6rem] uppercase tracking-[0.22em] text-[#a89c87]">
             {resolvedEyebrow}

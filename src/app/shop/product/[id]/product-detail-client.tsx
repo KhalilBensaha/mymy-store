@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { useI18n } from "../../../i18n/provider";
+import { useCart } from "@/lib/cart-context";
 
 /* ─── DB-compatible product type ─── */
 type DBProduct = {
@@ -45,10 +46,29 @@ export default function ProductDetailClient({
   recommended: DBProduct[];
 }) {
   const { t } = useI18n();
+  const { addItem } = useCart();
   const [activeImageIdx, setActiveImageIdx] = useState(0);
   const [activeVariant, setActiveVariant] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState<Tab>("description");
+  const [addedFlash, setAddedFlash] = useState(false);
+
+  function handleAddToCart() {
+    const variant = product.variants?.[activeVariant] ?? "";
+    for (let i = 0; i < quantity; i++) {
+      addItem({
+        id: product.id,
+        name: product.name,
+        subtitle: product.subtitle,
+        price: product.price,
+        image: product.image,
+        variant,
+        categoryName: product.categoryName ?? "",
+      });
+    }
+    setAddedFlash(true);
+    setTimeout(() => setAddedFlash(false), 2000);
+  }
 
   const gallery = product.gallery && product.gallery.length > 0 ? product.gallery : [product.image];
 
@@ -201,9 +221,10 @@ export default function ProductDetailClient({
               {/* Add to cart */}
               <button
                 type="button"
+                onClick={handleAddToCart}
                 className="flex flex-1 items-center justify-center bg-[#4a3a16] px-6 py-3 font-montserrat text-[0.65rem] uppercase tracking-[0.2em] text-white transition-colors hover:bg-[#3b2e12]"
               >
-                {t.product.addToCart}
+                {addedFlash ? "✓ Ajouté !" : t.product.addToCart}
               </button>
             </div>
 

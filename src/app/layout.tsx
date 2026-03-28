@@ -9,6 +9,7 @@ import {
 } from "next/font/google";
 import "./globals.css";
 import { I18nProvider } from "./i18n/provider";
+import { CartProvider } from "@/lib/cart-context";
 import { cn } from "@/lib/utils";
 import SplashCursor from "@/components/SplashCursor";
 
@@ -128,8 +129,9 @@ export const metadata: Metadata = {
   },
 
   icons: {
-    icon: "/favicon.ico",
-    shortcut: "/favicon.ico",
+    icon: "/logo.jpg",
+    shortcut: "/logo.jpg",
+    apple: "/logo.jpg",
   },
 
   category: "jewelry",
@@ -230,7 +232,7 @@ export default function RootLayout({
           BACK_COLOR={{ r: 0, g: 0, b: 0 }}
           TRANSPARENT={true}
         />
-        <I18nProvider>{children}</I18nProvider>
+        <I18nProvider><CartProvider>{children}</CartProvider></I18nProvider>
       </body>
     </html>
   );
