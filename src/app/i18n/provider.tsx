@@ -24,8 +24,8 @@ type I18nContextValue = {
 };
 
 const I18nContext = createContext<I18nContextValue>({
-  locale: "en",
-  t: en,
+  locale: "fr",
+  t: fr,
   setLocale: () => {},
   dir: "ltr",
 });
@@ -35,7 +35,7 @@ function getInitialLocale(): Locale {
     const saved = localStorage.getItem("mymy-locale") as Locale | null;
     if (saved && messages[saved]) return saved;
   }
-  return "ar";
+  return "fr";
 }
 
 export function I18nProvider({ children }: { children: ReactNode }) {

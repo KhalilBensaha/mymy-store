@@ -54,6 +54,13 @@ export const products = pgTable("products", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
+/* ─── Site Settings (key-value) ─── */
+export const settings = pgTable("settings", {
+  key: varchar("key", { length: 100 }).primaryKey(),
+  value: text("value").notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
 /* ─── Contact Messages ─── */
 export const contactMessages = pgTable("contact_messages", {
   id: serial("id").primaryKey(),
@@ -64,4 +71,34 @@ export const contactMessages = pgTable("contact_messages", {
   message: text("message").notNull(),
   read: boolean("read").notNull().default(false),
   submittedAt: timestamp("submitted_at").defaultNow().notNull(),
+});
+
+/* ─── Orders ─── */
+export const orders = pgTable("orders", {
+  id: serial("id").primaryKey(),
+  orderNumber: varchar("order_number", { length: 50 }).notNull().unique(),
+  customerName: varchar("customer_name", { length: 255 }).notNull(),
+  customerPhone: varchar("customer_phone", { length: 50 }).notNull(),
+  customerEmail: varchar("customer_email", { length: 255 }).notNull().default(""),
+  address: text("address").notNull(),
+  notes: text("notes").notNull().default(""),
+  total: integer("total").notNull(),
+  status: varchar("status", { length: 50 }).notNull().default("pending"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+/* ─── Order Items ─── */
+export const orderItems = pgTable("order_items", {
+  id: serial("id").primaryKey(),
+  orderId: integer("order_id")
+    .references(() => orders.id)
+    .notNull(),
+  productId: integer("product_id")
+    .references(() => products.id)
+    .notNull(),
+  productName: varchar("product_name", { length: 255 }).notNull(),
+  productImage: text("product_image").notNull().default(""),
+  variant: varchar("variant", { length: 100 }).notNull().default(""),
+  quantity: integer("quantity").notNull(),
+  price: integer("price").notNull(),
 });
