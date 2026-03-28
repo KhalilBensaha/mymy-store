@@ -106,8 +106,8 @@ export default function WishlistPage() {
                 <path d="M10 10a4 4 0 100-8 4 4 0 000 8zm-7 8a7 7 0 1114 0H3z" />
               </svg>
             </button>
-            {/* Cart / Bag → wishlist */}
-            <Link href="/wishlist" aria-label={t.nav.cart} className="text-[#8b6914] transition-colors hover:text-[#6f5110]">
+            {/* Cart / Bag → cart */}
+            <Link href="/cart" aria-label={t.nav.cart} className="text-[#8b6914] transition-colors hover:text-[#6f5110]">
               <svg className="h-4.5 w-4.5" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M3 1a1 1 0 000 2h1l.4 2M7 13h7l3-8H5.4m1.6 8L5.4 5m1.6 8l-1.35 2.7A1 1 0 006.55 17h8.9a1 1 0 100-2H7.42l.93-2zM7 18a1 1 0 100-2 1 1 0 000 2zm8 0a1 1 0 100-2 1 1 0 000 2z" />
               </svg>
@@ -159,7 +159,7 @@ export default function WishlistPage() {
                   <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
                 </svg>
               </button>
-              <Link href="/wishlist" aria-label={t.nav.cart} className="text-[#8b6914] transition-colors hover:text-[#6f5110]" onClick={() => setMobileOpen(false)}>
+              <Link href="/cart" aria-label={t.nav.cart} className="text-[#8b6914] transition-colors hover:text-[#6f5110]" onClick={() => setMobileOpen(false)}>
                 <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
                 </svg>
