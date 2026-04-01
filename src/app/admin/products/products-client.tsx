@@ -8,6 +8,7 @@ import {
   deleteProduct,
   type ProductInput,
 } from "@/lib/actions/products";
+import { CloudinaryUpload, CloudinaryGalleryUpload } from "@/components/cloudinary-upload";
 
 /* ─── Types ─── */
 export type ProductRow = {
@@ -146,11 +147,21 @@ function ProductModal({
               <label className="block text-[12px] font-semibold text-[#374151] mb-1">Badge (optional)</label>
               <input className="w-full rounded-lg border border-[#d1d5db] px-3 py-2 text-[13px] outline-none focus:border-[#c4a95a] focus:ring-1 focus:ring-[#c4a95a]/30" value={form.badge} onChange={(e) => setForm({ ...form, badge: e.target.value })} placeholder="e.g. Bestseller" />
             </div>
-            <div>
-              <label className="block text-[12px] font-semibold text-[#374151] mb-1">Main Image URL</label>
-              <input className="w-full rounded-lg border border-[#d1d5db] px-3 py-2 text-[13px] outline-none focus:border-[#c4a95a] focus:ring-1 focus:ring-[#c4a95a]/30" value={form.image} onChange={(e) => setForm({ ...form, image: e.target.value })} placeholder="/images/product.jpg" />
-            </div>
+            <CloudinaryUpload
+              label="Main Image"
+              folder="mymy-store/products"
+              value={form.image}
+              onChange={(url) => setForm({ ...form, image: url })}
+            />
           </div>
+
+          {/* Gallery */}
+          <CloudinaryGalleryUpload
+            label="Gallery Images"
+            folder="mymy-store/products"
+            value={form.gallery}
+            onChange={(urls) => setForm({ ...form, gallery: urls })}
+          />
 
           {/* Materials */}
           <div>

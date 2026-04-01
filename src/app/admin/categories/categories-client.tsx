@@ -7,6 +7,7 @@ import {
   updateCategory,
   deleteCategory,
 } from "@/lib/actions/categories";
+import { CloudinaryUpload } from "@/components/cloudinary-upload";
 
 /* ─── Types ─── */
 type CategoryRow = {
@@ -99,15 +100,12 @@ function CategoryModal({
               placeholder="A short description for this category…"
             />
           </div>
-          <div>
-            <label className="block text-[12px] font-semibold text-[#374151] mb-1">Image URL</label>
-            <input
-              className="w-full rounded-lg border border-[#d1d5db] px-3 py-2 text-[13px] outline-none focus:border-[#c4a95a] transition-colors"
-              value={form.image}
-              onChange={(e) => setForm({ ...form, image: e.target.value })}
-              placeholder="/images/category.jpg"
-            />
-          </div>
+          <CloudinaryUpload
+            label="Image"
+            folder="mymy-store/categories"
+            value={form.image}
+            onChange={(url) => setForm({ ...form, image: url })}
+          />
         </div>
         <div className="flex items-center justify-end gap-3 border-t border-[#e5e7eb] p-5">
           <button
