@@ -29,6 +29,7 @@ type HomeClientProps = {
   featuredCategories: CategoryData[];
   bestSellers: BestSellerData[];
   socialLinks: SocialLinks;
+  lifestyleImages: string[];
 };
 
 /* ─────────────── HERO ─────────────── */
@@ -140,14 +141,7 @@ function Categories({ allCategories }: { allCategories: CategoryData[] }) {
 function BestSellers({ items }: { items: BestSellerData[] }) {
   const { t } = useI18n();
 
-  const fallback = [
-    { id: 0, name: "Diamond Eternity Band", price: 5560, image: "https://images.unsplash.com/photo-1603561591411-07134e71a2a9?w=400&h=400&fit=crop" },
-    { id: 1, name: "Silver Kada Bracelet", price: 2200, image: "https://images.unsplash.com/photo-1611591437281-460bfbe1220a?w=400&h=400&fit=crop" },
-    { id: 2, name: "Pearl Strand Necklace", price: 1800, image: "https://images.unsplash.com/photo-1515562141589-67f0d569b6fc?w=400&h=400&fit=crop" },
-    { id: 3, name: "Solitaire Stud Earrings", price: 3500, image: "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=400&h=400&fit=crop" },
-  ];
-
-  const display = items.length > 0 ? items : fallback;
+  if (items.length === 0) return null;
 
   return (
     <section className="w-full bg-warm-white py-16 lg:py-20">
@@ -156,7 +150,7 @@ function BestSellers({ items }: { items: BestSellerData[] }) {
           {t.bestSellers.title}
         </h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
-          {display.map((p) => (
+          {items.map((p) => (
             <Link key={p.id} href={`/shop/product/${p.id}`} className="group text-center transition-transform duration-300 hover:-translate-y-1">
               <div className="relative rounded-2xl overflow-hidden bg-warm-white aspect-square mb-3 shadow-sm">
                 <Image
@@ -249,21 +243,18 @@ function SpecialCollections({ featuredCategories }: { featuredCategories: Catego
 }
 
 /* ─────────────── LIFESTYLE SHOWCASE ─────────────── */
-const lifestyleImages = [
-  "https://images.unsplash.com/photo-1617038260897-41a1f14a8ca0?w=500&h=700&fit=crop",
-  "https://images.unsplash.com/photo-1611591437281-460bfbe1220a?w=500&h=700&fit=crop",
-  "https://images.unsplash.com/photo-1596944924616-7b38e7cfac36?w=500&h=700&fit=crop",
-];
-
-function LifestyleShowcase() {
+function LifestyleShowcase({ images }: { images: string[] }) {
   const { t } = useI18n();
+
+  if (images.length === 0) return null;
+
   return (
     <section className="w-full bg-cream py-16 lg:py-20">
       <div className="max-w-7xl mx-auto px-6 text-center">
         <p className="font-montserrat text-xs tracking-[0.3em] uppercase text-gold mb-2">{t.lifestyle.eyebrow}</p>
         <div className="w-20 h-0.5 bg-gold mx-auto mb-12" />
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-          {lifestyleImages.map((src, i) => (
+          {images.map((src, i) => (
             <div key={i} className={`relative rounded-2xl overflow-hidden ${i === 1 ? "aspect-3/4 sm:-mt-6 sm:mb-6" : "aspect-3/4"} shadow-lg`}>
               <Image src={src} alt={`Lifestyle showcase ${i + 1}`} fill className="object-cover" sizes="(max-width: 768px) 100vw, 33vw" />
             </div>
@@ -333,7 +324,7 @@ function Footer({ socialLinks }: { socialLinks: SocialLinks }) {
 }
 
 /* ─────────────── PAGE ─────────────── */
-export default function HomeClient({ allCategories, featuredCategories, bestSellers, socialLinks }: HomeClientProps) {
+export default function HomeClient({ allCategories, featuredCategories, bestSellers, socialLinks, lifestyleImages }: HomeClientProps) {
   return (
     <div className="flex flex-col min-h-screen">
       <ScrollReveal />
@@ -344,7 +335,7 @@ export default function HomeClient({ allCategories, featuredCategories, bestSell
         <div className="reveal"><BestSellers items={bestSellers} /></div>
         <div className="reveal"><Craftsmanship /></div>
         <div className="reveal"><SpecialCollections featuredCategories={featuredCategories} /></div>
-        <div className="reveal"><LifestyleShowcase /></div>
+        <div className="reveal"><LifestyleShowcase images={lifestyleImages} /></div>
       </main>
       <Footer socialLinks={socialLinks} />
     </div>

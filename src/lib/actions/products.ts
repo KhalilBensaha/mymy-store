@@ -114,3 +114,27 @@ export async function getProductsByCategoryId(categoryId: number) {
     .where(eq(products.categoryId, categoryId))
     .orderBy(products.name);
 }
+
+/** Get product images for the lifestyle showcase section */
+export async function getLifestyleImages(limit = 3) {
+  const rows = await db
+    .select({ image: products.image, gallery: products.gallery })
+    .from(products)
+    .orderBy(products.createdAt)
+    .limit(limit * 2);
+
+  // Collect unique images, preferring gallery images over main image
+  const images: string[] = [];
+  for (const row of rows) {
+    const gallery = row.gallery as string[] | null;
+    if (gallery && gallery.length > 1) {
+      // Pick a gallery image that isn't the main one
+      const alt = gallery.find((g) => g !== row.image) ?? gallery[0];
+      if (alt && !images.includes(alt)) images.push(alt);
+    } else if (row.image && !images.includes(row.image)) {
+      images.push(row.image);
+    }
+    if (images.length >= limit) break;
+  }
+  return images;
+}
