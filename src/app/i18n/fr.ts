@@ -2,7 +2,9 @@ import type { Messages } from "./types";
 
 const fr: Messages = {
   nav: {
+    home: "Accueil",
     shop: "Boutique",
+    categories: "Catégories",
     collections: "Collections",
     ourStory: "Notre Histoire",
     search: "Rechercher",

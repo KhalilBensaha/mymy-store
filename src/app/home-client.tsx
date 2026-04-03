@@ -5,10 +5,9 @@ import Link from "next/link";
 import { useState } from "react";
 import ScrollReveal from "./scroll-reveal";
 import { MymyLogo } from "./components/mymy-logo";
-import { LanguageSwitcher } from "./components/language-switcher";
 import { useI18n } from "./i18n/provider";
-import { useCart } from "@/lib/cart-context";
 import type { SocialLinks } from "@/lib/actions/settings";
+import { Navbar } from "./components/navbar";
 
 /* ─── Props from server ─── */
 export type CategoryData = {
@@ -32,129 +31,6 @@ type HomeClientProps = {
   bestSellers: BestSellerData[];
   socialLinks: SocialLinks;
 };
-
-/* ─────────────── NAV ─────────────── */
-function Navbar() {
-  const { t } = useI18n();
-  const { totalItems: cartTotal } = useCart();
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const links = [
-    { label: t.nav.shop, href: "/shop" },
-    { label: t.nav.diamonds, href: "#diamonds" },
-    { label: t.nav.gold, href: "#gold" },
-    { label: t.nav.pearls, href: "#pearls" },
-    { label: t.nav.collections, href: "#collections" },
-    { label: t.nav.bridal, href: "#bridal" },
-    { label: t.nav.contact, href: "/contact" },
-  ];
-  return (
-    <header className="w-full bg-warm-white border-b border-cream-dark/40 sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto flex items-center justify-between px-6 lg:px-10 py-4">
-        <Link href="/" aria-label="Mymy home">
-          <MymyLogo className="text-[1.55rem]" />
-        </Link>
-        <nav className="hidden md:flex items-center gap-8">
-          {links.map((l) => (
-            <Link
-              key={l.href}
-              href={l.href}
-              className="font-montserrat text-[11px] font-medium tracking-[0.18em] uppercase text-text-muted hover:text-gold transition-colors"
-            >
-              {l.label}
-            </Link>
-          ))}
-        </nav>
-        <div className="hidden md:flex items-center gap-5">
-          <LanguageSwitcher />
-          <button aria-label={t.nav.search} className="text-text-dark hover:text-gold transition-colors">
-            <svg className="w-[18px] h-[18px]" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
-            </svg>
-          </button>
-          <Link href="/cart" aria-label={t.nav.cart} className="relative text-text-dark hover:text-gold transition-colors">
-            <svg className="w-[18px] h-[18px]" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
-            </svg>
-            {cartTotal > 0 && (
-              <span className="absolute -right-2 -top-2 flex h-4 w-4 items-center justify-center rounded-full bg-[#8b6914] font-montserrat text-[0.5rem] font-bold text-white">
-                {cartTotal > 9 ? "9+" : cartTotal}
-              </span>
-            )}
-          </Link>
-          <Link href="/admin" aria-label={t.nav.admin} className="text-text-dark hover:text-gold transition-colors">
-            <svg className="w-[18px] h-[18px]" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
-            </svg>
-          </Link>
-        </div>
-
-        {/* Mobile */}
-        <div className="flex items-center gap-3 md:hidden">
-          <LanguageSwitcher />
-          <button
-            className="text-text-dark"
-            aria-label={mobileOpen ? t.nav.close : t.nav.menu}
-            onClick={() => setMobileOpen(!mobileOpen)}
-          >
-            {mobileOpen ? (
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            ) : (
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            )}
-          </button>
-        </div>
-      </div>
-
-      {/* Mobile slide-down menu */}
-      <div
-        className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${
-          mobileOpen ? "max-h-[28rem] opacity-100" : "max-h-0 opacity-0"
-        }`}
-      >
-        <nav className="border-t border-cream-dark/30 bg-warm-white px-6 pb-6 pt-4">
-          <div className="flex flex-col gap-4">
-            {links.map((l) => (
-              <Link
-                key={l.href}
-                href={l.href}
-                onClick={() => setMobileOpen(false)}
-                className="font-montserrat text-[0.82rem] font-medium tracking-[0.12em] uppercase text-text-dark transition-colors hover:text-gold"
-              >
-                {l.label}
-              </Link>
-            ))}
-          </div>
-          <div className="mt-6 flex items-center gap-5 border-t border-cream-dark/30 pt-5">
-            <button aria-label={t.nav.search} className="text-text-dark hover:text-gold transition-colors">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
-              </svg>
-            </button>
-            <Link href="/cart" aria-label={t.nav.cart} className="relative text-text-dark hover:text-gold transition-colors" onClick={() => setMobileOpen(false)}>
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
-              </svg>
-              {cartTotal > 0 && (
-                <span className="absolute -right-2 -top-2 flex h-4 w-4 items-center justify-center rounded-full bg-[#8b6914] font-montserrat text-[0.5rem] font-bold text-white">
-                  {cartTotal > 9 ? "9+" : cartTotal}
-                </span>
-              )}
-            </Link>
-            <Link href="/admin" aria-label={t.nav.admin} className="text-text-dark hover:text-gold transition-colors" onClick={() => setMobileOpen(false)}>
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
-              </svg>
-            </Link>
-          </div>
-        </nav>
-      </div>
-    </header>
-  );
-}
 
 /* ─────────────── HERO ─────────────── */
 function Hero() {

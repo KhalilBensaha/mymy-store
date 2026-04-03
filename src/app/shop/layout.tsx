@@ -1,136 +1,16 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
 import { MymyLogo } from "../components/mymy-logo";
-import { LanguageSwitcher } from "../components/language-switcher";
+import { Navbar } from "../components/navbar";
 import { useI18n } from "../i18n/provider";
-import { useCart } from "@/lib/cart-context";
 
 export default function ShopLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   const { t } = useI18n();
-  const { totalItems } = useCart();
-  const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-warm-white text-text-dark">
-      <header className="sticky top-0 z-50 border-b border-cream-dark/40 bg-warm-white/95 backdrop-blur-sm">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-10">
-          <Link href="/" aria-label="Mymy home">
-            <MymyLogo className="text-[1.7rem]" />
-          </Link>
-
-          <nav className="hidden items-center gap-10 md:flex">
-            <Link href="/shop" className="border-b border-[#8b6914] pb-1 font-montserrat text-sm text-[#8b6914]">
-              {t.nav.shop}
-            </Link>
-            <Link href="/#collections" className="font-montserrat text-sm text-text-dark transition-colors hover:text-[#8b6914]">
-              {t.nav.collections}
-            </Link>
-            <Link href="/#our-story" className="font-montserrat text-sm text-text-dark transition-colors hover:text-[#8b6914]">
-              {t.nav.ourStory}
-            </Link>
-            <Link href="/contact" className="font-montserrat text-sm text-text-dark transition-colors hover:text-[#8b6914]">
-              {t.nav.contact}
-            </Link>
-          </nav>
-
-          <div className="hidden items-center gap-5 md:flex">
-            <LanguageSwitcher variant="gold" />
-            <button aria-label={t.nav.search} className="text-[#8b6914] transition-colors hover:text-[#6f5110]">
-              <svg className="h-4.5 w-4.5" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
-              </svg>
-            </button>
-            <button aria-label={t.nav.account} className="text-[#8b6914] transition-colors hover:text-[#6f5110]">
-              <svg className="h-4.5 w-4.5" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M10 10a4 4 0 100-8 4 4 0 000 8zm-7 8a7 7 0 1114 0H3z" />
-              </svg>
-            </button>
-            <Link href="/cart" aria-label={t.nav.cart} className="relative text-[#8b6914] transition-colors hover:text-[#6f5110]">
-              <svg className="h-4.5 w-4.5" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M3 1a1 1 0 000 2h1l.4 2M7 13h7l3-8H5.4m1.6 8L5.4 5m1.6 8l-1.35 2.7A1 1 0 006.55 17h8.9a1 1 0 100-2H7.42l.93-2zM7 18a1 1 0 100-2 1 1 0 000 2zm8 0a1 1 0 100-2 1 1 0 000 2z" />
-              </svg>
-              {totalItems > 0 && (
-                <span className="absolute -right-2 -top-2 flex h-4 w-4 items-center justify-center rounded-full bg-[#8b6914] font-montserrat text-[0.5rem] font-bold text-white">
-                  {totalItems > 9 ? "9+" : totalItems}
-                </span>
-              )}
-            </Link>
-            <Link href="/admin" aria-label={t.nav.admin} className="text-[#8b6914] transition-colors hover:text-[#6f5110]">
-              <svg className="h-4.5 w-4.5" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
-              </svg>
-            </Link>
-          </div>
-
-          {/* Mobile: language switcher + hamburger */}
-          <div className="flex items-center gap-3 md:hidden">
-            <LanguageSwitcher variant="gold" />
-            <button
-              className="text-[#8b6914]"
-              aria-label={mobileOpen ? t.nav.close : t.nav.menu}
-              onClick={() => setMobileOpen(!mobileOpen)}
-            >
-              {mobileOpen ? (
-                <svg className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              ) : (
-                <svg className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-              )}
-            </button>
-          </div>
-        </div>
-
-        {/* Mobile slide-down menu */}
-        <div
-          className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${
-            mobileOpen ? "max-h-80 opacity-100" : "max-h-0 opacity-0"
-          }`}
-        >
-          <nav className="border-t border-cream-dark/30 bg-warm-white px-6 pb-6 pt-4">
-            <div className="flex flex-col gap-4">
-              <Link href="/shop" onClick={() => setMobileOpen(false)} className="font-montserrat text-[0.82rem] font-medium tracking-[0.12em] uppercase text-[#8b6914]">
-                {t.nav.shop}
-              </Link>
-              <Link href="/#collections" onClick={() => setMobileOpen(false)} className="font-montserrat text-[0.82rem] font-medium tracking-[0.12em] uppercase text-text-dark transition-colors hover:text-[#8b6914]">
-                {t.nav.collections}
-              </Link>
-              <Link href="/#our-story" onClick={() => setMobileOpen(false)} className="font-montserrat text-[0.82rem] font-medium tracking-[0.12em] uppercase text-text-dark transition-colors hover:text-[#8b6914]">
-                {t.nav.ourStory}
-              </Link>
-              <Link href="/contact" onClick={() => setMobileOpen(false)} className="font-montserrat text-[0.82rem] font-medium tracking-[0.12em] uppercase text-text-dark transition-colors hover:text-[#8b6914]">
-                {t.nav.contact}
-              </Link>
-            </div>
-            <div className="mt-6 flex items-center gap-5 border-t border-cream-dark/30 pt-5">
-              <button aria-label={t.nav.search} className="text-[#8b6914] transition-colors hover:text-[#6f5110]">
-                <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
-                </svg>
-              </button>
-              <Link href="/cart" aria-label={t.nav.cart} className="relative text-[#8b6914] transition-colors hover:text-[#6f5110]" onClick={() => setMobileOpen(false)}>
-                <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
-                </svg>
-                {totalItems > 0 && (
-                  <span className="absolute -right-2 -top-2 flex h-4 w-4 items-center justify-center rounded-full bg-[#8b6914] font-montserrat text-[0.5rem] font-bold text-white">
-                    {totalItems > 9 ? "9+" : totalItems}
-                  </span>
-                )}
-              </Link>
-              <Link href="/admin" aria-label={t.nav.admin} className="text-[#8b6914] transition-colors hover:text-[#6f5110]" onClick={() => setMobileOpen(false)}>
-                <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
-                </svg>
-              </Link>
-            </div>
-          </nav>
-        </div>
-      </header>
+      <Navbar />
 
       <main>{children}</main>
 
@@ -147,8 +27,7 @@ export default function ShopLayout({ children }: Readonly<{ children: React.Reac
             <p className="font-montserrat text-[0.66rem] uppercase tracking-[0.22em] text-[#a89c87]">{t.nav.shop}</p>
             <ul className="mt-4 space-y-3 font-montserrat text-sm text-[#6c6257]">
               <li><Link href="/shop">{t.nav.shop}</Link></li>
-              <li><Link href="/#collections">{t.nav.collections}</Link></li>
-              <li><Link href="/#our-story">{t.nav.ourStory}</Link></li>
+              <li><Link href="/shop#categories">{t.nav.categories}</Link></li>
             </ul>
           </div>
 

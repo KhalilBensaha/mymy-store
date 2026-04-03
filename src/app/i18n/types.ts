@@ -3,7 +3,9 @@ export type Locale = "en" | "fr" | "ar";
 export type Messages = {
   /* ── Nav ── */
   nav: {
+    home: string;
     shop: string;
+    categories: string;
     collections: string;
     ourStory: string;
     search: string;
