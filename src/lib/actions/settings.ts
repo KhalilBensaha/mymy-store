@@ -2,8 +2,9 @@
 
 import { revalidatePath } from "next/cache";
 import { db } from "@/lib/db";
-import { settings } from "@/lib/db/schema";
+import { settings, admins } from "@/lib/db/schema";
 import { eq, inArray } from "drizzle-orm";
+import { hash } from "bcryptjs";
 
 /* ─── Types ─── */
 export type ContactInfo = {
@@ -172,4 +173,77 @@ export async function saveSocialLinks(links: SocialLinks) {
   }
   revalidatePath("/contact");
   revalidatePath("/admin/settings");
+}
+
+/* ─── Admin management ─── */
+export type AdminRow = {
+  id: number;
+  name: string;
+  email: string;
+  createdAt: Date;
+};
+
+export async function getAdmins(): Promise<AdminRow[]> {
+  return db
+    .select({
+      id: admins.id,
+      name: admins.name,
+      email: admins.email,
+      createdAt: admins.createdAt,
+    })
+    .from(admins)
+    .orderBy(admins.createdAt);
+}
+
+export async function createAdmin(data: {
+  name: string;
+  email: string;
+  password: string;
+}): Promise<{ success: boolean; error?: string; admin?: AdminRow }> {
+  const name = data.name.trim();
+  const email = data.email.trim().toLowerCase();
+  const password = data.password;
+
+  if (!name || !email || !password) {
+    return { success: false, error: "All fields are required." };
+  }
+  if (password.length < 6) {
+    return { success: false, error: "Password must be at least 6 characters." };
+  }
+
+  // Check for duplicate emails
+  const [existing] = await db
+    .select({ id: admins.id })
+    .from(admins)
+    .where(eq(admins.email, email))
+    .limit(1);
+
+  if (existing) {
+    return { success: false, error: "An admin with this email already exists." };
+  }
+
+  const passwordHash = await hash(password, 12);
+  const [inserted] = await db
+    .insert(admins)
+    .values({ name, email, passwordHash })
+    .returning({ id: admins.id, name: admins.name, email: admins.email, createdAt: admins.createdAt });
+  revalidatePath("/admin/settings");
+  return { success: true, admin: inserted };
+}
+
+export async function deleteAdmin(
+  id: number
+): Promise<{ success: boolean; error?: string }> {
+  // Prevent deleting the last admin
+  const allAdmins = await db
+    .select({ id: admins.id })
+    .from(admins);
+
+  if (allAdmins.length <= 1) {
+    return { success: false, error: "Cannot delete the last admin." };
+  }
+
+  await db.delete(admins).where(eq(admins.id, id));
+  revalidatePath("/admin/settings");
+  return { success: true };
 }

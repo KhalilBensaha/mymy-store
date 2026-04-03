@@ -4,19 +4,21 @@ import {
   getContactSettings,
   getSiteLanguage,
   getSocialLinks,
+  getAdmins,
 } from "@/lib/actions/settings";
 import SettingsClient from "./settings-client";
 
 export const revalidate = 0;
 
 export default async function SettingsPage() {
-  const [allCategories, initialFeaturedIds, initialContactInfo, initialLanguage, initialSocialLinks] =
+  const [allCategories, initialFeaturedIds, initialContactInfo, initialLanguage, initialSocialLinks, adminList] =
     await Promise.all([
       getCategories(),
       getFeaturedCategoryIds(),
       getContactSettings(),
       getSiteLanguage(),
       getSocialLinks(),
+      getAdmins(),
     ]);
 
   return (
@@ -26,6 +28,7 @@ export default async function SettingsPage() {
       initialContactInfo={initialContactInfo}
       initialLanguage={initialLanguage}
       initialSocialLinks={initialSocialLinks}
+      initialAdmins={adminList}
     />
   );
 }
