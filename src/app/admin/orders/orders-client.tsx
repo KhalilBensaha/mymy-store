@@ -52,11 +52,13 @@ function OrderDetail({
 }) {
   const status = order.status as OrderStatus;
   const [trackingUpdates, setTrackingUpdates] = useState<
-    { date: string; status: string }[]
-  >([]);
+    { remarque: string; station: string; livreur: string; created_at: string; tracking: string }[]
+  >([]); 
   const [loadingTracking, setLoadingTracking] = useState(false);
   const [noteText, setNoteText] = useState("");
   const [sendingNote, setSendingNote] = useState(false);
+  const [requestingReturn, setRequestingReturn] = useState(false);
+  const [returnMessage, setReturnMessage] = useState("");
 
   const fetchTracking = useCallback(() => {
     if (!order.ecotrackTracking) return;
@@ -89,6 +91,25 @@ function OrderDetail({
       console.error("Failed to add tracking note:", err);
     } finally {
       setSendingNote(false);
+    }
+  }
+
+  async function handleRequestReturn() {
+    if (!order.ecotrackTracking) return;
+    if (!confirm("Confirmer la demande de retour pour ce colis ?")) return;
+    setRequestingReturn(true);
+    setReturnMessage("");
+    try {
+      const res = await fetch(
+        `/api/ecotrack/request-return?tracking=${encodeURIComponent(order.ecotrackTracking)}`,
+        { method: "POST" }
+      );
+      const data = await res.json();
+      setReturnMessage(data.message || (data.success ? "Demande envoyée" : "Échec de la demande"));
+    } catch {
+      setReturnMessage("Erreur de connexion");
+    } finally {
+      setRequestingReturn(false);
     }
   }
 
@@ -194,8 +215,12 @@ function OrderDetail({
                     >
                       <div className="mt-1 h-2 w-2 shrink-0 rounded-full bg-[#c4a95a]" />
                       <div>
-                        <p className="font-medium">{u.status}</p>
-                        <p className="text-[11px] text-[#9ca3af]">{u.date}</p>
+                        <p className="font-medium">{u.remarque}</p>
+                        <div className="flex flex-wrap gap-x-3 text-[11px] text-[#9ca3af]">
+                          <span>{u.created_at}</span>
+                          {u.station && <span>📍 {u.station}</span>}
+                          {u.livreur && <span>🚚 {u.livreur}</span>}
+                        </div>
                       </div>
                     </div>
                   ))}
@@ -226,6 +251,20 @@ function OrderDetail({
                     {sendingNote ? "…" : "Envoyer"}
                   </button>
                 </div>
+              </div>
+
+              {/* Request return */}
+              <div className="mt-3 border-t border-[#e5e7eb] pt-3">
+                <button
+                  onClick={handleRequestReturn}
+                  disabled={requestingReturn}
+                  className="w-full rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-[12px] font-semibold text-red-600 transition-colors hover:bg-red-100 disabled:opacity-50"
+                >
+                  {requestingReturn ? "Envoi…" : "Demander le retour"}
+                </button>
+                {returnMessage && (
+                  <p className="mt-1.5 text-[11px] text-[#6b7280]">{returnMessage}</p>
+                )}
               </div>
             </div>
           )}

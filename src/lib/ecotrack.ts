@@ -49,8 +49,11 @@ export type EcoCreateOrderParams = {
 };
 
 export type EcoOrderUpdate = {
-  date: string;
-  status: string;
+  remarque: string;
+  station: string;
+  livreur: string;
+  created_at: string;
+  tracking: string;
 };
 
 /* ─── API Functions ─── */
@@ -102,7 +105,9 @@ export async function getOrderUpdates(
   tracking: string
 ): Promise<EcoOrderUpdate[]> {
   const data = await ecoFetch("/api/v1/get/maj", { tracking });
-  return data.data ?? data ?? [];
+  const raw = data.data ?? data ?? [];
+  if (Array.isArray(raw)) return raw;
+  return Object.values(raw) as EcoOrderUpdate[];
 }
 
 export async function getFees(): Promise<EcoFee[]> {
@@ -120,4 +125,15 @@ export async function addOrderUpdate(
     "POST"
   );
   return data.success === true;
+}
+
+export async function requestReturn(
+  tracking: string
+): Promise<{ success: boolean; message: string }> {
+  const data = await ecoFetch(
+    "/api/v1/ask/for/order/return",
+    { tracking },
+    "POST"
+  );
+  return { success: data.success ?? false, message: data.message ?? "" };
 }
