@@ -6,6 +6,7 @@ import type { OrderWithItems } from "@/lib/actions/orders";
 import Image from "next/image";
 
 type OrderStatus = "new" | "paid" | "canceled";
+type MainTab = "orders" | "ecotrack";
 
 const STATUS_STYLES: Record<OrderStatus, string> = {
   new: "bg-blue-50 text-blue-700",
@@ -384,6 +385,214 @@ function OrderDetail({
   );
 }
 
+/* ─── EcoTrack status style ─── */
+const ECO_STATUS_STYLES: Record<string, string> = {
+  prete_a_expedier: "bg-sky-50 text-sky-700",
+  en_ramassage: "bg-amber-50 text-amber-700",
+  vers_hub: "bg-orange-50 text-orange-700",
+  en_hub: "bg-indigo-50 text-indigo-700",
+  vers_wilaya: "bg-purple-50 text-purple-700",
+  en_livraison: "bg-blue-50 text-blue-700",
+  suspendus: "bg-yellow-50 text-yellow-700",
+  retours_chez_livreur: "bg-red-50 text-red-600",
+  livre_non_encaisse: "bg-emerald-50 text-emerald-600",
+  paiement_pret: "bg-green-50 text-green-700",
+  payé_et_archivé: "bg-gray-100 text-gray-600",
+};
+
+type EcoOrder = {
+  tracking: string;
+  reference: string | null;
+  client: string;
+  phone: string;
+  phone_2: string | null;
+  adresse: string;
+  commune: string;
+  wilaya_id: number;
+  montant: string;
+  tarif_prestation: string;
+  tarif_retour: string;
+  type_id: number;
+  created_at: string;
+  payment_id: number | null;
+  return_id: number | null;
+  status: string;
+  products: string;
+};
+
+/* ─── EcoTrack Orders tab ─── */
+function EcoTrackOrders() {
+  const [ecoOrders, setEcoOrders] = useState<EcoOrder[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const [lastPage, setLastPage] = useState(1);
+  const [trackingSearch, setTrackingSearch] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+
+  const fetchOrders = useCallback(() => {
+    setLoading(true);
+    const params = new URLSearchParams();
+    params.set("page", String(page));
+    if (trackingSearch.trim()) params.set("tracking", trackingSearch.trim());
+    if (startDate) params.set("start_date", startDate);
+    if (endDate) params.set("end_date", endDate);
+    fetch(`/api/ecotrack/orders?${params.toString()}`)
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.error) {
+          setEcoOrders([]);
+          return;
+        }
+        setEcoOrders(data.data ?? []);
+        setLastPage(data.last_page ?? 1);
+      })
+      .catch(console.error)
+      .finally(() => setLoading(false));
+  }, [page, trackingSearch, startDate, endDate]);
+
+  useEffect(() => {
+    fetchOrders();
+  }, [fetchOrders]);
+
+  function handleSearch() {
+    setPage(1);
+    fetchOrders();
+  }
+
+  function formatStatus(status: string) {
+    return status.replace(/_/g, " ").replace(/^\w/, (c) => c.toUpperCase());
+  }
+
+  function statusStyle(status: string) {
+    return ECO_STATUS_STYLES[status] ?? "bg-gray-100 text-gray-600";
+  }
+
+  return (
+    <div className="space-y-5">
+      {/* Filters */}
+      <div className="flex flex-wrap items-end gap-3">
+        <div>
+          <label className="mb-1 block text-[11px] font-semibold text-[#374151]">Tracking</label>
+          <input
+            type="text"
+            placeholder="Rechercher par tracking…"
+            value={trackingSearch}
+            onChange={(e) => setTrackingSearch(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+            className="rounded-lg border border-[#d1d5db] px-3 py-2 text-[13px] outline-none focus:border-[#c4a95a]"
+          />
+        </div>
+        <div>
+          <label className="mb-1 block text-[11px] font-semibold text-[#374151]">Date début</label>
+          <input
+            type="date"
+            value={startDate}
+            onChange={(e) => { setStartDate(e.target.value); setPage(1); }}
+            className="rounded-lg border border-[#d1d5db] px-3 py-2 text-[13px] outline-none focus:border-[#c4a95a]"
+          />
+        </div>
+        <div>
+          <label className="mb-1 block text-[11px] font-semibold text-[#374151]">Date fin</label>
+          <input
+            type="date"
+            value={endDate}
+            onChange={(e) => { setEndDate(e.target.value); setPage(1); }}
+            className="rounded-lg border border-[#d1d5db] px-3 py-2 text-[13px] outline-none focus:border-[#c4a95a]"
+          />
+        </div>
+        <button
+          onClick={handleSearch}
+          className="rounded-lg bg-[#c4a95a] px-4 py-2 text-[12px] font-semibold text-white transition-colors hover:bg-[#8b6914]"
+        >
+          Filtrer
+        </button>
+      </div>
+
+      {/* Table */}
+      <div className="overflow-hidden rounded-xl border border-[#e5e7eb] bg-white">
+        <div className="overflow-x-auto">
+          <table className="w-full text-start">
+            <thead>
+              <tr className="border-b border-[#f3f4f6] bg-[#f9fafb]">
+                <th className="px-5 py-3 text-start text-[11px] font-semibold uppercase tracking-wider text-[#6b7280]">Tracking</th>
+                <th className="px-5 py-3 text-start text-[11px] font-semibold uppercase tracking-wider text-[#6b7280]">Client</th>
+                <th className="px-5 py-3 text-start text-[11px] font-semibold uppercase tracking-wider text-[#6b7280]">Commune</th>
+                <th className="px-5 py-3 text-start text-[11px] font-semibold uppercase tracking-wider text-[#6b7280]">Produits</th>
+                <th className="px-5 py-3 text-start text-[11px] font-semibold uppercase tracking-wider text-[#6b7280]">Montant</th>
+                <th className="px-5 py-3 text-start text-[11px] font-semibold uppercase tracking-wider text-[#6b7280]">Prestation</th>
+                <th className="px-5 py-3 text-start text-[11px] font-semibold uppercase tracking-wider text-[#6b7280]">Statut</th>
+                <th className="px-5 py-3 text-start text-[11px] font-semibold uppercase tracking-wider text-[#6b7280]">Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              {loading ? (
+                <tr>
+                  <td colSpan={8} className="px-5 py-12 text-center text-[13px] text-[#9ca3af]">
+                    Chargement…
+                  </td>
+                </tr>
+              ) : ecoOrders.length === 0 ? (
+                <tr>
+                  <td colSpan={8} className="px-5 py-12 text-center">
+                    <p className="text-[14px] font-semibold text-[#6b7280]">Aucune commande EcoTrack</p>
+                    <p className="mt-1 text-[12px] text-[#9ca3af]">Aucun résultat pour cette période</p>
+                  </td>
+                </tr>
+              ) : (
+                ecoOrders.map((o) => (
+                  <tr key={o.tracking} className="border-b border-[#f3f4f6] last:border-0 hover:bg-[#fafafa]">
+                    <td className="px-5 py-4 text-[12px] font-mono font-semibold text-[#c4a95a]">{o.tracking}</td>
+                    <td className="px-5 py-4">
+                      <p className="text-[13px] font-medium">{o.client}</p>
+                      <p className="text-[11px] text-[#9ca3af]">{o.phone}</p>
+                    </td>
+                    <td className="px-5 py-4 text-[13px] text-[#6b7280]">{o.commune}</td>
+                    <td className="px-5 py-4 text-[13px] text-[#6b7280]">
+                      <p className="max-w-[160px] truncate">{o.products}</p>
+                    </td>
+                    <td className="px-5 py-4 text-[13px] font-semibold">{o.montant} DA</td>
+                    <td className="px-5 py-4 text-[13px] text-[#6b7280]">{o.tarif_prestation} DA</td>
+                    <td className="px-5 py-4">
+                      <span className={`inline-block rounded-full px-2.5 py-1 text-[10px] font-semibold ${statusStyle(o.status)}`}>
+                        {formatStatus(o.status)}
+                      </span>
+                    </td>
+                    <td className="px-5 py-4 text-[13px] text-[#6b7280]">{o.created_at}</td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* Pagination */}
+      {lastPage > 1 && (
+        <div className="flex items-center justify-center gap-2">
+          <button
+            onClick={() => setPage((p) => Math.max(1, p - 1))}
+            disabled={page <= 1}
+            className="rounded-lg border border-[#d1d5db] px-3 py-1.5 text-[12px] font-semibold text-[#6b7280] transition-colors hover:bg-[#f9fafb] disabled:opacity-40"
+          >
+            ← Précédent
+          </button>
+          <span className="text-[12px] text-[#6b7280]">
+            Page {page} / {lastPage}
+          </span>
+          <button
+            onClick={() => setPage((p) => Math.min(lastPage, p + 1))}
+            disabled={page >= lastPage}
+            className="rounded-lg border border-[#d1d5db] px-3 py-1.5 text-[12px] font-semibold text-[#6b7280] transition-colors hover:bg-[#f9fafb] disabled:opacity-40"
+          >
+            Suivant →
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
 /* ─── Main client component ─── */
 export default function OrdersClient({
   initialOrders,
@@ -398,6 +607,7 @@ export default function OrdersClient({
   const [sortDir, setSortDir] = useState<SortDir>("desc");
   const [, startTransition] = useTransition();
   const [deliveryStatuses, setDeliveryStatuses] = useState<Record<string, string>>({});
+  const [mainTab, setMainTab] = useState<MainTab>("orders");
 
   // Fetch bulk delivery statuses for all orders with tracking
   useEffect(() => {
@@ -502,6 +712,35 @@ export default function OrdersClient({
           {orders.length} commande{orders.length !== 1 ? "s" : ""} au total
         </p>
       </div>
+
+      {/* Main tabs: Commandes / Livraisons EcoTrack */}
+      <div className="flex gap-1 rounded-lg bg-[#f3f4f6] p-1">
+        <button
+          onClick={() => setMainTab("orders")}
+          className={`flex-1 rounded-md px-4 py-2 text-[13px] font-semibold transition-colors ${
+            mainTab === "orders"
+              ? "bg-white text-[#1e1e2d] shadow-sm"
+              : "text-[#6b7280] hover:text-[#1e1e2d]"
+          }`}
+        >
+          Mes commandes
+        </button>
+        <button
+          onClick={() => setMainTab("ecotrack")}
+          className={`flex-1 rounded-md px-4 py-2 text-[13px] font-semibold transition-colors ${
+            mainTab === "ecotrack"
+              ? "bg-white text-[#1e1e2d] shadow-sm"
+              : "text-[#6b7280] hover:text-[#1e1e2d]"
+          }`}
+        >
+          Livraisons EcoTrack
+        </button>
+      </div>
+
+      {mainTab === "ecotrack" ? (
+        <EcoTrackOrders />
+      ) : (
+      <>
 
       {/* Status tabs */}
       <div className="flex flex-wrap gap-2">
@@ -687,6 +926,9 @@ export default function OrdersClient({
           </table>
         </div>
       </div>
+
+      </>
+      )}
 
       {/* Slide-over */}
       {selectedOrder && (

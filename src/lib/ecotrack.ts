@@ -179,6 +179,33 @@ export type EcoBulkTrackingResult = {
   activities: EcoTrackingActivity[];
 };
 
+export type EcoOrder = {
+  tracking: string;
+  reference: string | null;
+  client: string;
+  phone: string;
+  phone_2: string | null;
+  adresse: string;
+  commune: string;
+  wilaya_id: number;
+  montant: string;
+  tarif_prestation: string;
+  tarif_retour: string;
+  type_id: number;
+  created_at: string;
+  payment_id: number | null;
+  return_id: number | null;
+  status: string;
+  products: string;
+};
+
+export type EcoOrdersPage = {
+  current_page: number;
+  data: EcoOrder[];
+  from: number;
+  last_page: number;
+};
+
 export async function getMultiTrackingInfo(
   trackings: string[]
 ): Promise<EcoBulkTrackingResult[]> {
@@ -196,4 +223,23 @@ export async function getMultiTrackingInfo(
   const raw = data.data ?? data;
   if (Array.isArray(raw)) return raw;
   return Object.values(raw) as EcoBulkTrackingResult[];
+}
+
+export async function getEcoOrders(params: {
+  page?: string;
+  start_date?: string;
+  end_date?: string;
+  tracking?: string;
+}): Promise<EcoOrdersPage> {
+  const filtered: Record<string, string> = {};
+  for (const [k, v] of Object.entries(params)) {
+    if (v) filtered[k] = v;
+  }
+  const data = await ecoFetch("/api/v1/get/orders", filtered);
+  return {
+    current_page: data.current_page ?? 1,
+    data: data.data ?? [],
+    from: data.from ?? 0,
+    last_page: data.last_page ?? 1,
+  };
 }
