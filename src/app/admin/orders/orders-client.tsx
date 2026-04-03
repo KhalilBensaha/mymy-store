@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition, useMemo } from "react";
+import { useState, useTransition, useMemo, useEffect, useCallback } from "react";
 import { updateOrderStatus } from "@/lib/actions/orders";
 import type { OrderWithItems } from "@/lib/actions/orders";
 import Image from "next/image";
@@ -51,6 +51,46 @@ function OrderDetail({
   onStatusChange: (id: number, status: OrderStatus) => void;
 }) {
   const status = order.status as OrderStatus;
+  const [trackingUpdates, setTrackingUpdates] = useState<
+    { date: string; status: string }[]
+  >([]);
+  const [loadingTracking, setLoadingTracking] = useState(false);
+  const [noteText, setNoteText] = useState("");
+  const [sendingNote, setSendingNote] = useState(false);
+
+  const fetchTracking = useCallback(() => {
+    if (!order.ecotrackTracking) return;
+    setLoadingTracking(true);
+    fetch(`/api/ecotrack/updates?tracking=${encodeURIComponent(order.ecotrackTracking)}`)
+      .then((r) => r.json())
+      .then((data) => setTrackingUpdates(Array.isArray(data) ? data : []))
+      .catch(console.error)
+      .finally(() => setLoadingTracking(false));
+  }, [order.ecotrackTracking]);
+
+  useEffect(() => {
+    fetchTracking();
+  }, [fetchTracking]);
+
+  async function handleAddNote() {
+    if (!noteText.trim() || !order.ecotrackTracking) return;
+    setSendingNote(true);
+    try {
+      const res = await fetch(
+        `/api/ecotrack/add-update?tracking=${encodeURIComponent(order.ecotrackTracking)}&content=${encodeURIComponent(noteText.trim())}`,
+        { method: "POST" }
+      );
+      const data = await res.json();
+      if (data.success) {
+        setNoteText("");
+        fetchTracking(); // refresh timeline
+      }
+    } catch (err) {
+      console.error("Failed to add tracking note:", err);
+    } finally {
+      setSendingNote(false);
+    }
+  }
 
   return (
     <div
@@ -110,6 +150,12 @@ function OrderDetail({
                 ...(order.customerEmail
                   ? [{ label: "Email", value: order.customerEmail }]
                   : []),
+                ...(order.wilaya
+                  ? [{ label: "Wilaya", value: order.wilaya }]
+                  : []),
+                ...(order.commune
+                  ? [{ label: "Commune", value: order.commune }]
+                  : []),
                 { label: "Adresse", value: order.address },
                 ...(order.notes ? [{ label: "Notes", value: order.notes }] : []),
               ].map(({ label, value }) => (
@@ -120,6 +166,69 @@ function OrderDetail({
               ))}
             </div>
           </div>
+
+          {/* EcoTrack Tracking */}
+          {order.ecotrackTracking && (
+            <div className="space-y-2 rounded-lg border border-[#e5e7eb] p-4">
+              <div className="flex items-center justify-between">
+                <h3 className="text-[13px] font-bold">Suivi livraison</h3>
+                <button
+                  onClick={fetchTracking}
+                  className="text-[11px] text-[#c4a95a] hover:underline"
+                >
+                  Actualiser
+                </button>
+              </div>
+              <p className="flex justify-between text-[12px]">
+                <span className="text-[#6b7280]">Tracking</span>
+                <span className="font-mono font-medium">{order.ecotrackTracking}</span>
+              </p>
+              {loadingTracking ? (
+                <p className="text-[12px] text-[#9ca3af]">Chargement…</p>
+              ) : trackingUpdates.length > 0 ? (
+                <div className="mt-2 space-y-2">
+                  {trackingUpdates.map((u, i) => (
+                    <div
+                      key={i}
+                      className="flex items-start gap-2 text-[12px]"
+                    >
+                      <div className="mt-1 h-2 w-2 shrink-0 rounded-full bg-[#c4a95a]" />
+                      <div>
+                        <p className="font-medium">{u.status}</p>
+                        <p className="text-[11px] text-[#9ca3af]">{u.date}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-[12px] text-[#9ca3af]">Aucune mise à jour</p>
+              )}
+
+              {/* Add note form */}
+              <div className="mt-3 border-t border-[#e5e7eb] pt-3">
+                <label className="mb-1 block text-[11px] font-semibold text-[#374151]">
+                  Ajouter une note
+                </label>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    maxLength={255}
+                    value={noteText}
+                    onChange={(e) => setNoteText(e.target.value)}
+                    placeholder="Ex: Livraison avant 17h…"
+                    className="flex-1 rounded-lg border border-[#d1d5db] px-3 py-2 text-[12px] outline-none focus:border-[#c4a95a]"
+                  />
+                  <button
+                    onClick={handleAddNote}
+                    disabled={sendingNote || !noteText.trim()}
+                    className="rounded-lg bg-[#c4a95a] px-3 py-2 text-[11px] font-semibold text-white transition-colors hover:bg-[#8b6914] disabled:opacity-50"
+                  >
+                    {sendingNote ? "…" : "Envoyer"}
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Items with product images */}
           <div className="rounded-lg border border-[#e5e7eb] p-4">
@@ -354,6 +463,9 @@ export default function OrdersClient({
                 <th className="px-5 py-3 text-start text-[11px] font-semibold uppercase tracking-wider text-[#6b7280]">
                   Statut
                 </th>
+                <th className="px-5 py-3 text-start text-[11px] font-semibold uppercase tracking-wider text-[#6b7280]">
+                  Tracking
+                </th>
                 <th className="px-5 py-3">
                 </th>
               </tr>
@@ -392,6 +504,9 @@ export default function OrdersClient({
                         {STATUS_LABELS[status] ?? status}
                       </span>
                     </td>
+                    <td className="px-5 py-4 text-[12px] font-mono text-[#6b7280]">
+                      {o.ecotrackTracking || "—"}
+                    </td>
                     <td className="px-5 py-4 text-end">
                       <button className="rounded-lg p-2 text-[#6b7280] transition-colors hover:bg-[#f4f5f7] hover:text-[#c4a95a]">
                         <svg
@@ -419,7 +534,7 @@ export default function OrdersClient({
               })}
               {filtered.length === 0 && (
                 <tr>
-                  <td colSpan={7} className="px-5 py-12 text-center">
+                  <td colSpan={8} className="px-5 py-12 text-center">
                     <p className="text-[14px] font-semibold text-[#6b7280]">
                       Aucune commande trouvée
                     </p>

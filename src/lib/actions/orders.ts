@@ -14,6 +14,9 @@ export type CreateOrderInput = {
   customerPhone: string;
   customerEmail: string;
   address: string;
+  wilaya?: string;
+  wilayaCode?: string;
+  commune?: string;
   notes: string;
   items: CartItem[];
 };
@@ -25,6 +28,10 @@ export type OrderWithItems = {
   customerPhone: string;
   customerEmail: string;
   address: string;
+  wilaya: string;
+  wilayaCode: string;
+  commune: string;
+  ecotrackTracking: string;
   notes: string;
   total: number;
   status: string;
@@ -63,6 +70,9 @@ export async function createOrder(input: CreateOrderInput): Promise<string> {
       customerPhone: input.customerPhone,
       customerEmail: input.customerEmail,
       address: input.address,
+      wilaya: input.wilaya ?? "",
+      wilayaCode: input.wilayaCode ?? "",
+      commune: input.commune ?? "",
       notes: input.notes,
       total,
       status: "new",
@@ -81,6 +91,9 @@ export async function createOrder(input: CreateOrderInput): Promise<string> {
       price: item.price,
     }))
   );
+
+  // TODO: EcoTrack delivery integration — re-enable when token is ready
+  // See src/lib/ecotrack.ts for the API client
 
   return orderNumber;
 }
