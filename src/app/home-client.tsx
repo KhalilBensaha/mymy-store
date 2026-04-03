@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
 import ScrollReveal from "./scroll-reveal";
 import { MymyLogo } from "./components/mymy-logo";
 import { useI18n } from "./i18n/provider";
@@ -66,8 +65,8 @@ function Hero() {
               <Link href="#diamonds" className="font-montserrat text-[10px] tracking-[0.14em] uppercase font-semibold bg-[#8b6914] text-white px-7 py-3.5 hover:bg-[#6f5110] transition-colors">
                 {t.hero.exploreDiamonds}
               </Link>
-              <Link href="#gold" className="font-montserrat text-[10px] tracking-[0.14em] uppercase font-semibold border border-text-dark/40 text-text-dark px-7 py-3.5 hover:bg-text-dark hover:text-white transition-colors">
-                {t.hero.shopGoldPearl}
+              <Link href="#shop" className="font-montserrat text-[10px] tracking-[0.14em] uppercase font-semibold border border-text-dark/40 text-text-dark px-7 py-3.5 hover:bg-text-dark hover:text-white transition-colors">
+                {t.hero.shopCollection}
               </Link>
             </div>
             <div className="mt-14 flex gap-10">
@@ -76,8 +75,8 @@ function Hero() {
                 <p className="mt-1 font-montserrat text-[0.58rem] uppercase tracking-[0.18em] text-[#a89c87]">Pieces Crafted</p>
               </div>
               <div className="border-s border-[#d9cfbe] ps-10">
-                <p className="font-playfair text-2xl text-text-dark">18K</p>
-                <p className="mt-1 font-montserrat text-[0.58rem] uppercase tracking-[0.18em] text-[#a89c87]">Pure Gold</p>
+                <p className="font-playfair text-2xl text-text-dark">925</p>
+                <p className="mt-1 font-montserrat text-[0.58rem] uppercase tracking-[0.18em] text-[#a89c87]">Sterling Silver</p>
               </div>
               <div className="border-s border-[#d9cfbe] ps-10">
                 <p className="font-playfair text-2xl text-text-dark">VS+</p>
@@ -98,7 +97,7 @@ function Categories({ allCategories }: { allCategories: CategoryData[] }) {
   /* Fallback static items when DB is empty */
   const fallback = [
     { id: 0, name: t.categories.diamondNecklace, slug: "necklaces", description: t.categories.certifiedBrilliance, image: "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=400&h=400&fit=crop" },
-    { id: 1, name: t.categories.goldBridalSet, slug: "bracelets", description: t.categories.timelessBridal, image: "https://images.unsplash.com/photo-1610694955371-d4a3e0ce4b52?w=400&h=400&fit=crop" },
+    { id: 1, name: t.categories.silverBridalSet, slug: "bracelets", description: t.categories.timelessBridal, image: "https://images.unsplash.com/photo-1610694955371-d4a3e0ce4b52?w=400&h=400&fit=crop" },
     { id: 2, name: t.categories.pearlEarrings, slug: "earrings", description: t.categories.lustrousElegance, image: "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=400&h=400&fit=crop" },
     { id: 3, name: t.categories.solitaireRings, slug: "rings", description: t.categories.perfectStones, image: "https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=400&h=400&fit=crop" },
   ];
@@ -143,7 +142,7 @@ function BestSellers({ items }: { items: BestSellerData[] }) {
 
   const fallback = [
     { id: 0, name: "Diamond Eternity Band", price: 5560, image: "https://images.unsplash.com/photo-1603561591411-07134e71a2a9?w=400&h=400&fit=crop" },
-    { id: 1, name: "Gold Kada Bracelet", price: 2200, image: "https://images.unsplash.com/photo-1611591437281-460bfbe1220a?w=400&h=400&fit=crop" },
+    { id: 1, name: "Silver Kada Bracelet", price: 2200, image: "https://images.unsplash.com/photo-1611591437281-460bfbe1220a?w=400&h=400&fit=crop" },
     { id: 2, name: "Pearl Strand Necklace", price: 1800, image: "https://images.unsplash.com/photo-1515562141589-67f0d569b6fc?w=400&h=400&fit=crop" },
     { id: 3, name: "Solitaire Stud Earrings", price: 3500, image: "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=400&h=400&fit=crop" },
   ];
@@ -186,7 +185,7 @@ function Craftsmanship() {
   const items = [
     { title: t.craftsmanship.handcrafted, sub: t.craftsmanship.masterArtisans, icon: <svg className="w-10 h-10 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg> },
     { title: t.craftsmanship.certifiedDiamonds, sub: t.craftsmanship.giaIgi, icon: <svg className="w-10 h-10 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg> },
-    { title: t.craftsmanship.pureGold, sub: t.craftsmanship.hallmarked, icon: <svg className="w-10 h-10 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg> },
+    { title: t.craftsmanship.sterlingSilver, sub: t.craftsmanship.hallmarked, icon: <svg className="w-10 h-10 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg> },
     { title: t.craftsmanship.premiumPearls, sub: t.craftsmanship.rareLustrous, icon: <svg className="w-10 h-10 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" /></svg> },
   ];
   return (
@@ -214,7 +213,7 @@ function SpecialCollections({ featuredCategories }: { featuredCategories: Catego
 
   const fallback = [
     { id: 0, name: t.specialCollections.bridalDiamonds, slug: "#", image: "https://images.unsplash.com/photo-1596944924616-7b38e7cfac36?w=500&h=600&fit=crop", description: "" },
-    { id: 1, name: t.specialCollections.royalGold, slug: "#", image: "https://images.unsplash.com/photo-1610694955371-d4a3e0ce4b52?w=500&h=600&fit=crop", description: "" },
+    { id: 1, name: t.specialCollections.royalSilver, slug: "#", image: "https://images.unsplash.com/photo-1610694955371-d4a3e0ce4b52?w=500&h=600&fit=crop", description: "" },
     { id: 2, name: t.specialCollections.pearlSignature, slug: "#", image: "https://images.unsplash.com/photo-1573408301185-9146fe634ad0?w=500&h=600&fit=crop", description: "" },
     { id: 3, name: t.specialCollections.modernFusion, slug: "#", image: "https://images.unsplash.com/photo-1611591437281-460bfbe1220a?w=500&h=600&fit=crop", description: "" },
   ];
@@ -311,7 +310,7 @@ function Footer({ socialLinks }: { socialLinks: SocialLinks }) {
           <div>
             <h4 className="font-montserrat text-xs font-bold tracking-[0.2em] uppercase text-warm-white mb-6">{t.footer.quickLinks}</h4>
             <ul className="space-y-3">
-              {[t.footer.aboutUs, t.footer.diamondCollections, t.footer.goldJewelry, t.footer.pearlJewelry, t.footer.bridalCollections].map((l) => (
+              {[t.footer.aboutUs, t.footer.diamondCollections, t.footer.silverJewelry, t.footer.pearlJewelry, t.footer.bridalCollections].map((l) => (
                 <li key={l}><Link href="#" className="font-montserrat text-sm text-cream-dark/60 hover:text-gold transition-colors">{l}</Link></li>
               ))}
             </ul>

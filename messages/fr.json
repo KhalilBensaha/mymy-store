@@ -1,7 +1,7 @@
 {
   "nav": {
     "diamonds": "Diamants",
-    "gold": "Or",
+    "silver": "Argent",
     "pearls": "Perles",
     "collections": "Collections",
     "bridal": "Mariage",
@@ -18,9 +18,9 @@
     "line2": "l'Éternité.",
     "line3": "Conçu pour",
     "line4": "l'Élégance.",
-    "sub": "Explorez nos collections exclusives de diamants certifiés, d'or pur 22 carats et de perles de mer du Sud, méticuleusement façonnés à la main pour les moments les plus précieux de votre vie.",
+    "sub": "Explorez nos collections exclusives de diamants certifiés, d'argent sterling et de pierres précieuses, méticuleusement façonnés à la main pour les moments les plus précieux de votre vie.",
     "cta1": "Explorer la Collection Diamants",
-    "cta2": "Bijoux Or & Perles",
+    "cta2": "Bijoux & Accessoires",
     "imageCaption": "Détail du Bijou"
   },
   "categories": {
@@ -31,7 +31,7 @@
     "bracelets": "Bracelets",
     "diamondNecklaceName": "Collier de Diamants",
     "diamondNecklaceSub": "Éclat Certifié",
-    "goldBridalName": "Parure Nuptiale Or",
+    "goldBridalName": "Parure Nuptiale Argent",
     "goldBridalSub": "Bijoux de Mariage Intemporels",
     "pearlEarringsName": "Boucles d'Oreilles Perle",
     "pearlEarringsSub": "Élégance Lumineuse",
@@ -41,13 +41,13 @@
   "bestSellers": {
     "title": "Meilleures Ventes",
     "p1": "Alliance Éternité Diamant",
-    "p2": "Bracelet Kada Or",
+    "p2": "Bracelet Kada Argent",
     "p3": "Collier de Perles",
     "p4": "Boucles d'Oreilles Solitaires",
-    "p5": "Pendentif Or avec Diamant",
+    "p5": "Pendentif Argent avec Diamant",
     "p6": "Bague Perle de Tahiti",
     "p7": "Bracelet Tennis Diamant",
-    "p8": "Boucles Jhumka Or 22 Carats"
+    "p8": "Boucles Jhumka Argent Sterling"
   },
   "craftsmanship": {
     "title": "Artisanat & Luxe",
@@ -55,15 +55,15 @@
     "handcraftedSub": "Maîtres Artisans",
     "certifiedTitle": "Diamants Certifiés",
     "certifiedSub": "Classés GIA & IGI",
-    "goldTitle": "Or Pur 22 Carats",
-    "goldSub": "Pureté Garantie",
+    "goldTitle": "Argent Sterling 925",
+    "goldSub": "Pureté Certifiée",
     "pearlsTitle": "Perles Haut de Gamme",
     "pearlsSub": "Rares & Lumineuses"
   },
   "specialCollections": {
     "title": "Collections Spéciales",
     "bridal": "Diamants Nuptiaux",
-    "royal": "Or Royal",
+    "royal": "Argent Royal",
     "pearl": "Signature Perle",
     "modern": "Bijoux Fusion Moderne"
   },
@@ -81,7 +81,7 @@
     "quickLinks": "Liens Rapides",
     "aboutUs": "À Propos",
     "diamondCollections": "Collections Diamants",
-    "goldJewelry": "Bijoux Or",
+    "goldJewelry": "Bijoux Argent",
     "pearlJewelry": "Bijoux Perle",
     "bridalCollections": "Collections Mariage",
     "customerCare": "Service Client",
@@ -132,7 +132,7 @@
     "selectVariant": "Choisir la Variante",
     "sizeGuide": "Guide des Tailles",
     "shipping": "Livraison mondiale offerte",
-    "certified": "Or 18k Certifié & Pierres Sans Conflit",
+    "certified": "Argent Sterling Certifié & Pierres Sans Conflit",
     "tabDescription": "Description",
     "tabReviews": "Avis",
     "tabCare": "Instructions d'Entretien",

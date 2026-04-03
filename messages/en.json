@@ -1,7 +1,7 @@
 {
   "nav": {
     "diamonds": "Diamonds",
-    "gold": "Gold",
+    "silver": "Silver",
     "pearls": "Pearls",
     "collections": "Collections",
     "bridal": "Bridal",
@@ -18,9 +18,9 @@
     "line2": "Eternity.",
     "line3": "Designed for",
     "line4": "Elegance.",
-    "sub": "Explore our exclusive collections of certified diamonds, pure 22K gold, and premium South Sea pearls, meticulously handcrafted for life's most precious moments.",
+    "sub": "Explore our exclusive collections of certified diamonds, sterling silver, and premium gemstones, meticulously handcrafted for life's most precious moments.",
     "cta1": "Explore Diamond Collection",
-    "cta2": "Shop Gold & Pearl Jewelry",
+    "cta2": "Shop Jewelry & Accessories",
     "imageCaption": "Jewelry Detail"
   },
   "categories": {
@@ -31,7 +31,7 @@
     "bracelets": "Bracelets",
     "diamondNecklaceName": "Diamond Necklace",
     "diamondNecklaceSub": "Certified Brilliance",
-    "goldBridalName": "Gold Bridal Set",
+    "goldBridalName": "Silver Bridal Set",
     "goldBridalSub": "Timeless Bridal Jewelry",
     "pearlEarringsName": "Pearl Earrings",
     "pearlEarringsSub": "Lustrous Elegance",
@@ -41,13 +41,13 @@
   "bestSellers": {
     "title": "Best Sellers",
     "p1": "Diamond Eternity Band",
-    "p2": "Gold Kada Bracelet",
+    "p2": "Silver Kada Bracelet",
     "p3": "Pearl Strand Necklace",
     "p4": "Solitaire Stud Earrings",
-    "p5": "Gold Pendant with Diamond",
+    "p5": "Silver Pendant with Diamond",
     "p6": "Tahitian Pearl Ring",
     "p7": "Diamond Tennis Bracelet",
-    "p8": "22K Gold Jhumka Earrings"
+    "p8": "Sterling Silver Jhumka Earrings"
   },
   "craftsmanship": {
     "title": "Craftsmanship & Luxury",
@@ -55,15 +55,15 @@
     "handcraftedSub": "Master Artisans",
     "certifiedTitle": "Certified Diamonds",
     "certifiedSub": "GIA & IGI Graded",
-    "goldTitle": "Pure 22K Gold",
-    "goldSub": "Hallmarked Purity",
+    "goldTitle": "Sterling Silver 925",
+    "goldSub": "Certified Purity",
     "pearlsTitle": "Premium Grade Pearls",
     "pearlsSub": "Rare & Lustrous"
   },
   "specialCollections": {
     "title": "Special Collections",
     "bridal": "Bridal Diamonds",
-    "royal": "Royal Gold",
+    "royal": "Royal Silver",
     "pearl": "Pearl Signature",
     "modern": "Modern Fusion Jewelry"
   },
@@ -81,7 +81,7 @@
     "quickLinks": "Quick Links",
     "aboutUs": "About Us",
     "diamondCollections": "Diamond Collections",
-    "goldJewelry": "Gold Jewelry",
+    "goldJewelry": "Silver Jewelry",
     "pearlJewelry": "Pearl Jewelry",
     "bridalCollections": "Bridal Collections",
     "customerCare": "Customer Care",
@@ -132,7 +132,7 @@
     "selectVariant": "Select Variant",
     "sizeGuide": "Size Guide",
     "shipping": "Complimentary worldwide shipping",
-    "certified": "Certified 18k Gold & Conflict-Free Stones",
+    "certified": "Certified Sterling Silver & Conflict-Free Stones",
     "tabDescription": "Description",
     "tabReviews": "Reviews",
     "tabCare": "Care Instructions",
