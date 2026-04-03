@@ -211,10 +211,15 @@ export type Messages = {
     phonePlaceholder: string;
     email: string;
     emailPlaceholder: string;
+    wilaya: string;
+    selectWilaya: string;
+    commune: string;
+    selectCommune: string;
     address: string;
     addressPlaceholder: string;
     notes: string;
     notesPlaceholder: string;
+    deliveryFee: string;
     orderSummary: string;
     placeOrder: string;
     placing: string;
