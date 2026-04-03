@@ -1,7 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { addOrderUpdate } from "@/lib/ecotrack";
+import { auth } from "@/auth";
 
 export async function POST(req: NextRequest) {
+  const session = await auth();
+  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const tracking = req.nextUrl.searchParams.get("tracking");
   const content = req.nextUrl.searchParams.get("content");
 

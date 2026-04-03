@@ -2,8 +2,10 @@
 
 import { revalidatePath } from "next/cache";
 import { db } from "@/lib/db";
-import { settings } from "@/lib/db/schema";
+import { settings, admins } from "@/lib/db/schema";
 import { eq, inArray } from "drizzle-orm";
+import { hash } from "bcryptjs";
+import { requireAdmin } from "./auth-guard";
 
 /* ─── Types ─── */
 export type ContactInfo = {
@@ -28,6 +30,7 @@ export async function getSetting(key: string): Promise<string | null> {
 }
 
 export async function setSetting(key: string, value: string) {
+  await requireAdmin();
   try {
     await db
       .insert(settings)
@@ -76,6 +79,7 @@ export async function getContactSettings(): Promise<ContactInfo> {
 }
 
 export async function saveContactSettings(info: ContactInfo) {
+  await requireAdmin();
   const entries: [string, string][] = [
     ["contact_address", info.address],
     ["contact_phone", info.phone],
@@ -101,6 +105,7 @@ export async function getFeaturedCategoryIds(): Promise<number[]> {
 }
 
 export async function saveFeaturedCategoryIds(ids: number[]) {
+  await requireAdmin();
   await setSetting("featured_category_ids", JSON.stringify(ids));
   revalidatePath("/");
   revalidatePath("/admin/settings");
@@ -116,6 +121,7 @@ export async function getSiteLanguage(): Promise<SiteLocale> {
 }
 
 export async function saveSiteLanguage(locale: SiteLocale) {
+  await requireAdmin();
   await setSetting("site_language", locale);
   revalidatePath("/admin/settings");
 }
@@ -161,6 +167,7 @@ export async function getSocialLinks(): Promise<SocialLinks> {
 }
 
 export async function saveSocialLinks(links: SocialLinks) {
+  await requireAdmin();
   const entries: [string, string][] = [
     ["social_whatsapp", links.whatsapp],
     ["social_instagram", links.instagram],
@@ -172,4 +179,79 @@ export async function saveSocialLinks(links: SocialLinks) {
   }
   revalidatePath("/contact");
   revalidatePath("/admin/settings");
+}
+
+/* ─── Admin management ─── */
+export type AdminRow = {
+  id: number;
+  name: string;
+  email: string;
+  createdAt: Date;
+};
+
+export async function getAdmins(): Promise<AdminRow[]> {
+  return db
+    .select({
+      id: admins.id,
+      name: admins.name,
+      email: admins.email,
+      createdAt: admins.createdAt,
+    })
+    .from(admins)
+    .orderBy(admins.createdAt);
+}
+
+export async function createAdmin(data: {
+  name: string;
+  email: string;
+  password: string;
+}): Promise<{ success: boolean; error?: string; admin?: AdminRow }> {
+  await requireAdmin();
+  const name = data.name.trim();
+  const email = data.email.trim().toLowerCase();
+  const password = data.password;
+
+  if (!name || !email || !password) {
+    return { success: false, error: "All fields are required." };
+  }
+  if (password.length < 6) {
+    return { success: false, error: "Password must be at least 6 characters." };
+  }
+
+  // Check for duplicate emails
+  const [existing] = await db
+    .select({ id: admins.id })
+    .from(admins)
+    .where(eq(admins.email, email))
+    .limit(1);
+
+  if (existing) {
+    return { success: false, error: "An admin with this email already exists." };
+  }
+
+  const passwordHash = await hash(password, 12);
+  const [inserted] = await db
+    .insert(admins)
+    .values({ name, email, passwordHash })
+    .returning({ id: admins.id, name: admins.name, email: admins.email, createdAt: admins.createdAt });
+  revalidatePath("/admin/settings");
+  return { success: true, admin: inserted };
+}
+
+export async function deleteAdmin(
+  id: number
+): Promise<{ success: boolean; error?: string }> {
+  await requireAdmin();
+  // Prevent deleting the last admin
+  const allAdmins = await db
+    .select({ id: admins.id })
+    .from(admins);
+
+  if (allAdmins.length <= 1) {
+    return { success: false, error: "Cannot delete the last admin." };
+  }
+
+  await db.delete(admins).where(eq(admins.id, id));
+  revalidatePath("/admin/settings");
+  return { success: true };
 }

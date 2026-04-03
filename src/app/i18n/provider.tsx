@@ -30,16 +30,16 @@ const I18nContext = createContext<I18nContextValue>({
   dir: "ltr",
 });
 
-function getInitialLocale(): Locale {
+function getInitialLocale(defaultLocale: Locale): Locale {
   if (typeof window !== "undefined") {
     const saved = localStorage.getItem("mymy-locale") as Locale | null;
     if (saved && messages[saved]) return saved;
   }
-  return "fr";
+  return defaultLocale;
 }
 
-export function I18nProvider({ children }: { children: ReactNode }) {
-  const [locale, setLocaleState] = useState<Locale>(getInitialLocale);
+export function I18nProvider({ children, defaultLocale = "fr" }: { children: ReactNode; defaultLocale?: Locale }) {
+  const [locale, setLocaleState] = useState<Locale>(() => getInitialLocale(defaultLocale));
 
   // Apply lang + dir to <html>
   useEffect(() => {

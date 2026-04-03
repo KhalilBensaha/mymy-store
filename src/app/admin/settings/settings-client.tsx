@@ -7,9 +7,12 @@ import {
   saveContactSettings,
   saveSiteLanguage,
   saveSocialLinks,
+  createAdmin,
+  deleteAdmin,
   type ContactInfo,
   type SiteLocale,
   type SocialLinks,
+  type AdminRow,
 } from "@/lib/actions/settings";
 
 /* ─── Types ─── */
@@ -21,7 +24,7 @@ type CategoryRow = {
   image: string;
 };
 
-type Section = "collections" | "contact" | "language" | "social";
+type Section = "collections" | "contact" | "language" | "social" | "admins";
 
 /* ─── Sections config ─── */
 const SECTIONS: { id: Section; label: string; icon: ReactNode }[] = [
@@ -61,6 +64,15 @@ const SECTIONS: { id: Section; label: string; icon: ReactNode }[] = [
       </svg>
     ),
   },
+  {
+    id: "admins",
+    label: "Admins",
+    icon: (
+      <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={1.6} viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
+      </svg>
+    ),
+  },
 ];
 
 const inputCls =
@@ -72,6 +84,7 @@ type Props = {
   initialContactInfo: ContactInfo;
   initialLanguage: SiteLocale;
   initialSocialLinks: SocialLinks;
+  initialAdmins: AdminRow[];
 };
 
 const LOCALE_OPTIONS: { value: SiteLocale; label: string; flag: string; native: string }[] = [
@@ -86,6 +99,7 @@ export default function SettingsClient({
   initialContactInfo,
   initialLanguage,
   initialSocialLinks,
+  initialAdmins,
 }: Props) {
   const [section, setSection] = useState<Section>("collections");
   const [selectedIds, setSelectedIds] = useState<number[]>(initialFeaturedIds);
@@ -95,6 +109,12 @@ export default function SettingsClient({
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [saveError, setSaveError] = useState("");
+
+  // Admin management state
+  const [adminList, setAdminList] = useState<AdminRow[]>(initialAdmins);
+  const [adminForm, setAdminForm] = useState({ name: "", email: "", password: "" });
+  const [adminSaving, setAdminSaving] = useState(false);
+  const [adminError, setAdminError] = useState("");
 
   function showSaved() {
     setSaved(true);
@@ -173,7 +193,7 @@ export default function SettingsClient({
             {[
               { label: "Products", href: "/admin/products" },
               { label: "Categories", href: "/admin/categories" },
-              { label: "Messages", href: "/admin/messages" },
+              { label: "Orders", href: "/admin/orders" },
               { label: "Contact Page", href: "/contact" },
             ].map((link) => (
               <Link
@@ -430,7 +450,104 @@ export default function SettingsClient({
             </div>
           )}
 
-          {/* ── Save bar ── */}
+          {/* ── Admins ── */}
+          {section === "admins" && (
+            <div className="p-6 space-y-6">
+              <div>
+                <h2 className="text-[16px] font-bold">Admin Accounts</h2>
+                <p className="text-[12px] text-[#6b7280] mt-0.5">
+                  Manage admin users who can access the dashboard.
+                </p>
+              </div>
+
+              {adminError && (
+                <div className="rounded-lg bg-red-50 border border-red-200 px-4 py-2.5 text-[12px] text-red-700 font-medium">
+                  {adminError}
+                </div>
+              )}
+
+              {/* Current admins */}
+              <div className="space-y-2">
+                <p className="text-[12px] font-semibold text-[#374151]">Current Admins ({adminList.length})</p>
+                <div className="divide-y divide-[#e5e7eb] rounded-xl border border-[#e5e7eb]">
+                  {adminList.map((admin) => (
+                    <div key={admin.id} className="flex items-center justify-between px-4 py-3">
+                      <div className="flex items-center gap-3">
+                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#c4a95a]/10 text-[#c4a95a] text-[12px] font-bold uppercase">
+                          {admin.name.charAt(0)}
+                        </div>
+                        <div>
+                          <p className="text-[13px] font-semibold text-[#1e1e2d]">{admin.name}</p>
+                          <p className="text-[11px] text-[#6b7280]">{admin.email}</p>
+                        </div>
+                      </div>
+                      <button
+                        type="button"
+                        disabled={adminList.length <= 1 || adminSaving}
+                        onClick={async () => {
+                          if (!confirm(`Delete admin "${admin.name}"?`)) return;
+                          setAdminSaving(true);
+                          setAdminError("");
+                          try {
+                            const res = await deleteAdmin(admin.id);
+                            if (!res.success) { setAdminError(res.error ?? "Failed"); return; }
+                            setAdminList((prev) => prev.filter((a) => a.id !== admin.id));
+                          } catch { setAdminError("Failed to delete admin."); }
+                          finally { setAdminSaving(false); }
+                        }}
+                        className="rounded-lg border border-red-200 px-3 py-1.5 text-[11px] font-semibold text-red-600 hover:bg-red-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  ))}
+                </div>
+                {adminList.length <= 1 && (
+                  <p className="text-[11px] text-[#9ca3af]">You cannot remove the last admin.</p>
+                )}
+              </div>
+
+              {/* Create new admin */}
+              <div className="rounded-xl border border-[#e5e7eb] bg-[#f9fafb] p-5 space-y-4">
+                <p className="text-[13px] font-bold text-[#1e1e2d]">Create New Admin</p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-[12px] font-semibold text-[#374151] mb-1">Name</label>
+                    <input className={inputCls} value={adminForm.name} onChange={(e) => setAdminForm({ ...adminForm, name: e.target.value })} placeholder="Full name" />
+                  </div>
+                  <div>
+                    <label className="block text-[12px] font-semibold text-[#374151] mb-1">Email</label>
+                    <input type="email" className={inputCls} value={adminForm.email} onChange={(e) => setAdminForm({ ...adminForm, email: e.target.value })} placeholder="admin@example.com" />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-[12px] font-semibold text-[#374151] mb-1">Password</label>
+                  <input type="password" className={inputCls} value={adminForm.password} onChange={(e) => setAdminForm({ ...adminForm, password: e.target.value })} placeholder="Min 6 characters" />
+                </div>
+                <button
+                  type="button"
+                  disabled={adminSaving || !adminForm.name.trim() || !adminForm.email.trim() || adminForm.password.length < 6}
+                  onClick={async () => {
+                    setAdminSaving(true);
+                    setAdminError("");
+                    try {
+                      const res = await createAdmin(adminForm);
+                      if (!res.success) { setAdminError(res.error ?? "Failed"); return; }
+                      setAdminList((prev) => [...prev, res.admin!]);
+                      setAdminForm({ name: "", email: "", password: "" });
+                    } catch { setAdminError("Failed to create admin."); }
+                    finally { setAdminSaving(false); }
+                  }}
+                  className="rounded-lg bg-[#c4a95a] px-5 py-2.5 text-[12px] font-semibold text-white hover:bg-[#b09845] transition-colors disabled:opacity-60"
+                >
+                  {adminSaving ? "Creating…" : "Create Admin"}
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* ── Save bar (not shown for admins — has inline actions) ── */}
+          {section !== "admins" && (
           <div className="flex items-center justify-end gap-3 border-t border-[#e5e7eb] p-5">
             {saveError && <span className="text-[12px] font-semibold text-red-500">{saveError}</span>}
             {saved && !saveError && (
@@ -449,6 +566,7 @@ export default function SettingsClient({
               {saving ? "Saving…" : "Save Changes"}
             </button>
           </div>
+          )}
         </div>
       </div>
     </div>

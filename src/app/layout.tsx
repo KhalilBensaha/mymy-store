@@ -12,6 +12,7 @@ import { I18nProvider } from "./i18n/provider";
 import { CartProvider } from "@/lib/cart-context";
 import { cn } from "@/lib/utils";
 import SplashCursor from "@/components/SplashCursor";
+import { getSiteLanguage } from "@/lib/actions/settings";
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -199,11 +200,12 @@ const jsonLd = {
   ],
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const defaultLocale = await getSiteLanguage();
   return (
     <html
       suppressHydrationWarning
@@ -232,7 +234,7 @@ export default function RootLayout({
           BACK_COLOR={{ r: 0, g: 0, b: 0 }}
           TRANSPARENT={true}
         />
-        <I18nProvider><CartProvider>{children}</CartProvider></I18nProvider>
+        <I18nProvider defaultLocale={defaultLocale}><CartProvider>{children}</CartProvider></I18nProvider>
       </body>
     </html>
   );

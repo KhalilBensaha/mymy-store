@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { db } from "@/lib/db";
 import { products, categories } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
+import { requireAdmin } from "./auth-guard";
 
 /* ─── Types ─── */
 export type ProductInput = {
@@ -82,6 +83,7 @@ export async function getProductById(id: number) {
 
 /* ─── Mutations ─── */
 export async function createProduct(data: ProductInput) {
+  await requireAdmin();
   await db.insert(products).values(data);
   revalidatePath("/admin/products");
   revalidatePath("/admin");
@@ -89,6 +91,7 @@ export async function createProduct(data: ProductInput) {
 }
 
 export async function updateProduct(id: number, data: Partial<ProductInput>) {
+  await requireAdmin();
   await db.update(products).set(data).where(eq(products.id, id));
   revalidatePath("/admin/products");
   revalidatePath("/admin");
@@ -97,6 +100,7 @@ export async function updateProduct(id: number, data: Partial<ProductInput>) {
 }
 
 export async function deleteProduct(id: number) {
+  await requireAdmin();
   await db.delete(products).where(eq(products.id, id));
   revalidatePath("/admin/products");
   revalidatePath("/admin");
