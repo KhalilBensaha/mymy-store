@@ -172,3 +172,28 @@ export async function getTrackingInfo(
   if (Array.isArray(raw)) return raw;
   return Object.values(raw) as EcoTrackingActivity[];
 }
+
+export type EcoBulkTrackingResult = {
+  tracking: string;
+  status: string;
+  activities: EcoTrackingActivity[];
+};
+
+export async function getMultiTrackingInfo(
+  trackings: string[]
+): Promise<EcoBulkTrackingResult[]> {
+  // The API accepts trackings[]=tracking1,tracking2
+  const url = new URL(`${BASE_URL}/api/v1/get/trackings/info`);
+  url.searchParams.set("trackings[]", trackings.join(","));
+  const res = await fetch(url.toString(), {
+    headers: { Authorization: `Bearer ${getToken()}` },
+  });
+  if (!res.ok) {
+    const text = await res.text().catch(() => "");
+    throw new Error(`EcoTrack ${res.status}: ${text}`);
+  }
+  const data = await res.json();
+  const raw = data.data ?? data;
+  if (Array.isArray(raw)) return raw;
+  return Object.values(raw) as EcoBulkTrackingResult[];
+}

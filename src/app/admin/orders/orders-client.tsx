@@ -397,6 +397,26 @@ export default function OrdersClient({
   const [sortField, setSortField] = useState<SortField>("date");
   const [sortDir, setSortDir] = useState<SortDir>("desc");
   const [, startTransition] = useTransition();
+  const [deliveryStatuses, setDeliveryStatuses] = useState<Record<string, string>>({});
+
+  // Fetch bulk delivery statuses for all orders with tracking
+  useEffect(() => {
+    const trackings = orders
+      .map((o) => o.ecotrackTracking)
+      .filter((t) => t && !t.startsWith("DRY-RUN"));
+    if (trackings.length === 0) return;
+    fetch(`/api/ecotrack/trackings-info?trackings=${encodeURIComponent(trackings.join(","))}`)
+      .then((r) => r.json())
+      .then((data: { tracking: string; status: string }[]) => {
+        if (!Array.isArray(data)) return;
+        const map: Record<string, string> = {};
+        for (const item of data) {
+          if (item.tracking && item.status) map[item.tracking] = item.status;
+        }
+        setDeliveryStatuses(map);
+      })
+      .catch(console.error);
+  }, [orders]);
 
   const filtered = useMemo(() => {
     let result = orders.filter((o) => {
@@ -608,8 +628,23 @@ export default function OrdersClient({
                         {STATUS_LABELS[status] ?? status}
                       </span>
                     </td>
-                    <td className="px-5 py-4 text-[12px] font-mono text-[#6b7280]">
-                      {o.ecotrackTracking || "—"}
+                    <td className="px-5 py-4">
+                      {o.ecotrackTracking ? (
+                        <div className="flex flex-col gap-1">
+                          <span className="text-[12px] font-mono text-[#6b7280]">{o.ecotrackTracking}</span>
+                          {deliveryStatuses[o.ecotrackTracking] ? (
+                            <span className="inline-block rounded-full bg-blue-50 px-2 py-0.5 text-[10px] font-semibold text-blue-700">
+                              {deliveryStatuses[o.ecotrackTracking]}
+                            </span>
+                          ) : o.ecotrackTracking.startsWith("DRY-RUN") ? (
+                            <span className="inline-block rounded-full bg-gray-100 px-2 py-0.5 text-[10px] font-medium text-gray-500">Test</span>
+                          ) : (
+                            <span className="text-[10px] text-gray-400">Chargement…</span>
+                          )}
+                        </div>
+                      ) : (
+                        <span className="text-[12px] text-[#6b7280]">—</span>
+                      )}
                     </td>
                     <td className="px-5 py-4 text-end">
                       <button className="rounded-lg p-2 text-[#6b7280] transition-colors hover:bg-[#f4f5f7] hover:text-[#c4a95a]">
