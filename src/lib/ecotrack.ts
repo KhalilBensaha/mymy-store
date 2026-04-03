@@ -56,6 +56,31 @@ export type EcoOrderUpdate = {
   tracking: string;
 };
 
+export type EcoTrackingActivity = {
+  activity: string;
+  created_at: string;
+};
+
+export type EcoTrackingInfo = {
+  tracking: string;
+  activities: EcoTrackingActivity[];
+};
+
+/* ─── Activity Labels ─── */
+export const ACTIVITY_LABELS: Record<string, string> = {
+  order_information_received_by_carrier: "Commande enregistrée et validée par le vendeur",
+  picked: "Commande récupérée par le prestataire de livraison",
+  accepted_by_carrier: "Réceptionnée par le centre de tri",
+  dispatched_to_driver: "Commande dispatchée au livreur",
+  attempt_delivery: "Tentative de livraison",
+  return_asked: "Retour initié par le centre de tri",
+  return_in_transit: "Retour en transit",
+  Return_received: "Retour réceptionné par le vendeur",
+  livred: "Commande livrée",
+  encaissed: "Commande encaissée",
+  payed: "Paiement effectué",
+};
+
 /* ─── API Functions ─── */
 
 export async function validateToken(): Promise<boolean> {
@@ -136,4 +161,14 @@ export async function requestReturn(
     "POST"
   );
   return { success: data.success ?? false, message: data.message ?? "" };
+}
+
+export async function getTrackingInfo(
+  tracking: string
+): Promise<EcoTrackingActivity[]> {
+  const data = await ecoFetch("/api/v1/get/tracking/info", { tracking });
+  if (!data.success && data.success !== undefined) return [];
+  const raw = data.activities ?? data.data ?? data ?? [];
+  if (Array.isArray(raw)) return raw;
+  return Object.values(raw) as EcoTrackingActivity[];
 }

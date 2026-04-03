@@ -21,6 +21,20 @@ const STATUS_LABELS: Record<OrderStatus, string> = {
 
 const ALL_STATUSES: OrderStatus[] = ["new", "paid", "canceled"];
 
+const ACTIVITY_LABELS: Record<string, string> = {
+  order_information_received_by_carrier: "Commande enregistrée et validée",
+  picked: "Récupérée par le prestataire",
+  accepted_by_carrier: "Réceptionnée par le centre de tri",
+  dispatched_to_driver: "Dispatchée au livreur",
+  attempt_delivery: "Tentative de livraison",
+  return_asked: "Retour initié par le centre de tri",
+  return_in_transit: "Retour en transit",
+  Return_received: "Retour réceptionné par le vendeur",
+  livred: "Commande livrée",
+  encaissed: "Commande encaissée",
+  payed: "Paiement effectué",
+};
+
 type SortField = "date" | "price" | "product";
 type SortDir = "asc" | "desc";
 
@@ -59,6 +73,8 @@ function OrderDetail({
   const [sendingNote, setSendingNote] = useState(false);
   const [requestingReturn, setRequestingReturn] = useState(false);
   const [returnMessage, setReturnMessage] = useState("");
+  const [activities, setActivities] = useState<{ activity: string; created_at: string }[]>([]);
+  const [loadingActivities, setLoadingActivities] = useState(false);
 
   const fetchTracking = useCallback(() => {
     if (!order.ecotrackTracking) return;
@@ -68,6 +84,13 @@ function OrderDetail({
       .then((data) => setTrackingUpdates(Array.isArray(data) ? data : []))
       .catch(console.error)
       .finally(() => setLoadingTracking(false));
+    // Also fetch operations history
+    setLoadingActivities(true);
+    fetch(`/api/ecotrack/tracking-info?tracking=${encodeURIComponent(order.ecotrackTracking)}`)
+      .then((r) => r.json())
+      .then((data) => setActivities(Array.isArray(data) ? data : []))
+      .catch(console.error)
+      .finally(() => setLoadingActivities(false));
   }, [order.ecotrackTracking]);
 
   useEffect(() => {
@@ -266,6 +289,48 @@ function OrderDetail({
                   <p className="mt-1.5 text-[11px] text-[#6b7280]">{returnMessage}</p>
                 )}
               </div>
+            </div>
+          )}
+
+          {/* Operations History */}
+          {order.ecotrackTracking && (
+            <div className="space-y-2 rounded-lg border border-[#e5e7eb] p-4">
+              <h3 className="text-[13px] font-bold">Historique des opérations</h3>
+              {loadingActivities ? (
+                <p className="text-[12px] text-[#9ca3af]">Chargement…</p>
+              ) : activities.length > 0 ? (
+                <div className="mt-2 space-y-0">
+                  {activities.map((a, i) => {
+                    const isLast = i === activities.length - 1;
+                    return (
+                      <div key={i} className="flex gap-3">
+                        {/* Timeline indicator */}
+                        <div className="flex flex-col items-center">
+                          <div
+                            className={`h-3 w-3 shrink-0 rounded-full border-2 ${
+                              isLast
+                                ? "border-[#c4a95a] bg-[#c4a95a]"
+                                : "border-[#d1d5db] bg-white"
+                            }`}
+                          />
+                          {i < activities.length - 1 && (
+                            <div className="h-full w-0.5 bg-[#e5e7eb]" />
+                          )}
+                        </div>
+                        {/* Content */}
+                        <div className="pb-4">
+                          <p className="text-[12px] font-medium">
+                            {ACTIVITY_LABELS[a.activity] ?? a.activity}
+                          </p>
+                          <p className="text-[11px] text-[#9ca3af]">{a.created_at}</p>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              ) : (
+                <p className="text-[12px] text-[#9ca3af]">Aucune opération enregistrée</p>
+              )}
             </div>
           )}
 
