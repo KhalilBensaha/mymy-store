@@ -332,7 +332,7 @@ export default function ProductsClient({
                   <td className="px-5 py-3">
                     <span className="rounded-full bg-[#f4f5f7] px-2.5 py-1 text-[11px] font-medium text-[#374151]">{p.categoryName}</span>
                   </td>
-                  <td className="px-5 py-3 text-[13px] font-semibold">${p.price.toLocaleString()}</td>
+                  <td className="px-5 py-3 text-[13px] font-semibold">{p.price.toLocaleString()} DA</td>
                   <td className="px-5 py-3">
                     <div className="flex flex-wrap gap-1">
                       {p.materials.map((m) => (

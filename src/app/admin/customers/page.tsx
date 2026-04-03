@@ -61,8 +61,8 @@ export default function CustomersPage() {
         {[
           { label: "Total Customers", value: totalCustomers },
           { label: "Active", value: activeCustomers },
-          { label: "Total Revenue", value: `$${totalRevenue.toLocaleString()}` },
-          { label: "Avg. Spend", value: `$${avgSpend.toLocaleString()}` },
+          { label: "Total Revenue", value: `${totalRevenue.toLocaleString()} DA` },
+          { label: "Avg. Spend", value: `${avgSpend.toLocaleString()} DA` },
         ].map((s) => (
           <div key={s.label} className="rounded-xl border border-[#e5e7eb] bg-white p-4">
             <p className="text-[11px] font-semibold text-[#9ca3af] uppercase tracking-wider">{s.label}</p>
@@ -126,7 +126,7 @@ export default function CustomersPage() {
                   </td>
                   <td className="px-5 py-4 text-[13px] text-[#6b7280]">{c.location}</td>
                   <td className="px-5 py-4 text-[13px] font-medium">{c.orders}</td>
-                  <td className="px-5 py-4 text-[13px] font-semibold">${c.totalSpent.toLocaleString()}</td>
+                  <td className="px-5 py-4 text-[13px] font-semibold">{c.totalSpent.toLocaleString()} DA</td>
                   <td className="px-5 py-4 text-[13px] text-[#6b7280]">{c.lastOrder}</td>
                   <td className="px-5 py-4">
                     <span

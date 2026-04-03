@@ -1,35 +1,25 @@
 import Link from "next/link";
 import Image from "next/image";
 import { db } from "@/lib/db";
-import { products, categories, contactMessages } from "@/lib/db/schema";
+import { products, categories, orders, orderItems } from "@/lib/db/schema";
 import { sql, eq, desc } from "drizzle-orm";
 
 export const revalidate = 0;
 
-/* ─── Mock order data (stays mock until orders table exists) ─── */
-const RECENT_ORDERS = [
-  { id: "ORD-2401", customer: "Sophia Laurent", email: "sophia@example.com", total: 5560, items: 2, status: "delivered" as const, date: "Mar 24, 2026" },
-  { id: "ORD-2400", customer: "Priya Rajesh", email: "priya@example.com", total: 4500, items: 1, status: "shipped" as const, date: "Mar 23, 2026" },
-  { id: "ORD-2399", customer: "Isabella Moretti", email: "isabella@example.com", total: 2100, items: 3, status: "processing" as const, date: "Mar 22, 2026" },
-  { id: "ORD-2398", customer: "Amira Benali", email: "amira@example.com", total: 1250, items: 1, status: "pending" as const, date: "Mar 21, 2026" },
-  { id: "ORD-2397", customer: "Léa Dupont", email: "lea@example.com", total: 8900, items: 4, status: "delivered" as const, date: "Mar 20, 2026" },
-];
-
 const STATUS_STYLES: Record<string, string> = {
-  delivered: "bg-emerald-50 text-emerald-700",
-  shipped: "bg-blue-50 text-blue-700",
-  processing: "bg-amber-50 text-amber-700",
+  new: "bg-blue-50 text-blue-700",
+  paid: "bg-emerald-50 text-emerald-700",
+  canceled: "bg-red-50 text-red-600",
   pending: "bg-gray-100 text-gray-600",
-  cancelled: "bg-red-50 text-red-600",
 };
 
 /* ─── Stats ─── */
-function buildStats(productCount: number, categoryCount: number, messageCount: number) {
+function buildStats(productCount: number, categoryCount: number, totalRevenue: number, orderCount: number) {
   return [
     {
       label: "Total Revenue",
-      value: "$124,580",
-      change: "+12.5%",
+      value: `${totalRevenue.toLocaleString()} DA`,
+      change: `${orderCount} orders`,
       positive: true,
       icon: (
         <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth={1.6} viewBox="0 0 24 24">
@@ -39,8 +29,8 @@ function buildStats(productCount: number, categoryCount: number, messageCount: n
     },
     {
       label: "Total Orders",
-      value: "384",
-      change: "+8.2%",
+      value: String(orderCount),
+      change: `${totalRevenue.toLocaleString()} DA revenue`,
       positive: true,
       icon: (
         <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth={1.6} viewBox="0 0 24 24">
@@ -60,13 +50,14 @@ function buildStats(productCount: number, categoryCount: number, messageCount: n
       ),
     },
     {
-      label: "Messages",
-      value: String(messageCount),
-      change: "Contact inbox",
+      label: "Categories",
+      value: String(categoryCount),
+      change: `${productCount} products`,
       positive: true,
       icon: (
         <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth={1.6} viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+          <path strokeLinecap="round" strokeLinejoin="round" d="M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 005.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 009.568 3z" />
+          <path strokeLinecap="round" strokeLinejoin="round" d="M6 6h.008v.008H6V6z" />
         </svg>
       ),
     },
@@ -74,20 +65,11 @@ function buildStats(productCount: number, categoryCount: number, messageCount: n
 }
 
 /* ─── Revenue chart (mini bar chart) ─── */
-const REVENUE_DATA = [
-  { month: "Oct", value: 18400 },
-  { month: "Nov", value: 22100 },
-  { month: "Dec", value: 31500 },
-  { month: "Jan", value: 19800 },
-  { month: "Feb", value: 24600 },
-  { month: "Mar", value: 28200 },
-];
-
-function MiniChart() {
-  const max = Math.max(...REVENUE_DATA.map((d) => d.value));
+function MiniChart({ data }: { data: { month: string; value: number }[] }) {
+  const max = Math.max(...data.map((d) => d.value), 1);
   return (
     <div className="flex items-end gap-3 h-40 mt-4">
-      {REVENUE_DATA.map((d) => (
+      {data.map((d) => (
         <div key={d.month} className="flex flex-col items-center flex-1 gap-1">
           <div
             className="w-full rounded-t-md bg-[#c4a95a]/80 hover:bg-[#c4a95a] transition-colors min-h-[4px]"
@@ -114,7 +96,7 @@ function TopProducts({ topProducts }: { topProducts: { id: number; name: string;
             <p className="text-[13px] font-semibold truncate">{p.name}</p>
             <p className="text-[11px] text-[#9ca3af]">{p.categoryName}</p>
           </div>
-          <p className="text-[13px] font-semibold text-[#1e1e2d]">${p.price.toLocaleString()}</p>
+          <p className="text-[13px] font-semibold text-[#1e1e2d]">{p.price.toLocaleString()} DA</p>
         </div>
       ))}
     </div>
@@ -126,11 +108,54 @@ export default async function AdminDashboard() {
   /* Fetch counts from DB */
   const [productCountResult] = await db.select({ count: sql<number>`count(*)` }).from(products);
   const [categoryCountResult] = await db.select({ count: sql<number>`count(*)` }).from(categories);
-  const [messageCountResult] = await db.select({ count: sql<number>`count(*)` }).from(contactMessages);
+  const [orderCountResult] = await db.select({ count: sql<number>`count(*)` }).from(orders);
+  const [revenueResult] = await db.select({ total: sql<number>`coalesce(sum(${orders.total}), 0)` }).from(orders);
 
   const productCount = Number(productCountResult?.count ?? 0);
   const categoryCount = Number(categoryCountResult?.count ?? 0);
-  const messageCount = Number(messageCountResult?.count ?? 0);
+  const orderCount = Number(orderCountResult?.count ?? 0);
+  const totalRevenue = Number(revenueResult?.total ?? 0);
+
+  /* Recent orders */
+  const recentOrders = await db
+    .select({
+      id: orders.id,
+      orderNumber: orders.orderNumber,
+      customerName: orders.customerName,
+      customerEmail: orders.customerEmail,
+      total: orders.total,
+      status: orders.status,
+      createdAt: orders.createdAt,
+    })
+    .from(orders)
+    .orderBy(desc(orders.createdAt))
+    .limit(5);
+
+  /* Monthly revenue for chart (last 6 months) */
+  const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const now = new Date();
+  const revenueByMonth: { month: string; value: number }[] = [];
+
+  const monthlyRows = await db
+    .select({
+      month: sql<number>`extract(month from ${orders.createdAt})`,
+      year: sql<number>`extract(year from ${orders.createdAt})`,
+      total: sql<number>`coalesce(sum(${orders.total}), 0)`,
+    })
+    .from(orders)
+    .where(sql`${orders.createdAt} >= now() - interval '6 months'`)
+    .groupBy(sql`extract(year from ${orders.createdAt})`, sql`extract(month from ${orders.createdAt})`)
+    .orderBy(sql`extract(year from ${orders.createdAt})`, sql`extract(month from ${orders.createdAt})`);
+
+  const monthMap = new Map<string, number>();
+  for (const r of monthlyRows) {
+    monthMap.set(`${Number(r.year)}-${Number(r.month)}`, Number(r.total));
+  }
+  for (let i = 5; i >= 0; i--) {
+    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    const key = `${d.getFullYear()}-${d.getMonth() + 1}`;
+    revenueByMonth.push({ month: monthNames[d.getMonth()], value: monthMap.get(key) ?? 0 });
+  }
 
   /* Top products by price */
   const topProducts = await db
@@ -146,7 +171,7 @@ export default async function AdminDashboard() {
     .orderBy(desc(products.price))
     .limit(5);
 
-  const STATS = buildStats(productCount, categoryCount, messageCount);
+  const STATS = buildStats(productCount, categoryCount, totalRevenue, orderCount);
   return (
     <div className="space-y-8">
       {/* Header */}
@@ -204,9 +229,9 @@ export default async function AdminDashboard() {
               <h2 className="text-[15px] font-bold">Revenue Overview</h2>
               <p className="text-[12px] text-[#6b7280]">Last 6 months</p>
             </div>
-            <span className="text-[12px] font-semibold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-md">+12.5%</span>
+            <span className="text-[12px] font-semibold text-[#1e1e2d] bg-[#f4f5f7] px-2 py-1 rounded-md">{totalRevenue.toLocaleString()} DA</span>
           </div>
-          <MiniChart />
+          <MiniChart data={revenueByMonth} />
         </div>
 
         {/* Top products */}
@@ -236,22 +261,32 @@ export default async function AdminDashboard() {
               </tr>
             </thead>
             <tbody>
-              {RECENT_ORDERS.map((o) => (
-                <tr key={o.id} className="border-b border-[#f3f4f6] last:border-0 hover:bg-[#f9fafb] transition-colors">
-                  <td className="px-6 py-4 text-[13px] font-semibold text-[#c4a95a]">{o.id}</td>
-                  <td className="px-6 py-4">
-                    <p className="text-[13px] font-medium">{o.customer}</p>
-                    <p className="text-[11px] text-[#9ca3af]">{o.email}</p>
-                  </td>
-                  <td className="px-6 py-4 text-[13px] text-[#6b7280]">{o.date}</td>
-                  <td className="px-6 py-4 text-[13px] font-semibold">${o.total.toLocaleString()}</td>
-                  <td className="px-6 py-4">
-                    <span className={`inline-block rounded-full px-2.5 py-1 text-[11px] font-semibold capitalize ${STATUS_STYLES[o.status]}`}>
-                      {o.status}
-                    </span>
+              {recentOrders.length === 0 ? (
+                <tr>
+                  <td colSpan={5} className="px-6 py-8 text-center text-[13px] text-[#9ca3af]">
+                    No orders yet
                   </td>
                 </tr>
-              ))}
+              ) : (
+                recentOrders.map((o) => (
+                  <tr key={o.id} className="border-b border-[#f3f4f6] last:border-0 hover:bg-[#f9fafb] transition-colors">
+                    <td className="px-6 py-4 text-[13px] font-semibold text-[#c4a95a]">{o.orderNumber}</td>
+                    <td className="px-6 py-4">
+                      <p className="text-[13px] font-medium">{o.customerName}</p>
+                      <p className="text-[11px] text-[#9ca3af]">{o.customerEmail}</p>
+                    </td>
+                    <td className="px-6 py-4 text-[13px] text-[#6b7280]">
+                      {new Date(o.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+                    </td>
+                    <td className="px-6 py-4 text-[13px] font-semibold">{o.total.toLocaleString()} DA</td>
+                    <td className="px-6 py-4">
+                      <span className={`inline-block rounded-full px-2.5 py-1 text-[11px] font-semibold capitalize ${STATUS_STYLES[o.status] ?? "bg-gray-100 text-gray-600"}`}>
+                        {o.status}
+                      </span>
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>

@@ -292,7 +292,7 @@ function BestSellers({ items }: { items: BestSellerData[] }) {
               </div>
               <h4 className="font-montserrat text-sm font-semibold text-text-dark">{p.name}</h4>
               <p className="font-montserrat text-sm text-gold font-bold">
-                {new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(p.price)}
+                {new Intl.NumberFormat("fr-DZ", { style: "decimal", maximumFractionDigits: 0 }).format(p.price)} DA
               </p>
             </Link>
           ))}
