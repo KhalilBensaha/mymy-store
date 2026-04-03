@@ -123,6 +123,7 @@ export type Messages = {
     selectVariant: string;
     sizeGuide: string;
     addToCart: string;
+    orderNow: string;
     freeShipping: string;
     certified: string;
     descriptionTab: string;

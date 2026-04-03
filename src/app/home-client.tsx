@@ -18,9 +18,17 @@ export type CategoryData = {
   image: string;
 };
 
+export type BestSellerData = {
+  id: number;
+  name: string;
+  price: number;
+  image: string;
+};
+
 type HomeClientProps = {
   allCategories: CategoryData[];
   featuredCategories: CategoryData[];
+  bestSellers: BestSellerData[];
 };
 
 /* ─────────────── NAV ─────────────── */
@@ -252,19 +260,18 @@ function Categories({ allCategories }: { allCategories: CategoryData[] }) {
 }
 
 /* ─────────────── BEST SELLERS ─────────────── */
-const bestSellers = [
-  { name: "Diamond Eternity Band", price: "$5,560", img: "https://images.unsplash.com/photo-1603561591411-07134e71a2a9?w=400&h=400&fit=crop" },
-  { name: "Gold Kada Bracelet", price: "$2,200", img: "https://images.unsplash.com/photo-1611591437281-460bfbe1220a?w=400&h=400&fit=crop" },
-  { name: "Pearl Strand Necklace", price: "$1,800", img: "https://images.unsplash.com/photo-1515562141589-67f0d569b6fc?w=400&h=400&fit=crop" },
-  { name: "Solitaire Stud Earrings", price: "$3,500", img: "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=400&h=400&fit=crop" },
-  { name: "Gold Pendant with Diamond", price: "$1,200", img: "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=400&h=400&fit=crop" },
-  { name: "Tahitian Pearl Ring", price: "$4,000", img: "https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=400&h=400&fit=crop" },
-  { name: "Diamond Tennis Bracelet", price: "$7,800", img: "https://images.unsplash.com/photo-1602751584552-8ba73aad10e1?w=400&h=400&fit=crop" },
-  { name: "22K Gold Jhumka Earrings", price: "$2,600", img: "https://images.unsplash.com/photo-1610694955371-d4a3e0ce4b52?w=400&h=400&fit=crop" },
-];
-
-function BestSellers() {
+function BestSellers({ items }: { items: BestSellerData[] }) {
   const { t } = useI18n();
+
+  const fallback = [
+    { id: 0, name: "Diamond Eternity Band", price: 5560, image: "https://images.unsplash.com/photo-1603561591411-07134e71a2a9?w=400&h=400&fit=crop" },
+    { id: 1, name: "Gold Kada Bracelet", price: 2200, image: "https://images.unsplash.com/photo-1611591437281-460bfbe1220a?w=400&h=400&fit=crop" },
+    { id: 2, name: "Pearl Strand Necklace", price: 1800, image: "https://images.unsplash.com/photo-1515562141589-67f0d569b6fc?w=400&h=400&fit=crop" },
+    { id: 3, name: "Solitaire Stud Earrings", price: 3500, image: "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=400&h=400&fit=crop" },
+  ];
+
+  const display = items.length > 0 ? items : fallback;
+
   return (
     <section className="w-full bg-warm-white py-16 lg:py-20">
       <div className="max-w-7xl mx-auto px-6">
@@ -272,11 +279,11 @@ function BestSellers() {
           {t.bestSellers.title}
         </h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
-          {bestSellers.map((p) => (
-            <Link key={p.name} href="#" className="group text-center transition-transform duration-300 hover:-translate-y-1">
+          {display.map((p) => (
+            <Link key={p.id} href={`/shop/product/${p.id}`} className="group text-center transition-transform duration-300 hover:-translate-y-1">
               <div className="relative rounded-2xl overflow-hidden bg-warm-white aspect-square mb-3 shadow-sm">
                 <Image
-                  src={p.img}
+                  src={p.image}
                   alt={p.name}
                   fill
                   className="object-cover group-hover:scale-105 transition-transform duration-500"
@@ -284,7 +291,9 @@ function BestSellers() {
                 />
               </div>
               <h4 className="font-montserrat text-sm font-semibold text-text-dark">{p.name}</h4>
-              <p className="font-montserrat text-sm text-gold font-bold">{p.price}</p>
+              <p className="font-montserrat text-sm text-gold font-bold">
+                {new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(p.price)}
+              </p>
             </Link>
           ))}
         </div>
@@ -433,7 +442,7 @@ function Footer() {
 }
 
 /* ─────────────── PAGE ─────────────── */
-export default function HomeClient({ allCategories, featuredCategories }: HomeClientProps) {
+export default function HomeClient({ allCategories, featuredCategories, bestSellers }: HomeClientProps) {
   return (
     <div className="flex flex-col min-h-screen">
       <ScrollReveal />
@@ -441,7 +450,7 @@ export default function HomeClient({ allCategories, featuredCategories }: HomeCl
       <main className="flex-1">
         <Hero />
         <div className="reveal"><Categories allCategories={allCategories} /></div>
-        <div className="reveal"><BestSellers /></div>
+        <div className="reveal"><BestSellers items={bestSellers} /></div>
         <div className="reveal"><Craftsmanship /></div>
         <div className="reveal"><SpecialCollections featuredCategories={featuredCategories} /></div>
         <div className="reveal"><LifestyleShowcase /></div>

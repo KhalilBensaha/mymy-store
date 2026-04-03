@@ -1,26 +1,28 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useMemo } from "react";
 import { updateOrderStatus } from "@/lib/actions/orders";
 import type { OrderWithItems } from "@/lib/actions/orders";
+import Image from "next/image";
 
-type OrderStatus = "pending" | "processing" | "shipped" | "delivered" | "cancelled";
+type OrderStatus = "new" | "paid" | "canceled";
 
 const STATUS_STYLES: Record<OrderStatus, string> = {
-  pending: "bg-gray-100 text-gray-600",
-  processing: "bg-amber-50 text-amber-700",
-  shipped: "bg-blue-50 text-blue-700",
-  delivered: "bg-emerald-50 text-emerald-700",
-  cancelled: "bg-red-50 text-red-600",
+  new: "bg-blue-50 text-blue-700",
+  paid: "bg-emerald-50 text-emerald-700",
+  canceled: "bg-red-50 text-red-600",
 };
 
-const ALL_STATUSES: OrderStatus[] = [
-  "pending",
-  "processing",
-  "shipped",
-  "delivered",
-  "cancelled",
-];
+const STATUS_LABELS: Record<OrderStatus, string> = {
+  new: "Nouvelle",
+  paid: "Payée",
+  canceled: "Annulée",
+};
+
+const ALL_STATUSES: OrderStatus[] = ["new", "paid", "canceled"];
+
+type SortField = "date" | "price" | "product";
+type SortDir = "asc" | "desc";
 
 function formatDate(date: Date) {
   return new Date(date).toLocaleDateString("fr-FR", {
@@ -86,13 +88,13 @@ function OrderDetail({
                 <button
                   key={s}
                   onClick={() => onStatusChange(order.id, s)}
-                  className={`rounded-full border px-3 py-1.5 text-[11px] font-semibold capitalize transition-colors ${
+                  className={`rounded-full border px-3 py-1.5 text-[11px] font-semibold transition-colors ${
                     status === s
                       ? `${STATUS_STYLES[s]} border-current`
                       : "border-[#d1d5db] bg-white text-[#6b7280] hover:border-[#9ca3af]"
                   }`}
                 >
-                  {s}
+                  {STATUS_LABELS[s]}
                 </button>
               ))}
             </div>
@@ -119,23 +121,40 @@ function OrderDetail({
             </div>
           </div>
 
-          {/* Items */}
+          {/* Items with product images */}
           <div className="rounded-lg border border-[#e5e7eb] p-4">
             <h3 className="mb-3 text-[13px] font-bold">Articles</h3>
-            <div className="space-y-2">
+            <div className="space-y-3">
               {order.items.map((item) => (
                 <div
                   key={item.id}
-                  className="flex items-center justify-between text-[12px]"
+                  className="flex items-center gap-3 rounded-lg border border-[#f3f4f6] p-3"
                 >
-                  <div>
-                    <p className="font-medium">
-                      {item.productName}
-                      {item.variant ? ` — ${item.variant}` : ""}
-                    </p>
-                    <p className="text-[#9ca3af]">Qté : {item.quantity}</p>
+                  <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-lg bg-[#f9fafb]">
+                    {item.productImage ? (
+                      <Image
+                        src={item.productImage}
+                        alt={item.productName}
+                        fill
+                        className="object-cover"
+                        sizes="64px"
+                      />
+                    ) : (
+                      <div className="flex h-full w-full items-center justify-center text-[#d1d5db]">
+                        <svg className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0 0 22.5 18.75V5.25A2.25 2.25 0 0 0 20.25 3H3.75A2.25 2.25 0 0 0 1.5 5.25v13.5A2.25 2.25 0 0 0 3.75 21Z" />
+                        </svg>
+                      </div>
+                    )}
                   </div>
-                  <p className="font-semibold">
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-[13px] font-medium">{item.productName}</p>
+                    {item.variant && (
+                      <p className="text-[11px] text-[#9ca3af]">{item.variant}</p>
+                    )}
+                    <p className="text-[11px] text-[#9ca3af]">Qté : {item.quantity}</p>
+                  </div>
+                  <p className="whitespace-nowrap text-[13px] font-semibold">
                     {formatPrice(item.price * item.quantity)}
                   </p>
                 </div>
@@ -162,32 +181,63 @@ export default function OrdersClient({
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<OrderStatus | "all">("all");
   const [selectedOrder, setSelectedOrder] = useState<OrderWithItems | null>(null);
+  const [sortField, setSortField] = useState<SortField>("date");
+  const [sortDir, setSortDir] = useState<SortDir>("desc");
   const [, startTransition] = useTransition();
 
-  const filtered = orders.filter((o) => {
-    const q = search.toLowerCase();
-    const matchSearch =
-      o.orderNumber.toLowerCase().includes(q) ||
-      o.customerName.toLowerCase().includes(q) ||
-      o.customerEmail.toLowerCase().includes(q) ||
-      o.customerPhone.toLowerCase().includes(q);
-    const matchStatus =
-      statusFilter === "all" || o.status === statusFilter;
-    return matchSearch && matchStatus;
-  });
+  const filtered = useMemo(() => {
+    let result = orders.filter((o) => {
+      const q = search.toLowerCase();
+      const matchSearch =
+        o.orderNumber.toLowerCase().includes(q) ||
+        o.customerName.toLowerCase().includes(q) ||
+        o.customerEmail.toLowerCase().includes(q) ||
+        o.customerPhone.toLowerCase().includes(q);
+      const matchStatus =
+        statusFilter === "all" || o.status === statusFilter;
+      return matchSearch && matchStatus;
+    });
+
+    result = [...result].sort((a, b) => {
+      let cmp = 0;
+      switch (sortField) {
+        case "date":
+          cmp = new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+          break;
+        case "price":
+          cmp = a.total - b.total;
+          break;
+        case "product":
+          cmp = (a.items[0]?.productName ?? "").localeCompare(
+            b.items[0]?.productName ?? ""
+          );
+          break;
+      }
+      return sortDir === "asc" ? cmp : -cmp;
+    });
+
+    return result;
+  }, [orders, search, statusFilter, sortField, sortDir]);
 
   function handleStatusChange(id: number, status: OrderStatus) {
-    // Optimistic update
     setOrders((prev) =>
       prev.map((o) => (o.id === id ? { ...o, status } : o))
     );
     if (selectedOrder?.id === id) {
       setSelectedOrder((prev) => (prev ? { ...prev, status } : prev));
     }
-    // Persist to DB
     startTransition(() => {
       updateOrderStatus(id, status).catch(console.error);
     });
+  }
+
+  function toggleSort(field: SortField) {
+    if (sortField === field) {
+      setSortDir((d) => (d === "asc" ? "desc" : "asc"));
+    } else {
+      setSortField(field);
+      setSortDir(field === "product" ? "asc" : "desc");
+    }
   }
 
   const statusCounts = ALL_STATUSES.reduce(
@@ -196,6 +246,18 @@ export default function OrdersClient({
       [s]: orders.filter((o) => o.status === s).length,
     }),
     {} as Record<OrderStatus, number>
+  );
+
+  const SortIcon = ({ field }: { field: SortField }) => (
+    <svg
+      className={`ml-1 inline h-3 w-3 transition-transform ${sortField === field ? "text-[#c4a95a]" : "text-[#9ca3af]"} ${sortField === field && sortDir === "asc" ? "rotate-180" : ""}`}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      viewBox="0 0 24 24"
+    >
+      <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+    </svg>
   );
 
   return (
@@ -218,19 +280,19 @@ export default function OrdersClient({
               : "border border-[#e5e7eb] bg-white text-[#6b7280] hover:bg-[#f9fafb]"
           }`}
         >
-          Tous ({orders.length})
+          Toutes ({orders.length})
         </button>
         {ALL_STATUSES.map((s) => (
           <button
             key={s}
             onClick={() => setStatusFilter(s)}
-            className={`rounded-lg px-3 py-2 text-[12px] font-semibold capitalize transition-colors ${
+            className={`rounded-lg px-3 py-2 text-[12px] font-semibold transition-colors ${
               statusFilter === s
                 ? `${STATUS_STYLES[s]} border border-current`
                 : "border border-[#e5e7eb] bg-white text-[#6b7280] hover:bg-[#f9fafb]"
             }`}
           >
-            {s} ({statusCounts[s]})
+            {STATUS_LABELS[s]} ({statusCounts[s]})
           </button>
         ))}
       </div>
@@ -238,7 +300,7 @@ export default function OrdersClient({
       {/* Search */}
       <div className="relative max-w-md">
         <svg
-          className="absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#9ca3af]"
+          className="absolute inset-s-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#9ca3af]"
           fill="none"
           stroke="currentColor"
           strokeWidth={2}
@@ -265,16 +327,35 @@ export default function OrdersClient({
           <table className="w-full text-start">
             <thead>
               <tr className="border-b border-[#f3f4f6] bg-[#f9fafb]">
-                {["Commande", "Client", "Date", "Articles", "Total", "Statut", ""].map(
-                  (h) => (
-                    <th
-                      key={h}
-                      className="px-5 py-3 text-start text-[11px] font-semibold uppercase tracking-wider text-[#6b7280]"
-                    >
-                      {h}
-                    </th>
-                  )
-                )}
+                <th className="px-5 py-3 text-start text-[11px] font-semibold uppercase tracking-wider text-[#6b7280]">
+                  Commande
+                </th>
+                <th className="px-5 py-3 text-start text-[11px] font-semibold uppercase tracking-wider text-[#6b7280]">
+                  Client
+                </th>
+                <th
+                  className="cursor-pointer select-none px-5 py-3 text-start text-[11px] font-semibold uppercase tracking-wider text-[#6b7280] hover:text-[#c4a95a]"
+                  onClick={() => toggleSort("date")}
+                >
+                  Date <SortIcon field="date" />
+                </th>
+                <th
+                  className="cursor-pointer select-none px-5 py-3 text-start text-[11px] font-semibold uppercase tracking-wider text-[#6b7280] hover:text-[#c4a95a]"
+                  onClick={() => toggleSort("product")}
+                >
+                  Produit <SortIcon field="product" />
+                </th>
+                <th
+                  className="cursor-pointer select-none px-5 py-3 text-start text-[11px] font-semibold uppercase tracking-wider text-[#6b7280] hover:text-[#c4a95a]"
+                  onClick={() => toggleSort("price")}
+                >
+                  Total <SortIcon field="price" />
+                </th>
+                <th className="px-5 py-3 text-start text-[11px] font-semibold uppercase tracking-wider text-[#6b7280]">
+                  Statut
+                </th>
+                <th className="px-5 py-3">
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -297,16 +378,18 @@ export default function OrdersClient({
                       {formatDate(o.createdAt)}
                     </td>
                     <td className="px-5 py-4 text-[13px] text-[#6b7280]">
-                      {o.items.length} article{o.items.length !== 1 ? "s" : ""}
+                      <p className="max-w-[180px] truncate">
+                        {o.items.map((i) => i.productName).join(", ")}
+                      </p>
                     </td>
                     <td className="px-5 py-4 text-[13px] font-semibold">
                       {formatPrice(o.total)}
                     </td>
                     <td className="px-5 py-4">
                       <span
-                        className={`inline-block rounded-full px-2.5 py-1 text-[11px] font-semibold capitalize ${STATUS_STYLES[status] ?? "bg-gray-100 text-gray-600"}`}
+                        className={`inline-block rounded-full px-2.5 py-1 text-[11px] font-semibold ${STATUS_STYLES[status] ?? "bg-gray-100 text-gray-600"}`}
                       >
-                        {status}
+                        {STATUS_LABELS[status] ?? status}
                       </span>
                     </td>
                     <td className="px-5 py-4 text-end">

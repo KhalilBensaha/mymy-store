@@ -116,6 +116,7 @@ const en: Messages = {
     selectVariant: "Select Variant",
     sizeGuide: "Size Guide",
     addToCart: "Add to Cart",
+    orderNow: "Order Now",
     freeShipping: "Complimentary worldwide shipping",
     certified: "Certified 18k Gold & Conflict-Free Stones",
     descriptionTab: "Description",

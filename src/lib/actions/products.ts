@@ -102,3 +102,11 @@ export async function deleteProduct(id: number) {
   revalidatePath("/admin");
   revalidatePath("/shop");
 }
+
+export async function getProductsByCategoryId(categoryId: number) {
+  return db
+    .select({ id: products.id, name: products.name, image: products.image })
+    .from(products)
+    .where(eq(products.categoryId, categoryId))
+    .orderBy(products.name);
+}
