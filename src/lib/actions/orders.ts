@@ -222,10 +222,29 @@ export async function getBestSellers(limit = 4) {
     .orderBy(sql`sum(${orderItems.quantity}) desc`)
     .limit(limit);
 
-  if (rows.length === 0) return [];
+  if (rows.length > 0) {
+    const productIds = rows.map((r) => r.productId);
+    const prods = await db
+      .select({
+        id: products.id,
+        name: products.name,
+        price: products.price,
+        image: products.image,
+        slug: sql<string>`concat('product/', ${products.id})`,
+      })
+      .from(products)
+      .where(sql`${products.id} in ${productIds}`);
 
-  const productIds = rows.map((r) => r.productId);
-  const prods = await db
+    // Preserve order by totalQty
+    const sorted = productIds
+      .map((id) => prods.find((p) => p.id === id))
+      .filter(Boolean) as typeof prods;
+
+    if (sorted.length > 0) return sorted;
+  }
+
+  // Fallback: newest products from DB
+  return db
     .select({
       id: products.id,
       name: products.name,
@@ -234,10 +253,6 @@ export async function getBestSellers(limit = 4) {
       slug: sql<string>`concat('product/', ${products.id})`,
     })
     .from(products)
-    .where(sql`${products.id} in ${productIds}`);
-
-  // Preserve order by totalQty
-  return productIds
-    .map((id) => prods.find((p) => p.id === id))
-    .filter(Boolean) as typeof prods;
+    .orderBy(sql`${products.createdAt} desc`)
+    .limit(limit);
 }

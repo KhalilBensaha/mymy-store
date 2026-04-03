@@ -3,7 +3,9 @@ export type Locale = "en" | "fr" | "ar";
 export type Messages = {
   /* ── Nav ── */
   nav: {
+    home: string;
     shop: string;
+    categories: string;
     collections: string;
     ourStory: string;
     search: string;
@@ -13,7 +15,7 @@ export type Messages = {
     menu: string;
     close: string;
     diamonds: string;
-    gold: string;
+    silver: string;
     pearls: string;
     bridal: string;
     contact: string;
@@ -27,14 +29,14 @@ export type Messages = {
     elegance: string;
     description: string;
     exploreDiamonds: string;
-    shopGoldPearl: string;
+    shopCollection: string;
   };
   /* ── Categories ── */
   categories: {
     title: string;
     diamondNecklace: string;
     certifiedBrilliance: string;
-    goldBridalSet: string;
+    silverBridalSet: string;
     timelessBridal: string;
     pearlEarrings: string;
     lustrousElegance: string;
@@ -52,7 +54,7 @@ export type Messages = {
     masterArtisans: string;
     certifiedDiamonds: string;
     giaIgi: string;
-    pureGold: string;
+    sterlingSilver: string;
     hallmarked: string;
     premiumPearls: string;
     rareLustrous: string;
@@ -61,7 +63,7 @@ export type Messages = {
   specialCollections: {
     title: string;
     bridalDiamonds: string;
-    royalGold: string;
+    royalSilver: string;
     pearlSignature: string;
     modernFusion: string;
   };
@@ -80,7 +82,7 @@ export type Messages = {
     customerCare: string;
     aboutUs: string;
     diamondCollections: string;
-    goldJewelry: string;
+    silverJewelry: string;
     pearlJewelry: string;
     bridalCollections: string;
     contactUs: string;

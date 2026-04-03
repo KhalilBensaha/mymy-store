@@ -35,7 +35,7 @@ export type CatalogCategory = {
   image: string | null;
 };
 
-const materialOptions = ["18K Yellow Gold", "Sterling Silver", "VS Diamonds"];
+const materialOptions = ["Sterling Silver 925", "Stainless Steel", "VS Diamonds"];
 const MAX_PRICE = 10000;
 const PAGE_SIZE = 6;
 
