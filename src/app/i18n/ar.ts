@@ -116,6 +116,7 @@ const ar: Messages = {
     selectVariant: "اختاري النوع",
     sizeGuide: "دليل المقاسات",
     addToCart: "أضيفي إلى السلة",
+    orderNow: "اطلبي الآن",
     freeShipping: "شحن مجاني حول العالم",
     certified: "ذهب 18 قيراط معتمد وأحجار خالية من النزاعات",
     descriptionTab: "الوصف",

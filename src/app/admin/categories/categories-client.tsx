@@ -7,7 +7,6 @@ import {
   updateCategory,
   deleteCategory,
 } from "@/lib/actions/categories";
-import { CloudinaryUpload } from "@/components/cloudinary-upload";
 
 /* ─── Types ─── */
 type CategoryRow = {
@@ -20,13 +19,22 @@ type CategoryRow = {
   createdAt: Date;
 };
 
+type ProductOption = {
+  id: number;
+  name: string;
+  image: string;
+  categoryId: number;
+};
+
 /* ─── Modal ─── */
 function CategoryModal({
   category,
   onClose,
+  products,
 }: {
   category: { id?: number; name: string; slug: string; description: string; image: string; isNew: boolean };
   onClose: () => void;
+  products: ProductOption[];
 }) {
   const [form, setForm] = useState({
     name: category.name,
@@ -100,12 +108,32 @@ function CategoryModal({
               placeholder="A short description for this category…"
             />
           </div>
-          <CloudinaryUpload
-            label="Image"
-            folder="mymy-store/categories"
-            value={form.image}
-            onChange={(url) => setForm({ ...form, image: url })}
-          />
+          {/* Product image selector — pick a product to use its image as category image */}
+          <div>
+            <label className="block text-[12px] font-semibold text-[#374151] mb-1">
+              Category Image (from product)
+            </label>
+            <select
+              className="w-full rounded-lg border border-[#d1d5db] px-3 py-2 text-[13px] outline-none focus:border-[#c4a95a] transition-colors bg-white"
+              value={form.image}
+              onChange={(e) => setForm({ ...form, image: e.target.value })}
+            >
+              <option value="">— Select a product —</option>
+              {(category.id
+                ? products.filter((p) => p.categoryId === category.id)
+                : products
+              ).map((p) => (
+                <option key={p.id} value={p.image}>
+                  {p.name}
+                </option>
+              ))}
+            </select>
+            {form.image && (
+              <div className="mt-2 relative h-24 w-24 rounded-lg overflow-hidden bg-[#f4f5f7]">
+                <Image src={form.image} alt="Preview" fill className="object-cover" sizes="96px" />
+              </div>
+            )}
+          </div>
         </div>
         <div className="flex items-center justify-end gap-3 border-t border-[#e5e7eb] p-5">
           <button
@@ -179,9 +207,11 @@ function DeleteDialog({
 export default function CategoriesClient({
   initialCategories,
   totalProducts,
+  products,
 }: {
   initialCategories: CategoryRow[];
   totalProducts: number;
+  products: ProductOption[];
 }) {
   const [editCat, setEditCat] = useState<{
     id?: number;
@@ -311,7 +341,7 @@ export default function CategoriesClient({
       </div>
 
       {/* Modal */}
-      {editCat && <CategoryModal category={editCat} onClose={() => setEditCat(null)} />}
+      {editCat && <CategoryModal category={editCat} onClose={() => setEditCat(null)} products={products} />}
 
       {/* Delete dialog */}
       {deleteCat && (

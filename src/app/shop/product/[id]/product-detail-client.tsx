@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { useI18n } from "../../../i18n/provider";
 import { useCart } from "@/lib/cart-context";
 
@@ -47,6 +48,7 @@ export default function ProductDetailClient({
 }) {
   const { t } = useI18n();
   const { addItem } = useCart();
+  const router = useRouter();
   const [activeImageIdx, setActiveImageIdx] = useState(0);
   const [activeVariant, setActiveVariant] = useState(0);
   const [quantity, setQuantity] = useState(1);
@@ -68,6 +70,22 @@ export default function ProductDetailClient({
     }
     setAddedFlash(true);
     setTimeout(() => setAddedFlash(false), 2000);
+  }
+
+  function handleOrderNow() {
+    const variant = product.variants?.[activeVariant] ?? "";
+    for (let i = 0; i < quantity; i++) {
+      addItem({
+        id: product.id,
+        name: product.name,
+        subtitle: product.subtitle,
+        price: product.price,
+        image: product.image,
+        variant,
+        categoryName: product.categoryName ?? "",
+      });
+    }
+    router.push("/checkout");
   }
 
   const gallery = product.gallery && product.gallery.length > 0 ? product.gallery : [product.image];
@@ -227,6 +245,15 @@ export default function ProductDetailClient({
                 {addedFlash ? "✓ Ajouté !" : t.product.addToCart}
               </button>
             </div>
+
+            {/* Order Now */}
+            <button
+              type="button"
+              onClick={handleOrderNow}
+              className="flex w-full items-center justify-center border border-[#c4a95a] bg-transparent px-6 py-3 font-montserrat text-[0.65rem] uppercase tracking-[0.2em] text-[#8b6914] transition-colors hover:bg-[#c4a95a]/10"
+            >
+              {t.product.orderNow}
+            </button>
 
             {/* Shipping / certification */}
             <div className="space-y-3 border-t border-[#e8e0d4] pt-6">

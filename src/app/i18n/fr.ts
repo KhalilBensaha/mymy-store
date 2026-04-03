@@ -116,6 +116,7 @@ const fr: Messages = {
     selectVariant: "Sélectionnez le Variant",
     sizeGuide: "Guide des Tailles",
     addToCart: "Ajouter au Panier",
+    orderNow: "Commander maintenant",
     freeShipping: "Livraison mondiale offerte",
     certified: "Or 18 carats certifié & Pierres sans conflit",
     descriptionTab: "Description",
