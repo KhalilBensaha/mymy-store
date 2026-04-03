@@ -3,6 +3,7 @@
 import { db } from "@/lib/db";
 import { orders, orderItems, products } from "@/lib/db/schema";
 import { eq, desc, sql } from "drizzle-orm";
+import { createDeliveryOrder } from "@/lib/ecotrack";
 import type { CartItem } from "@/lib/cart-context";
 
 /* ────────────────────────────────────────────── */
@@ -92,8 +93,34 @@ export async function createOrder(input: CreateOrderInput): Promise<string> {
     }))
   );
 
-  // TODO: EcoTrack delivery integration — re-enable when token is ready
-  // See src/lib/ecotrack.ts for the API client
+  // Send to EcoTrack for delivery
+  try {
+    const productNames = input.items.map((i) => i.name).join(", ");
+    const totalQty = input.items.reduce((s, i) => s + i.quantity, 0);
+
+    const tracking = await createDeliveryOrder({
+      reference: orderNumber,
+      nom_client: input.customerName,
+      telephone: input.customerPhone,
+      adresse: input.address,
+      commune: input.commune ?? "",
+      code_wilaya: input.wilayaCode ?? "",
+      montant: String(total),
+      remarque: input.notes || "",
+      produit: productNames,
+      quantite: String(totalQty),
+    });
+
+    if (tracking) {
+      await db
+        .update(orders)
+        .set({ ecotrackTracking: tracking })
+        .where(eq(orders.id, order.id));
+    }
+  } catch (err) {
+    // Log but don't fail the order if EcoTrack is unavailable
+    console.error("[EcoTrack] Failed to create delivery order:", err);
+  }
 
   return orderNumber;
 }

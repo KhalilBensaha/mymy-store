@@ -182,8 +182,8 @@ const jsonLd = {
       name: "Mymy Atelier",
       image: OG_IMAGE,
       url: SITE_URL,
-      priceRange: "$$$",
-      currenciesAccepted: "USD, EUR, DZD",
+      priceRange: "DA DA DA",
+      currenciesAccepted: "DZD",
       paymentAccepted: "Credit Card, Bank Transfer, Cash on Delivery",
       hasOfferCatalog: {
         "@type": "OfferCatalog",

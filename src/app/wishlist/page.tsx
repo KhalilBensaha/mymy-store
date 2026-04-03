@@ -47,11 +47,10 @@ const INITIAL_ITEMS: WishlistItem[] = [
 ];
 
 function formatPrice(price: number) {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
+  return new Intl.NumberFormat("fr-DZ", {
+    style: "decimal",
     maximumFractionDigits: 0,
-  }).format(price);
+  }).format(price) + " DA";
 }
 
 export default function WishlistPage() {

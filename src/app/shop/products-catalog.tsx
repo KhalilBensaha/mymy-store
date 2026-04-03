@@ -50,11 +50,10 @@ export type ProductsCatalogProps = {
 };
 
 function formatPrice(price: number) {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
+  return new Intl.NumberFormat("fr-DZ", {
+    style: "decimal",
     maximumFractionDigits: 0,
-  }).format(price);
+  }).format(price) + " DA";
 }
 
 function ProductCard({ product }: { product: CatalogProduct }) {
@@ -256,7 +255,7 @@ export default function ProductsCatalog({
                   }}
                 />
                 <div className="mt-4 flex items-center justify-between font-montserrat text-[0.85rem] text-[#7d7267]">
-                  <span>$500</span>
+                  <span>500 DA</span>
                   <span>{formatPrice(maxPrice)}+</span>
                 </div>
               </div>

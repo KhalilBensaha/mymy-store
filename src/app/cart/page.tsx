@@ -8,11 +8,10 @@ import { MymyLogo } from "../components/mymy-logo";
 import { LanguageSwitcher } from "../components/language-switcher";
 
 function formatPrice(price: number) {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
+  return new Intl.NumberFormat("fr-DZ", {
+    style: "decimal",
     maximumFractionDigits: 0,
-  }).format(price);
+  }).format(price) + " DA";
 }
 
 export default function CartPage() {
