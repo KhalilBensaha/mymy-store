@@ -5,6 +5,7 @@ import { db } from "@/lib/db";
 import { settings, admins } from "@/lib/db/schema";
 import { eq, inArray } from "drizzle-orm";
 import { hash } from "bcryptjs";
+import { requireAdmin } from "./auth-guard";
 
 /* ─── Types ─── */
 export type ContactInfo = {
@@ -29,6 +30,7 @@ export async function getSetting(key: string): Promise<string | null> {
 }
 
 export async function setSetting(key: string, value: string) {
+  await requireAdmin();
   try {
     await db
       .insert(settings)
@@ -77,6 +79,7 @@ export async function getContactSettings(): Promise<ContactInfo> {
 }
 
 export async function saveContactSettings(info: ContactInfo) {
+  await requireAdmin();
   const entries: [string, string][] = [
     ["contact_address", info.address],
     ["contact_phone", info.phone],
@@ -102,6 +105,7 @@ export async function getFeaturedCategoryIds(): Promise<number[]> {
 }
 
 export async function saveFeaturedCategoryIds(ids: number[]) {
+  await requireAdmin();
   await setSetting("featured_category_ids", JSON.stringify(ids));
   revalidatePath("/");
   revalidatePath("/admin/settings");
@@ -117,6 +121,7 @@ export async function getSiteLanguage(): Promise<SiteLocale> {
 }
 
 export async function saveSiteLanguage(locale: SiteLocale) {
+  await requireAdmin();
   await setSetting("site_language", locale);
   revalidatePath("/admin/settings");
 }
@@ -162,6 +167,7 @@ export async function getSocialLinks(): Promise<SocialLinks> {
 }
 
 export async function saveSocialLinks(links: SocialLinks) {
+  await requireAdmin();
   const entries: [string, string][] = [
     ["social_whatsapp", links.whatsapp],
     ["social_instagram", links.instagram],
@@ -200,6 +206,7 @@ export async function createAdmin(data: {
   email: string;
   password: string;
 }): Promise<{ success: boolean; error?: string; admin?: AdminRow }> {
+  await requireAdmin();
   const name = data.name.trim();
   const email = data.email.trim().toLowerCase();
   const password = data.password;
@@ -234,6 +241,7 @@ export async function createAdmin(data: {
 export async function deleteAdmin(
   id: number
 ): Promise<{ success: boolean; error?: string }> {
+  await requireAdmin();
   // Prevent deleting the last admin
   const allAdmins = await db
     .select({ id: admins.id })

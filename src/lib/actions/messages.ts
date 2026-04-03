@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { db } from "@/lib/db";
 import { contactMessages } from "@/lib/db/schema";
 import { eq, sql, desc } from "drizzle-orm";
+import { requireAdmin } from "./auth-guard";
 
 /* ─── Types ─── */
 export type MessageInput = {
@@ -38,6 +39,7 @@ export async function submitContactMessage(data: MessageInput) {
 }
 
 export async function markMessageRead(id: number) {
+  await requireAdmin();
   await db
     .update(contactMessages)
     .set({ read: true })
@@ -47,6 +49,7 @@ export async function markMessageRead(id: number) {
 }
 
 export async function markAllMessagesRead() {
+  await requireAdmin();
   await db
     .update(contactMessages)
     .set({ read: true })
@@ -56,6 +59,7 @@ export async function markAllMessagesRead() {
 }
 
 export async function deleteMessage(id: number) {
+  await requireAdmin();
   await db.delete(contactMessages).where(eq(contactMessages.id, id));
   revalidatePath("/admin/messages");
   revalidatePath("/admin");

@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { db } from "@/lib/db";
 import { categories, products } from "@/lib/db/schema";
 import { eq, sql } from "drizzle-orm";
+import { requireAdmin } from "./auth-guard";
 
 /* ─── Types ─── */
 export type CategoryInput = {
@@ -40,6 +41,7 @@ export async function getCategoriesWithCounts() {
 
 /* ─── Mutations ─── */
 export async function createCategory(data: CategoryInput) {
+  await requireAdmin();
   await db.insert(categories).values(data);
   revalidatePath("/admin/categories");
   revalidatePath("/admin");
@@ -47,6 +49,7 @@ export async function createCategory(data: CategoryInput) {
 }
 
 export async function updateCategory(id: number, data: Partial<CategoryInput>) {
+  await requireAdmin();
   await db.update(categories).set(data).where(eq(categories.id, id));
   revalidatePath("/admin/categories");
   revalidatePath("/admin");
@@ -54,6 +57,7 @@ export async function updateCategory(id: number, data: Partial<CategoryInput>) {
 }
 
 export async function deleteCategory(id: number) {
+  await requireAdmin();
   await db.delete(categories).where(eq(categories.id, id));
   revalidatePath("/admin/categories");
   revalidatePath("/admin");

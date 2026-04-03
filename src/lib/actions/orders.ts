@@ -5,6 +5,7 @@ import { orders, orderItems, products } from "@/lib/db/schema";
 import { eq, desc, sql } from "drizzle-orm";
 import { createDeliveryOrder } from "@/lib/ecotrack";
 import type { CartItem } from "@/lib/cart-context";
+import { requireAdmin } from "./auth-guard";
 
 /* ────────────────────────────────────────────── */
 /*  Types                                         */
@@ -202,6 +203,7 @@ export async function updateOrderStatus(
   orderId: number,
   status: string
 ): Promise<void> {
+  await requireAdmin();
   await db.update(orders).set({ status }).where(eq(orders.id, orderId));
 }
 
