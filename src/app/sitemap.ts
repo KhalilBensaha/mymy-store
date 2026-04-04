@@ -53,48 +53,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "monthly",
       priority: 0.2,
     },
-    {
-      url: `${SITE_URL}/admin`,
-      lastModified: new Date(),
-      changeFrequency: "weekly",
-      priority: 0.1,
-    },
-    {
-      url: `${SITE_URL}/admin/orders`,
-      lastModified: new Date(),
-      changeFrequency: "weekly",
-      priority: 0.1,
-    },
-    {
-      url: `${SITE_URL}/admin/settings`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.1,
-    },
-    {
-      url: `${SITE_URL}/admin/categories`,
-      lastModified: new Date(),
-      changeFrequency: "weekly",
-      priority: 0.1,
-    },
-    {
-      url: `${SITE_URL}/admin/customers`,
-      lastModified: new Date(),
-      changeFrequency: "weekly",
-      priority: 0.1,
-    },
-    {
-      url: `${SITE_URL}/admin/products`,
-      lastModified: new Date(),
-      changeFrequency: "weekly",
-      priority: 0.1,
-    },
-    {
-      url: `${SITE_URL}/admin/messages`,
-      lastModified: new Date(),
-      changeFrequency: "weekly",
-      priority: 0.1,
-    },
   ];
 
   const categoryPages: MetadataRoute.Sitemap = categories.map((cat) => ({
