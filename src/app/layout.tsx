@@ -62,6 +62,9 @@ export const metadata: Metadata = {
     default: "Mymy Atelier | مجوهرات فاخرة — ألماس · ذهب · لؤلؤ",
     template: "%s — Mymy Atelier | مجوهرات فاخرة",
   },
+  verification: {
+    google: 'P-tYjvIyiSurgo0Q116DJGHbXRklF76b--AURmJgAV8', 
+  },
 
   description:
     "اكتشفي مجموعة Mymy Atelier من المجوهرات الفاخرة المصنوعة يدوياً — ألماس معتمد، ذهب خالص 18 قيراط، ولؤلؤ بحر الجنوب النادر. Luxury handcrafted jewelry: certified diamonds, 18K gold & South Sea pearls.",
