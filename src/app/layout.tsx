@@ -10,6 +10,7 @@ import {
 import "./globals.css";
 import { I18nProvider } from "./i18n/provider";
 import { CartProvider } from "@/lib/cart-context";
+import { WishlistProvider } from "@/lib/wishlist-context";
 import { cn } from "@/lib/utils";
 import SplashCursor from "@/components/SplashCursor";
 import { getSiteLanguage } from "@/lib/actions/settings";
@@ -83,9 +84,9 @@ export const metadata: Metadata = {
   alternates: {
     canonical: SITE_URL,
     languages: {
-      ar: SITE_URL,
-      en: SITE_URL,
-      fr: SITE_URL,
+      ar: `${SITE_URL}`,
+      en: `${SITE_URL}`,
+      fr: `${SITE_URL}`,
     },
   },
 
@@ -183,7 +184,7 @@ const jsonLd = {
       name: "Mymy Atelier",
       image: OG_IMAGE,
       url: SITE_URL,
-      priceRange: "DA DA DA",
+      priceRange: "$$",
       currenciesAccepted: "DZD",
       paymentAccepted: "Credit Card, Bank Transfer, Cash on Delivery",
       hasOfferCatalog: {
@@ -209,8 +210,8 @@ export default async function RootLayout({
   return (
     <html
       suppressHydrationWarning
-      lang="ar"
-      dir="rtl"
+      lang={defaultLocale}
+      dir={defaultLocale === "ar" ? "rtl" : "ltr"}
       className={cn(
         "h-full", "antialiased",
         playfair.variable, cormorant.variable, montserrat.variable,
@@ -234,7 +235,7 @@ export default async function RootLayout({
           BACK_COLOR={{ r: 0, g: 0, b: 0 }}
           TRANSPARENT={true}
         />
-        <I18nProvider defaultLocale={defaultLocale}><CartProvider>{children}</CartProvider></I18nProvider>
+        <I18nProvider defaultLocale={defaultLocale}><CartProvider><WishlistProvider>{children}</WishlistProvider></CartProvider></I18nProvider>
       </body>
     </html>
   );
