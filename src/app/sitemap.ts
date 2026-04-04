@@ -29,30 +29,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "monthly",
       priority: 0.5,
     },
-    {
-      url: `${SITE_URL}/wishlist`,
-      lastModified: new Date(),
-      changeFrequency: "weekly",
-      priority: 0.4,
-    },
-    {
-      url: `${SITE_URL}/cart`,
-      lastModified: new Date(),
-      changeFrequency: "weekly",
-      priority: 0.3,
-    },
-    {
-      url: `${SITE_URL}/checkout`,
-      lastModified: new Date(),
-      changeFrequency: "weekly",
-      priority: 0.3,
-    },
-    {
-      url: `${SITE_URL}/admin/login`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.2,
-    },
   ];
 
   const categoryPages: MetadataRoute.Sitemap = categories.map((cat) => ({
