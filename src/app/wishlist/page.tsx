@@ -6,45 +6,7 @@ import { useState } from "react";
 import { MymyLogo } from "../components/mymy-logo";
 import { Navbar } from "../components/navbar";
 import { useI18n } from "../i18n/provider";
-
-type WishlistItem = {
-  id: number;
-  name: string;
-  subtitle: string;
-  price: number;
-  image: string;
-};
-
-const INITIAL_ITEMS: WishlistItem[] = [
-  {
-    id: 1,
-    name: "Aurelia Band",
-    subtitle: "18K Yellow Gold",
-    price: 1250,
-    image: "/images/cat-rings.jpg",
-  },
-  {
-    id: 3,
-    name: "Eos Drop Earrings",
-    subtitle: "18K Yellow Gold",
-    price: 2100,
-    image: "/images/cat-earrings.jpg",
-  },
-  {
-    id: 2,
-    name: "Lunar Pendant",
-    subtitle: "Sterling Silver",
-    price: 890,
-    image: "/images/best2.jpg",
-  },
-  {
-    id: 4,
-    name: "Starlight Bracelet",
-    subtitle: "VS Diamonds",
-    price: 4500,
-    image: "/images/hero-bracelet.jpg",
-  },
-];
+import { useWishlist } from "@/lib/wishlist-context";
 
 function formatPrice(price: number) {
   return new Intl.NumberFormat("fr-DZ", {
@@ -55,10 +17,8 @@ function formatPrice(price: number) {
 
 export default function WishlistPage() {
   const { t } = useI18n();
-  const [items, setItems] = useState<WishlistItem[]>(INITIAL_ITEMS);
+  const { items, removeItem } = useWishlist();
   const [email, setEmail] = useState("");
-
-  const remove = (id: number) => setItems((prev) => prev.filter((i) => i.id !== id));
 
   return (
     <div className="flex min-h-screen flex-col bg-[#f5f0e8] text-text-dark">
@@ -118,7 +78,7 @@ export default function WishlistPage() {
                   {/* Remove button */}
                   <button
                     type="button"
-                    onClick={() => remove(item.id)}
+                    onClick={() => removeItem(item.id)}
                     aria-label={`${t.wishlist.removeFromWishlist} ${item.name}`}
                     className="absolute inset-e-2.5 top-2.5 flex h-6 w-6 items-center justify-center bg-white/90 text-[#5e564d] shadow-sm transition-colors hover:bg-white hover:text-[#c0392b]"
                   >

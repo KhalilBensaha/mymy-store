@@ -35,7 +35,6 @@ export type CatalogCategory = {
   image: string | null;
 };
 
-const materialOptions = ["Sterling Silver 925", "Stainless Steel", "VS Diamonds"];
 const MAX_PRICE = 10000;
 const PAGE_SIZE = 6;
 
@@ -99,9 +98,17 @@ export default function ProductsCatalog({
   const resolvedTitle = title ?? t.shop.coreCollection;
   const resolvedDescription = description ?? t.shop.coreCollectionDesc;
   const [activeCategory, setActiveCategory] = useState<string | null>(initialCategory);
-  const [selectedMaterials, setSelectedMaterials] = useState<string[]>(["VS Diamonds"]);
+  const [selectedMaterials, setSelectedMaterials] = useState<string[]>([]);
   const [maxPrice, setMaxPrice] = useState(5500);
   const [page, setPage] = useState(0);
+
+  const materialOptions = useMemo(() => {
+    const allMaterials = new Set<string>();
+    for (const p of products) {
+      if (p.materials) p.materials.forEach((m) => allMaterials.add(m));
+    }
+    return Array.from(allMaterials).sort();
+  }, [products]);
 
   const filteredProducts = useMemo(() => {
     return products.filter((product) => {

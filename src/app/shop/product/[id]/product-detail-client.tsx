@@ -6,6 +6,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useI18n } from "../../../i18n/provider";
 import { useCart } from "@/lib/cart-context";
+import { useWishlist } from "@/lib/wishlist-context";
 
 /* ─── DB-compatible product type ─── */
 type DBProduct = {
@@ -47,6 +48,7 @@ export default function ProductDetailClient({
 }) {
   const { t } = useI18n();
   const { addItem } = useCart();
+  const { toggleItem, hasItem } = useWishlist();
   const router = useRouter();
   const [activeImageIdx, setActiveImageIdx] = useState(0);
   const [activeVariant, setActiveVariant] = useState(0);
@@ -242,6 +244,36 @@ export default function ProductDetailClient({
                 className="flex flex-1 items-center justify-center bg-[#4a3a16] px-6 py-3 font-montserrat text-[0.65rem] uppercase tracking-[0.2em] text-white transition-colors hover:bg-[#3b2e12]"
               >
                 {addedFlash ? "✓ Ajouté !" : t.product.addToCart}
+              </button>
+
+              {/* Wishlist toggle */}
+              <button
+                type="button"
+                onClick={() =>
+                  toggleItem({
+                    id: product.id,
+                    name: product.name,
+                    subtitle: product.subtitle,
+                    price: product.price,
+                    image: product.image,
+                  })
+                }
+                aria-label={t.wishlist.removeFromWishlist}
+                className="flex w-12 items-center justify-center border border-[#d9cfbe] transition-colors hover:border-[#8b6914]"
+              >
+                <svg
+                  className="h-5 w-5"
+                  fill={hasItem(product.id) ? "#c0392b" : "none"}
+                  stroke={hasItem(product.id) ? "#c0392b" : "currentColor"}
+                  strokeWidth={1.5}
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"
+                  />
+                </svg>
               </button>
             </div>
 
