@@ -306,11 +306,6 @@ export default function ContactClient({ contactInfo, socialLinks }: { contactInf
           </div>
         </div>
       </section>
-
-      {/* ── Footer strip ── */}
-      <footer className="border-t border-cream-dark/40 bg-warm-white py-6 text-center">
-        <p className="font-montserrat text-[11px] text-text-muted">{t.footer.copyright}</p>
-      </footer>
     </div>
   );
 }

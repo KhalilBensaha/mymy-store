@@ -13,7 +13,8 @@ import { CartProvider } from "@/lib/cart-context";
 import { WishlistProvider } from "@/lib/wishlist-context";
 import { cn } from "@/lib/utils";
 import SplashCursor from "@/components/SplashCursor";
-import { getSiteLanguage } from "@/lib/actions/settings";
+import { getSiteLanguage, getSocialLinks } from "@/lib/actions/settings";
+import { SiteFooter } from "./components/site-footer";
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -210,6 +211,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const defaultLocale = await getSiteLanguage();
+  const socialLinks = await getSocialLinks();
   return (
     <html
       suppressHydrationWarning
@@ -238,7 +240,14 @@ export default async function RootLayout({
           BACK_COLOR={{ r: 0, g: 0, b: 0 }}
           TRANSPARENT={true}
         />
-        <I18nProvider defaultLocale={defaultLocale}><CartProvider><WishlistProvider>{children}</WishlistProvider></CartProvider></I18nProvider>
+        <I18nProvider defaultLocale={defaultLocale}>
+          <CartProvider>
+            <WishlistProvider>
+              {children}
+              <SiteFooter socialLinks={socialLinks} />
+            </WishlistProvider>
+          </CartProvider>
+        </I18nProvider>
       </body>
     </html>
   );

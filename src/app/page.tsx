@@ -1,5 +1,5 @@
 import { getCategories } from "@/lib/actions/categories";
-import { getFeaturedCategoryIds, getSocialLinks } from "@/lib/actions/settings";
+import { getFeaturedCategoryIds } from "@/lib/actions/settings";
 import { getBestSellers } from "@/lib/actions/orders";
 import { getLifestyleImages } from "@/lib/actions/products";
 import HomeClient, { CategoryData } from "./home-client";
@@ -7,11 +7,10 @@ import HomeClient, { CategoryData } from "./home-client";
 export const revalidate = 0;
 
 export default async function HomePage() {
-  const [allCats, featuredIds, bestSellers, socialLinks, lifestyleImages] = await Promise.all([
+  const [allCats, featuredIds, bestSellers, lifestyleImages] = await Promise.all([
     getCategories(),
     getFeaturedCategoryIds(),
     getBestSellers(4),
-    getSocialLinks(),
     getLifestyleImages(3),
   ]);
 
@@ -27,7 +26,6 @@ export default async function HomePage() {
       allCategories={allCats as CategoryData[]}
       featuredCategories={featuredCategories}
       bestSellers={bestSellers}
-      socialLinks={socialLinks}
       lifestyleImages={lifestyleImages}
     />
   );

@@ -2,8 +2,6 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
-import { MymyLogo } from "../components/mymy-logo";
 import { Navbar } from "../components/navbar";
 import { useI18n } from "../i18n/provider";
 import { useWishlist } from "@/lib/wishlist-context";
@@ -18,7 +16,6 @@ function formatPrice(price: number) {
 export default function WishlistPage() {
   const { t } = useI18n();
   const { items, removeItem } = useWishlist();
-  const [email, setEmail] = useState("");
 
   return (
     <div className="flex min-h-screen flex-col bg-[#f5f0e8] text-text-dark">
@@ -108,84 +105,6 @@ export default function WishlistPage() {
           </div>
         )}
       </main>
-
-      {/* ── Footer ── */}
-      <footer className="mt-auto border-t border-[#e0d8cc] bg-[#f5f0e8]">
-        <div className="mx-auto grid max-w-7xl gap-10 px-6 py-16 lg:grid-cols-[1.4fr_1fr_1fr_1.4fr] lg:px-10">
-          {/* Brand */}
-          <div>
-            <MymyLogo className="text-3xl" />
-            <p className="mt-4 max-w-xs font-montserrat text-sm leading-7 text-[#7a7065]">
-              {t.shop.atelierDesc}
-            </p>
-          </div>
-
-          {/* Shop */}
-          <div>
-            <p className="font-montserrat text-[0.6rem] uppercase tracking-[0.24em] text-[#a89c87]">
-              {t.nav.shop}
-            </p>
-            <ul className="mt-5 space-y-3.5 font-montserrat text-sm text-[#6c6257]">
-              <li><Link href="/shop" className="transition-colors hover:text-[#8b6914]">{t.shop.newArrivals}</Link></li>
-              <li><Link href="/shop" className="transition-colors hover:text-[#8b6914]">{t.shop.bestSellers}</Link></li>
-              <li><Link href="/#collections" className="transition-colors hover:text-[#8b6914]">{t.nav.collections}</Link></li>
-            </ul>
-          </div>
-
-          {/* Support */}
-          <div>
-            <p className="font-montserrat text-[0.6rem] uppercase tracking-[0.24em] text-[#a89c87]">
-              {t.shop.support}
-            </p>
-            <ul className="mt-5 space-y-3.5 font-montserrat text-sm text-[#6c6257]">
-              <li><Link href="#" className="transition-colors hover:text-[#8b6914]">{t.footer.shipping}</Link></li>
-              <li><Link href="#" className="transition-colors hover:text-[#8b6914]">{t.footer.returns}</Link></li>
-              <li><Link href="#" className="transition-colors hover:text-[#8b6914]">{t.footer.contactUs}</Link></li>
-            </ul>
-          </div>
-
-          {/* Newsletter */}
-          <div>
-            <p className="font-montserrat text-[0.6rem] uppercase tracking-[0.24em] text-[#a89c87]">
-              {t.shop.newsletter}
-            </p>
-            <form
-              className="mt-5 flex items-stretch border-b border-[#c4b99a]"
-              onSubmit={(e) => {
-                e.preventDefault();
-                setEmail("");
-              }}
-            >
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder={t.shop.emailPlaceholder}
-                className="flex-1 bg-transparent py-2 font-montserrat text-sm text-text-dark placeholder-[#b3a897] outline-none"
-              />
-              <button
-                type="submit"
-                aria-label="Subscribe"
-                className="flex items-center justify-center px-2 text-[#8b6914] transition-opacity hover:opacity-70"
-              >
-                <svg className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-                </svg>
-              </button>
-            </form>
-            <div className="mt-6 flex gap-5 font-montserrat text-[0.6rem] uppercase tracking-[0.2em] text-[#a89c87]">
-              <Link href="#" className="transition-colors hover:text-[#8b6914]">{t.footer.instagram}</Link>
-              <Link href="#" className="transition-colors hover:text-[#8b6914]">{t.footer.pinterest}</Link>
-            </div>
-          </div>
-        </div>
-
-        <div className="mx-auto max-w-7xl px-6 pb-8 lg:px-10">
-          <p className="font-montserrat text-[0.58rem] uppercase tracking-[0.24em] text-[#b3a897]">
-            {t.footer.copyright}
-          </p>
-        </div>
-      </footer>
     </div>
   );
 }
