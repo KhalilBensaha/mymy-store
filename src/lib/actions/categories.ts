@@ -31,7 +31,9 @@ export async function getCategoriesWithCounts() {
     .groupBy(products.categoryId);
 
   const countMap: Record<number, number> = {};
-  for (const c of counts) countMap[c.categoryId] = Number(c.count);
+  for (const c of counts) {
+    if (c.categoryId !== null) countMap[c.categoryId] = Number(c.count);
+  }
 
   return cats.map((cat) => ({
     ...cat,
@@ -58,7 +60,14 @@ export async function updateCategory(id: number, data: Partial<CategoryInput>) {
 
 export async function deleteCategory(id: number) {
   await requireAdmin();
+
+  await db
+    .update(products)
+    .set({ categoryId: null })
+    .where(eq(products.categoryId, id));
+
   await db.delete(categories).where(eq(categories.id, id));
+
   revalidatePath("/admin/categories");
   revalidatePath("/admin");
   revalidatePath("/shop");

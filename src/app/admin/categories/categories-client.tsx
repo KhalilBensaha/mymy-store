@@ -177,7 +177,7 @@ function DeleteDialog({
         </div>
         <h3 className="text-lg font-bold text-[#1e1e2d]">Delete Category</h3>
         <p className="mt-2 text-[13px] text-[#6b7280]">
-          Are you sure you want to delete <strong>{name}</strong>? Products in this category will lose their category assignment.
+          Are you sure you want to delete <strong>{name}</strong>? Products in this category will keep their products but become uncategorized.
         </p>
         <div className="mt-5 flex gap-3 justify-center">
           <button
@@ -228,9 +228,15 @@ export default function CategoriesClient({
     if (!deleteCat) return;
     const id = deleteCat.id;
     startTransition(async () => {
-      await deleteCategory(id);
-      setDeleteCat(null);
-      window.location.reload();
+      try {
+        await deleteCategory(id);
+        setDeleteCat(null);
+        window.location.reload();
+      } catch (error) {
+        const message =
+          error instanceof Error ? error.message : "Failed to delete category.";
+        alert(message);
+      }
     });
   }
 
@@ -276,7 +282,7 @@ export default function CategoriesClient({
                 />
               )}
               <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors" />
-              <div className="absolute bottom-3 start-3">
+              <div className="absolute bottom-3 inset-s-3">
                 <span className="rounded-full bg-white/90 px-3 py-1 text-[11px] font-bold text-[#1e1e2d]">
                   {cat.productCount} products
                 </span>

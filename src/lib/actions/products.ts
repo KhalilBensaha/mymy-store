@@ -13,7 +13,7 @@ export type ProductInput = {
   price: number;
   image: string;
   gallery: string[];
-  categoryId: number;
+  categoryId: number | null;
   materials: string[];
   badge: string;
   description: string;

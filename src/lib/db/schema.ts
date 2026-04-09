@@ -37,9 +37,9 @@ export const products = pgTable("products", {
   price: integer("price").notNull(),
   image: text("image").notNull(),
   gallery: jsonb("gallery").$type<string[]>().notNull().default([]),
-  categoryId: integer("category_id")
-    .references(() => categories.id)
-    .notNull(),
+  categoryId: integer("category_id").references(() => categories.id, {
+    onDelete: "set null",
+  }),
   materials: jsonb("materials").$type<string[]>().notNull().default([]),
   badge: varchar("badge", { length: 100 }).default(""),
   description: text("description").notNull().default(""),

@@ -18,7 +18,7 @@ export type ProductRow = {
   price: number;
   image: string;
   gallery: string[];
-  categoryId: number;
+  categoryId: number | null;
   categoryName: string | null;
   categorySlug: string | null;
   materials: string[];
@@ -36,8 +36,6 @@ export type CategoryOption = {
   id: number;
   name: string;
 };
-
-const MATERIAL_OPTIONS = ["18K Yellow Gold", "Sterling Silver", "VS Diamonds"];
 
 /* ─── Modal ─── */
 function ProductModal({
@@ -57,7 +55,7 @@ function ProductModal({
     price: product?.price ?? 0,
     image: product?.image ?? "/images/best1.jpg",
     gallery: product?.gallery ?? ["/images/best1.jpg"],
-    categoryId: product?.categoryId ?? (categories[0]?.id ?? 1),
+    categoryId: product?.categoryId ?? null,
     materials: product?.materials ?? [],
     badge: product?.badge ?? "",
     description: product?.description ?? "",
@@ -67,6 +65,9 @@ function ProductModal({
     ratingScore: product?.ratingScore ?? 0,
     ratingCount: product?.ratingCount ?? 0,
   });
+  const [materialsText, setMaterialsText] = useState(
+    (product?.materials ?? []).join(", ")
+  );
   const [variantInput, setVariantInput] = useState("");
 
   const handleSave = () => {
@@ -77,7 +78,10 @@ function ProductModal({
       image: form.image,
       gallery: form.gallery,
       categoryId: form.categoryId,
-      materials: form.materials,
+      materials: materialsText
+        .split(",")
+        .map((value) => value.trim())
+        .filter(Boolean),
       badge: form.badge,
       description: form.description,
       story: form.story,
@@ -97,7 +101,7 @@ function ProductModal({
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-start justify-center bg-black/50 overflow-y-auto py-8 px-4">
+    <div className="fixed inset-0 z-100 flex items-start justify-center bg-black/50 overflow-y-auto py-8 px-4">
       <div className="w-full max-w-2xl rounded-xl bg-white shadow-2xl">
         {/* Header */}
         <div className="flex items-center justify-between border-b border-[#e5e7eb] p-5">
@@ -133,7 +137,17 @@ function ProductModal({
             </div>
             <div>
               <label className="block text-[12px] font-semibold text-[#374151] mb-1">Category</label>
-              <select className="w-full rounded-lg border border-[#d1d5db] px-3 py-2 text-[13px] outline-none focus:border-[#c4a95a] bg-white" value={form.categoryId} onChange={(e) => setForm({ ...form, categoryId: Number(e.target.value) })}>
+              <select
+                className="w-full rounded-lg border border-[#d1d5db] px-3 py-2 text-[13px] outline-none focus:border-[#c4a95a] bg-white"
+                value={form.categoryId ?? ""}
+                onChange={(e) =>
+                  setForm({
+                    ...form,
+                    categoryId: e.target.value === "" ? null : Number(e.target.value),
+                  })
+                }
+              >
+                <option value="">No category</option>
                 {categories.map((c) => (
                   <option key={c.id} value={c.id}>{c.name}</option>
                 ))}
@@ -165,12 +179,15 @@ function ProductModal({
 
           {/* Materials */}
           <div>
-            <label className="block text-[12px] font-semibold text-[#374151] mb-2">Materials</label>
-            <div className="flex flex-wrap gap-2">
-              {MATERIAL_OPTIONS.map((m) => (
-                <button key={m} type="button" onClick={() => { const has = form.materials.includes(m); setForm({ ...form, materials: has ? form.materials.filter((x) => x !== m) : [...form.materials, m] }); }} className={`rounded-full px-3 py-1.5 text-[11px] font-semibold border transition-colors ${form.materials.includes(m) ? "bg-[#c4a95a] text-white border-[#c4a95a]" : "bg-white text-[#6b7280] border-[#d1d5db] hover:border-[#c4a95a]"}`}>{m}</button>
-              ))}
-            </div>
+            <label className="block text-[12px] font-semibold text-[#374151] mb-1">
+              Materials (comma separated)
+            </label>
+            <input
+              className="w-full rounded-lg border border-[#d1d5db] px-3 py-2 text-[13px] outline-none focus:border-[#c4a95a] focus:ring-1 focus:ring-[#c4a95a]/30"
+              value={materialsText}
+              onChange={(e) => setMaterialsText(e.target.value)}
+              placeholder="e.g. Sterling Silver 925, Natural Pearl"
+            />
           </div>
 
           {/* Variants */}
@@ -218,7 +235,7 @@ function ProductModal({
 /* ─── Delete dialog ─── */
 function DeleteDialog({ name, onCancel, onConfirm, isPending }: { name: string; onCancel: () => void; onConfirm: () => void; isPending: boolean }) {
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 px-4">
+    <div className="fixed inset-0 z-100 flex items-center justify-center bg-black/50 px-4">
       <div className="w-full max-w-sm rounded-xl bg-white p-6 shadow-2xl text-center">
         <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-red-50">
           <svg className="w-6 h-6 text-red-500" fill="none" stroke="currentColor" strokeWidth={1.6} viewBox="0 0 24 24">
@@ -275,7 +292,7 @@ export default function ProductsClient({
           <p className="text-[13px] text-[#6b7280] mt-1">{initialProducts.length} products in your catalog</p>
         </div>
         <button
-          onClick={() => setEditProduct({ id: 0, name: "", subtitle: "", price: 0, image: "/images/best1.jpg", gallery: ["/images/best1.jpg"], categoryId: categories[0]?.id ?? 1, categoryName: null, categorySlug: null, materials: [], badge: "", description: "", story: "", specs: [{ label: "", value: "" }], variants: [], ratingScore: 0, ratingCount: 0, createdAt: new Date(), _isNew: true })}
+          onClick={() => setEditProduct({ id: 0, name: "", subtitle: "", price: 0, image: "/images/best1.jpg", gallery: ["/images/best1.jpg"], categoryId: null, categoryName: null, categorySlug: null, materials: [], badge: "", description: "", story: "", specs: [{ label: "", value: "" }], variants: [], ratingScore: 0, ratingCount: 0, createdAt: new Date(), _isNew: true })}
           className="inline-flex items-center gap-1.5 rounded-lg bg-[#c4a95a] px-4 py-2.5 text-[12px] font-semibold text-white hover:bg-[#b09845] transition-colors self-start"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
@@ -288,7 +305,7 @@ export default function ProductsClient({
       {/* Filters */}
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="relative flex-1 max-w-md">
-          <svg className="absolute start-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9ca3af]" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+          <svg className="absolute inset-s-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9ca3af]" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
           </svg>
           <input type="text" placeholder="Search products…" className="w-full rounded-lg border border-[#d1d5db] ps-9 pe-3 py-2.5 text-[13px] outline-none focus:border-[#c4a95a] focus:ring-1 focus:ring-[#c4a95a]/30" value={search} onChange={(e) => setSearch(e.target.value)} />
@@ -330,15 +347,11 @@ export default function ProductsClient({
                     </div>
                   </td>
                   <td className="px-5 py-3">
-                    <span className="rounded-full bg-[#f4f5f7] px-2.5 py-1 text-[11px] font-medium text-[#374151]">{p.categoryName}</span>
+                    <span className="rounded-full bg-[#f4f5f7] px-2.5 py-1 text-[11px] font-medium text-[#374151]">{p.categoryName ?? "No category"}</span>
                   </td>
                   <td className="px-5 py-3 text-[13px] font-semibold">{p.price.toLocaleString()} DA</td>
                   <td className="px-5 py-3">
-                    <div className="flex flex-wrap gap-1">
-                      {p.materials.map((m) => (
-                        <span key={m} className="rounded bg-[#c4a95a]/10 px-1.5 py-0.5 text-[10px] font-medium text-[#8b6914]">{m}</span>
-                      ))}
-                    </div>
+                    <span className="text-[12px] text-[#6b7280]">{p.materials.join(", ") || "-"}</span>
                   </td>
                   <td className="px-5 py-3">
                     {p.badge ? (

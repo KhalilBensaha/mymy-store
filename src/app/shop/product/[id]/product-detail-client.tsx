@@ -16,7 +16,7 @@ type DBProduct = {
   price: number;
   image: string;
   gallery: string[] | null;
-  categoryId: number;
+  categoryId: number | null;
   categoryName: string | null;
   categorySlug: string | null;
   materials: string[] | null;
