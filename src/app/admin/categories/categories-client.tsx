@@ -23,7 +23,7 @@ type ProductOption = {
   id: number;
   name: string;
   image: string;
-  categoryId: number;
+  categoryId: number | null;
 };
 
 /* ─── Modal ─── */
