@@ -17,9 +17,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!category) return {};
 
   const title = `${category.name} — Mymy Atelier`;
-  const description =
-    category.description?.slice(0, 160) ??
-    `Shop ${category.name} from Mymy Atelier — handcrafted luxury jewelry.`;
+  const description = category.description?.slice(0, 160) ?? category.name;
 
   return {
     title,
@@ -55,9 +53,8 @@ export default async function CategoryPage({ params }: Props) {
     <ProductsCatalog
       products={allProducts}
       categories={allCategories}
-      eyebrow="Category Selection"
       title={category.name}
-      description={category.description ?? undefined}
+      description={category.description ?? ""}
       initialCategory={category.name}
       lockCategory
     />

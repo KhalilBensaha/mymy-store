@@ -14,10 +14,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const product = await getProductById(Number(id));
   if (!product) return {};
 
-  const title = `${product.name} — ${product.subtitle}`;
+  const title = product.subtitle
+    ? `${product.name} — ${product.subtitle}`
+    : product.name;
   const description =
     product.description?.slice(0, 160) ??
-    `${product.name} — ${product.subtitle}. Handcrafted jewelry from Mymy Atelier.`;
+    product.story?.slice(0, 160) ??
+    product.subtitle?.slice(0, 160) ??
+    product.name;
 
   return {
     title,
@@ -70,7 +74,7 @@ export default async function ProductPage({ params }: Props) {
     "@context": "https://schema.org",
     "@type": "Product",
     name: product.name,
-    description: product.description ?? product.subtitle,
+    description: product.description ?? product.story ?? product.subtitle ?? product.name,
     image: product.gallery?.length ? product.gallery : [product.image],
     brand: { "@type": "Brand", name: "Mymy Atelier" },
     ...(product.materials?.length && { material: product.materials.join(", ") }),

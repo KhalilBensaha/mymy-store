@@ -119,7 +119,7 @@ const ar: Messages = {
     sizeGuide: "دليل المقاسات",
     addToCart: "أضيفي إلى السلة",
     orderNow: "اطلبي الآن",
-    freeShipping: "شحن مجاني حول العالم",
+    freeShipping: "توصيل مجاني على المستوى الوطني",
     certified: "فضة استرلينية معتمدة وأحجار خالية من النزاعات",
     descriptionTab: "الوصف",
     reviewsTab: "التقييمات",

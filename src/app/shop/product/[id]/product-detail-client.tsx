@@ -37,8 +37,6 @@ function formatPrice(price: number) {
   }).format(price) + " DA";
 }
 
-type Tab = "description" | "care";
-
 export default function ProductDetailClient({
   product,
   recommended,
@@ -53,7 +51,6 @@ export default function ProductDetailClient({
   const [activeImageIdx, setActiveImageIdx] = useState(0);
   const [activeVariant, setActiveVariant] = useState(0);
   const [quantity, setQuantity] = useState(1);
-  const [activeTab, setActiveTab] = useState<Tab>("description");
   const [addedFlash, setAddedFlash] = useState(false);
 
   function handleAddToCart() {
@@ -90,11 +87,10 @@ export default function ProductDetailClient({
   }
 
   const gallery = product.gallery && product.gallery.length > 0 ? product.gallery : [product.image];
-
-  const tabs: { id: Tab; label: string }[] = [
-    { id: "description", label: t.product.descriptionTab },
-    { id: "care", label: t.product.careTab },
-  ];
+  const hasProductDetails =
+    Boolean(product.description?.trim()) ||
+    Boolean(product.story?.trim()) ||
+    (product.specs?.length ?? 0) > 0;
 
   return (
     <div className="bg-warm-white min-h-screen">
@@ -331,71 +327,47 @@ export default function ProductDetailClient({
         </div>
       </div>
 
-      {/* ── Tabs ── */}
-      <div className="mx-auto max-w-7xl px-6 lg:px-10">
-        {/* Tab bar */}
-        <div className="border-b border-[#e2d9cc]">
-          <div className="flex gap-8">
-            {tabs.map(({ id, label }) => (
-              <button
-                key={id}
-                type="button"
-                onClick={() => setActiveTab(id)}
-                className={`pb-4 font-montserrat text-[0.62rem] uppercase tracking-[0.2em] transition-colors ${
-                  activeTab === id
-                    ? "border-b-2 border-[#8b6914] text-[#8b6914]"
-                    : "text-[#b3a897] hover:text-text-dark"
-                }`}
-              >
-                {label}
-              </button>
-            ))}
+      {/* ── Product details (admin-authored only) ── */}
+      {hasProductDetails && (
+        <div className="mx-auto max-w-7xl px-6 pb-20 pt-12 lg:px-10">
+          <div className="grid gap-16 lg:grid-cols-[1.2fr_0.8fr]">
+            <div>
+              {product.story && (
+                <>
+                  <h2 className="font-playfair text-3xl text-text-dark">
+                    {t.product.storyTitle}
+                  </h2>
+                  <p className="mt-6 font-montserrat text-[0.93rem] leading-8 text-[#6f6458]">
+                    {product.story}
+                  </p>
+                </>
+              )}
+
+              {!product.story && product.description && (
+                <p className="font-montserrat text-[0.93rem] leading-8 text-[#6f6458]">
+                  {product.description}
+                </p>
+              )}
+            </div>
+
+            <div>
+              {(product.specs ?? []).map((spec, idx) => (
+                <div key={`${spec.label}-${idx}`}>
+                  {idx > 0 && <div className="border-t border-[#ede7dd]" />}
+                  <div className="flex items-start justify-between py-5">
+                    <span className="font-montserrat text-[0.6rem] uppercase tracking-[0.2em] text-[#a89c87]">
+                      {spec.label}
+                    </span>
+                    <span className="text-end font-montserrat text-[0.88rem] text-[#5e564d]">
+                      {spec.value}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
-
-        {/* Tab content */}
-        <div className="pb-20 pt-12">
-          {activeTab === "description" && (
-            <div className="grid gap-16 lg:grid-cols-[1.2fr_0.8fr]">
-              <div>
-                <h2 className="font-playfair text-3xl text-text-dark">
-                  {t.product.storyTitle}
-                </h2>
-                <p className="mt-6 font-montserrat text-[0.93rem] leading-8 text-[#6f6458]">
-                  {product.story}
-                </p>
-              </div>
-              <div>
-                {(product.specs ?? []).map((spec, idx) => (
-                  <div key={spec.label}>
-                    {idx > 0 && <div className="border-t border-[#ede7dd]" />}
-                    <div className="flex items-start justify-between py-5">
-                      <span className="font-montserrat text-[0.6rem] uppercase tracking-[0.2em] text-[#a89c87]">
-                        {spec.label}
-                      </span>
-                      <span className="text-end font-montserrat text-[0.88rem] text-[#5e564d]">
-                        {spec.value}
-                      </span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {activeTab === "care" && (
-            <div className="max-w-2xl">
-              <h2 className="font-playfair text-3xl text-text-dark">{t.product.careTitle}</h2>
-              <div className="mt-8 space-y-5 font-montserrat text-[0.93rem] leading-8 text-[#6f6458]">
-                <p>{t.product.careStorage}</p>
-                <p>{t.product.careAvoid}</p>
-                <p>{t.product.careClean}</p>
-                <p>{t.product.careProfessional}</p>
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
+      )}
 
       {/* ── Recommended for you ── */}
       {recommended.length > 0 && (

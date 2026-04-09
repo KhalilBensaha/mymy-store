@@ -27,7 +27,7 @@ export default function ShopLayout({ children }: Readonly<{ children: React.Reac
             <p className="font-montserrat text-[0.66rem] uppercase tracking-[0.22em] text-[#a89c87]">{t.nav.shop}</p>
             <ul className="mt-4 space-y-3 font-montserrat text-sm text-[#6c6257]">
               <li><Link href="/shop">{t.nav.shop}</Link></li>
-              <li><Link href="/shop#categories">{t.nav.categories}</Link></li>
+              <li><Link href="/shop/categories">{t.nav.categories}</Link></li>
             </ul>
           </div>
 

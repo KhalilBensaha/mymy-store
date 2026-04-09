@@ -98,30 +98,17 @@ export default function ProductsCatalog({
   const resolvedTitle = title ?? t.shop.coreCollection;
   const resolvedDescription = description ?? t.shop.coreCollectionDesc;
   const [activeCategory, setActiveCategory] = useState<string | null>(initialCategory);
-  const [selectedMaterials, setSelectedMaterials] = useState<string[]>([]);
-  const [maxPrice, setMaxPrice] = useState(5500);
+  const [maxPrice, setMaxPrice] = useState(MAX_PRICE);
   const [page, setPage] = useState(0);
-
-  const materialOptions = useMemo(() => {
-    const allMaterials = new Set<string>();
-    for (const p of products) {
-      if (p.materials) p.materials.forEach((m) => allMaterials.add(m));
-    }
-    return Array.from(allMaterials).sort();
-  }, [products]);
 
   const filteredProducts = useMemo(() => {
     return products.filter((product) => {
       const categoryMatch = activeCategory ? product.categoryName === activeCategory : true;
-      const materialMatch =
-        selectedMaterials.length > 0
-          ? selectedMaterials.every((material) => product.materials?.includes(material))
-          : true;
       const priceMatch = product.price <= maxPrice;
 
-      return categoryMatch && materialMatch && priceMatch;
+      return categoryMatch && priceMatch;
     });
-  }, [activeCategory, selectedMaterials, maxPrice, products]);
+  }, [activeCategory, maxPrice, products]);
 
   const totalPages = Math.max(1, Math.ceil(filteredProducts.length / PAGE_SIZE));
   const safePage = Math.min(page, totalPages - 1);
@@ -130,19 +117,9 @@ export default function ProductsCatalog({
     safePage * PAGE_SIZE + PAGE_SIZE
   );
 
-  const toggleMaterial = (material: string) => {
-    setPage(0);
-    setSelectedMaterials((current) =>
-      current.includes(material)
-        ? current.filter((item) => item !== material)
-        : [...current, material]
-    );
-  };
-
   const clearFilters = () => {
     setActiveCategory(initialCategory);
-    setSelectedMaterials([]);
-    setMaxPrice(5500);
+    setMaxPrice(MAX_PRICE);
     setPage(0);
   };
 
@@ -168,9 +145,11 @@ export default function ProductsCatalog({
           <h1 className="mt-3 font-playfair text-5xl leading-[1.04] text-text-dark lg:text-[4.25rem]">
             {resolvedTitle}
           </h1>
-          <p className="mt-5 max-w-2xl font-montserrat text-[0.97rem] leading-8 text-[#6f6458] lg:text-[1.02rem]">
-            {resolvedDescription}
-          </p>
+          {resolvedDescription && (
+            <p className="mt-5 max-w-2xl font-montserrat text-[0.97rem] leading-8 text-[#6f6458] lg:text-[1.02rem]">
+              {resolvedDescription}
+            </p>
+          )}
         </div>
 
         <div className="grid gap-12 md:grid-cols-[220px_minmax(0,1fr)] xl:grid-cols-[240px_minmax(0,1fr)] md:items-start">
@@ -211,31 +190,6 @@ export default function ProductsCatalog({
                   );
                 })}
               </ul>
-            </div>
-
-            <div>
-              <p className="font-montserrat text-[0.62rem] uppercase tracking-[0.22em] text-[#a89c87]">
-                {t.shop.material}
-              </p>
-              <div className="mt-5 space-y-3.5">
-                {materialOptions.map((material) => {
-                  const checked = selectedMaterials.includes(material);
-                  return (
-                    <label key={material} className="flex cursor-pointer items-center gap-3">
-                      <span className="relative flex h-3.5 w-3.5 items-center justify-center border border-[#d9cfbe] bg-white">
-                        <input
-                          type="checkbox"
-                          checked={checked}
-                          onChange={() => toggleMaterial(material)}
-                          className="absolute inset-0 opacity-0"
-                        />
-                        {checked ? <span className="h-2 w-2 bg-[#8b6914]" /> : null}
-                      </span>
-                      <span className="font-montserrat text-[0.92rem] text-[#5e564d]">{material}</span>
-                    </label>
-                  );
-                })}
-              </div>
             </div>
 
             <div>

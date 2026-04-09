@@ -119,7 +119,7 @@ const en: Messages = {
     sizeGuide: "Size Guide",
     addToCart: "Add to Cart",
     orderNow: "Order Now",
-    freeShipping: "Complimentary worldwide shipping",
+    freeShipping: "Complimentary nationwide shipping",
     certified: "Certified Sterling Silver & Conflict-Free Stones",
     descriptionTab: "Description",
     reviewsTab: "Reviews",

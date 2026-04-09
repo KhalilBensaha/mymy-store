@@ -119,7 +119,7 @@ const fr: Messages = {
     sizeGuide: "Guide des Tailles",
     addToCart: "Ajouter au Panier",
     orderNow: "Commander maintenant",
-    freeShipping: "Livraison mondiale offerte",
+    freeShipping: "Livraison nationale offerte",
     certified: "Argent sterling certifié & Pierres sans conflit",
     descriptionTab: "Description",
     reviewsTab: "Avis",
