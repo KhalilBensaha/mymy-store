@@ -30,8 +30,8 @@ export type Messages = {
     description: string;
     exploreDiamonds: string;
     shopCollection: string;
-    since2028: string;
-    since2028Label: string;
+    since2018: string;
+    since2018Label: string;
     clientsSatisfied: string;
     clientsSatisfiedLabel: string;
   };

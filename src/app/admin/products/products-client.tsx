@@ -186,7 +186,7 @@ function ProductModal({
               className="w-full rounded-lg border border-[#d1d5db] px-3 py-2 text-[13px] outline-none focus:border-[#c4a95a] focus:ring-1 focus:ring-[#c4a95a]/30"
               value={materialsText}
               onChange={(e) => setMaterialsText(e.target.value)}
-              placeholder="e.g. Sterling Silver 925, Natural Pearl"
+              placeholder="e.g. Amethyst, Rose Quartz, Black Tourmaline"
             />
           </div>
 

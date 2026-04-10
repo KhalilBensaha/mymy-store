@@ -60,29 +60,25 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
 
   title: {
-    default: "Mymy Atelier | مجوهرات فاخرة — ألماس · ذهب · لؤلؤ",
-    template: "%s — Mymy Atelier | مجوهرات فاخرة",
+    default: "Mymy Atelier | Natural Healing Stones | أحجار علاجية طبيعية",
+    template: "%s — Mymy Atelier | Natural Healing Stones",
   },
   verification: {
     google: 'P-tYjvIyiSurgo0Q116DJGHbXRklF76b--AURmJgAV8', 
   },
 
   description:
-    "اكتشفي مجموعة Mymy Atelier من المجوهرات الفاخرة المصنوعة يدوياً — ألماس معتمد، ذهب خالص 18 قيراط، ولؤلؤ بحر الجنوب النادر. Luxury handcrafted jewelry: certified diamonds, 18K gold & South Sea pearls.",
+    "Discover Mymy Atelier natural healing stones — authentic crystals selected for balance, calm, and positive energy. اكتشفي أحجار ميمي العلاجية الطبيعية المختارة بعناية.",
 
   keywords: [
     // Arabic
-    "مجوهرات فاخرة", "ألماس معتمد", "ذهب 18 قيراط", "لؤلؤ بحر الجنوب",
-    "خواتم ألماس", "أساور ذهبية", "أقراط لؤلؤ", "عقود فاخرة",
-    "مجوهرات عروس", "مجوهرات مصنوعة يدوياً", "Mymy Atelier",
-    "مجوهرات الجزائر", "مجوهرات راقية", "هدايا مجوهرات",
+    "أحجار علاجية طبيعية", "كريستال طبيعي", "أحجار طاقة", "أحجار توازن",
+    "أحجار عافية", "أحجار أصلية", "Mymy Atelier", "أحجار الجزائر",
     // English
-    "luxury jewelry", "diamond rings", "18K gold jewelry", "pearl necklaces",
-    "bridal jewelry", "handcrafted fine jewelry", "VS diamonds",
-    "South Sea pearls", "Mymy Atelier", "certified diamonds",
-    "gold bridal set", "solitaire rings", "diamond bracelet",
+    "natural healing stones", "healing crystals", "authentic stones", "wellness stones",
+    "chakra stones", "energy crystals", "mymy atelier", "stone shop algeria",
     // French
-    "bijoux de luxe", "bagues en diamant", "or 18 carats", "perles de mer",
+    "pierres naturelles thérapeutiques", "cristaux de guérison", "pierres bien-être", "pierres énergétiques",
   ],
 
   alternates: {
@@ -107,9 +103,9 @@ export const metadata: Metadata = {
   },
 
   openGraph: {
-    title: "Mymy Atelier | مجوهرات فاخرة — ألماس · ذهب · لؤلؤ",
+    title: "Mymy Atelier | Natural Healing Stones | أحجار علاجية طبيعية",
     description:
-      "اكتشفي مجوهراتنا الفاخرة المصنوعة يدوياً. Luxury handcrafted jewelry — certified diamonds, 18K gold & South Sea pearls.",
+      "Natural healing stones selected for balance and positive energy. أحجار علاجية طبيعية مختارة للتوازن والطاقة الإيجابية.",
     url: SITE_URL,
     siteName: "Mymy Atelier",
     images: [
@@ -117,7 +113,7 @@ export const metadata: Metadata = {
         url: OG_IMAGE,
         width: 1200,
         height: 630,
-        alt: "Mymy Atelier — مجوهرات فاخرة | Luxury Fine Jewelry",
+        alt: "Mymy Atelier — Natural Healing Stones | أحجار علاجية طبيعية",
       },
     ],
     locale: "ar_DZ",
@@ -127,9 +123,9 @@ export const metadata: Metadata = {
 
   twitter: {
     card: "summary_large_image",
-    title: "Mymy Atelier | مجوهرات فاخرة",
+    title: "Mymy Atelier | Natural Healing Stones",
     description:
-      "اكتشفي مجموعة Mymy من الألماس المعتمد والذهب الخالص ولؤلؤ بحر الجنوب — مصنوعة يدوياً بعناية فائقة.",
+      "Explore authentic natural healing stones for calm, focus, and daily balance.",
     images: [OG_IMAGE],
     creator: "@mymyatelier",
   },
@@ -140,7 +136,7 @@ export const metadata: Metadata = {
     apple: "/logo.jpg",
   },
 
-  category: "jewelry",
+  category: "wellness",
 };
 
 const jsonLd = {
@@ -150,7 +146,7 @@ const jsonLd = {
       "@type": "Organization",
       "@id": `${SITE_URL}/#organization`,
       name: "Mymy Atelier",
-      alternateName: "Mymy مجوهرات",
+      alternateName: "Mymy Natural Healing Stones",
       url: SITE_URL,
       logo: {
         "@type": "ImageObject",
@@ -159,7 +155,7 @@ const jsonLd = {
         height: 630,
       },
       description:
-        "مجوهرات فاخرة مصنوعة يدوياً — ألماس معتمد، ذهب 18 قيراط، لؤلؤ بحر الجنوب. Handcrafted luxury jewelry: certified diamonds, 18K gold, South Sea pearls.",
+        "Natural healing stones selected with care for balance, intention, and positive energy. أحجار علاجية طبيعية أصلية.",
       sameAs: [
         "https://www.instagram.com/mymyatelier",
         "https://www.pinterest.com/mymyatelier",
@@ -170,7 +166,7 @@ const jsonLd = {
       "@id": `${SITE_URL}/#website`,
       url: SITE_URL,
       name: "Mymy Atelier",
-      description: "مجوهرات فاخرة مصنوعة يدوياً",
+      description: "Natural healing stones boutique",
       publisher: { "@id": `${SITE_URL}/#organization` },
       inLanguage: ["ar", "en", "fr"],
       potentialAction: {
@@ -193,12 +189,12 @@ const jsonLd = {
       paymentAccepted: "Credit Card, Bank Transfer, Cash on Delivery",
       hasOfferCatalog: {
         "@type": "OfferCatalog",
-        name: "مجوهرات فاخرة | Luxury Jewelry Collection",
+        name: "Natural Healing Stones Collection",
         itemListElement: [
-          { "@type": "Offer", itemOffered: { "@type": "Product", name: "Diamond Rings | خواتم الألماس" } },
-          { "@type": "Offer", itemOffered: { "@type": "Product", name: "Gold Necklaces | عقود ذهبية" } },
-          { "@type": "Offer", itemOffered: { "@type": "Product", name: "Pearl Earrings | أقراط لؤلؤ" } },
-          { "@type": "Offer", itemOffered: { "@type": "Product", name: "Diamond Bracelets | أساور ألماس" } },
+          { "@type": "Offer", itemOffered: { "@type": "Product", name: "Amethyst Cluster" } },
+          { "@type": "Offer", itemOffered: { "@type": "Product", name: "Rose Quartz Stone" } },
+          { "@type": "Offer", itemOffered: { "@type": "Product", name: "Black Tourmaline" } },
+          { "@type": "Offer", itemOffered: { "@type": "Product", name: "Clear Quartz" } },
         ],
       },
     },

@@ -36,7 +36,7 @@ function Hero() {
     <section className="relative w-full overflow-hidden" style={{ minHeight: "90vh" }}>
       <Image
         src="/bg-image.jpg"
-        alt="Luxury jewelry model"
+        alt="Natural healing stones"
         fill
         className="object-cover object-center"
         sizes="100vw"
@@ -47,7 +47,7 @@ function Hero() {
         <div className="max-w-7xl mx-auto w-full px-6 lg:px-10 py-20">
           <div className="max-w-xl animate-fade-up">
             <p className="font-montserrat text-[0.58rem] uppercase tracking-[0.32em] text-[#8b6914] mb-5">
-              Mymy Atelier · Luxury Jewelry
+              Mymy Atelier · Natural Healing Stones
             </p>
             <h1 className="font-playfair text-[2.6rem] sm:text-[3.2rem] lg:text-[3.8rem] xl:text-[4.4rem] font-bold leading-[1.05] mb-7 uppercase">
               <span className="text-text-dark block">{t.hero.craftedFor}</span>
@@ -69,8 +69,8 @@ function Hero() {
             </div>
             <div className="mt-14 flex gap-10">
               <div>
-                <p className="font-playfair text-2xl text-text-dark">{t.hero.since2028}</p>
-                <p className="mt-1 font-montserrat text-[0.58rem] uppercase tracking-[0.18em] text-[#a89c87]">{t.hero.since2028Label}</p>
+                <p className="font-playfair text-2xl text-text-dark">{t.hero.since2018}</p>
+                <p className="mt-1 font-montserrat text-[0.58rem] uppercase tracking-[0.18em] text-[#a89c87]">{t.hero.since2018Label}</p>
               </div>
               <div className="border-s border-[#d9cfbe] ps-10">
                 <p className="font-playfair text-2xl text-text-dark">{t.hero.clientsSatisfied}</p>

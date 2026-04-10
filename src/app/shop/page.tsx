@@ -8,11 +8,11 @@ const SITE_URL = "https://mymy-store.vercel.app";
 export const metadata: Metadata = {
   title: "Shop — Mymy Atelier",
   description:
-    "Browse our handcrafted jewelry collection — sterling silver, diamonds, and more. Mymy Atelier, luxury accessories from Algeria.",
+    "Browse our natural healing stones collection — authentic crystals selected for balance, calm, and positive energy.",
   alternates: { canonical: `${SITE_URL}/shop` },
   openGraph: {
     title: "Shop — Mymy Atelier",
-    description: "Browse our handcrafted jewelry collection.",
+    description: "Browse our natural healing stones collection.",
     url: `${SITE_URL}/shop`,
     type: "website",
   },

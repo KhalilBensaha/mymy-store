@@ -117,11 +117,24 @@ export async function getProductsByCategoryId(categoryId: number) {
 
 /** Get product images for the lifestyle showcase section */
 export async function getLifestyleImages(limit = 3) {
-  const rows = await db
-    .select({ image: products.image, gallery: products.gallery })
-    .from(products)
-    .orderBy(products.createdAt)
-    .limit(limit * 2);
+  let rows: Array<{ image: string; gallery: string[] | null }> = [];
+
+  try {
+    rows = await db
+      .select({ image: products.image, gallery: products.gallery })
+      .from(products)
+      .orderBy(products.createdAt)
+      .limit(limit * 2);
+  } catch {
+    // Backward compatibility: some deployed DBs may not have the gallery column yet.
+    const fallbackRows = await db
+      .select({ image: products.image })
+      .from(products)
+      .orderBy(products.createdAt)
+      .limit(limit * 2);
+
+    rows = fallbackRows.map((row) => ({ image: row.image, gallery: null }));
+  }
 
   // Collect unique images, preferring gallery images over main image
   const images: string[] = [];
