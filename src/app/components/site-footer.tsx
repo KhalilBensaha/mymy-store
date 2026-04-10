@@ -1,13 +1,17 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { MymyLogo } from "./mymy-logo";
 import { LanguageSwitcher } from "./language-switcher";
 import { useI18n } from "../i18n/provider";
 import type { SocialLinks } from "@/lib/actions/settings";
 
 export function SiteFooter({ socialLinks }: { socialLinks: SocialLinks }) {
+  const pathname = usePathname();
   const { t } = useI18n();
+
+  if (pathname.startsWith("/admin")) return null;
 
   const routeLinks = [
     { href: "/", label: t.nav.home },

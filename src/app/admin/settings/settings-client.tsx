@@ -101,8 +101,11 @@ export default function SettingsClient({
   initialSocialLinks,
   initialAdmins,
 }: Props) {
+  const validCategoryIds = new Set(allCategories.map((c) => c.id));
   const [section, setSection] = useState<Section>("collections");
-  const [selectedIds, setSelectedIds] = useState<number[]>(initialFeaturedIds);
+  const [selectedIds, setSelectedIds] = useState<number[]>(
+    initialFeaturedIds.filter((id) => validCategoryIds.has(id))
+  );
   const [contactForm, setContactForm] = useState<ContactInfo>(initialContactInfo);
   const [locale, setLocale] = useState<SiteLocale>(initialLanguage);
   const [social, setSocial] = useState<SocialLinks>(initialSocialLinks);

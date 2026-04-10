@@ -21,10 +21,13 @@ export default async function SettingsPage() {
       getAdmins(),
     ]);
 
+  const validCategoryIds = new Set(allCategories.map((c) => c.id));
+  const sanitizedFeaturedIds = initialFeaturedIds.filter((id) => validCategoryIds.has(id));
+
   return (
     <SettingsClient
       allCategories={allCategories}
-      initialFeaturedIds={initialFeaturedIds}
+      initialFeaturedIds={sanitizedFeaturedIds}
       initialContactInfo={initialContactInfo}
       initialLanguage={initialLanguage}
       initialSocialLinks={initialSocialLinks}

@@ -92,16 +92,7 @@ function Hero() {
 /* ─────────────── CATEGORIES (styled like Best Sellers) ─────────────── */
 function Categories({ allCategories }: { allCategories: CategoryData[] }) {
   const { t } = useI18n();
-
-  /* Fallback static items when DB is empty */
-  const fallback = [
-    { id: 0, name: t.categories.diamondNecklace, slug: "necklaces", description: t.categories.certifiedBrilliance, image: "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=400&h=400&fit=crop" },
-    { id: 1, name: t.categories.silverBridalSet, slug: "bracelets", description: t.categories.timelessBridal, image: "https://images.unsplash.com/photo-1610694955371-d4a3e0ce4b52?w=400&h=400&fit=crop" },
-    { id: 2, name: t.categories.pearlEarrings, slug: "earrings", description: t.categories.lustrousElegance, image: "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=400&h=400&fit=crop" },
-    { id: 3, name: t.categories.solitaireRings, slug: "rings", description: t.categories.perfectStones, image: "https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=400&h=400&fit=crop" },
-  ];
-
-  const items = allCategories.length > 0 ? allCategories : fallback;
+  if (allCategories.length === 0) return null;
 
   return (
     <section className="w-full bg-cream py-16 lg:py-20">
@@ -110,7 +101,7 @@ function Categories({ allCategories }: { allCategories: CategoryData[] }) {
           {t.categories.title}
         </h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
-          {items.map((c) => (
+          {allCategories.map((c) => (
             <Link
               key={c.id}
               href={`/shop/${c.slug}`}
@@ -202,15 +193,7 @@ function Craftsmanship() {
 /* ─────────────── SPECIAL COLLECTIONS (from DB featured categories) ─────────────── */
 function SpecialCollections({ featuredCategories }: { featuredCategories: CategoryData[] }) {
   const { t } = useI18n();
-
-  const fallback = [
-    { id: 0, name: t.specialCollections.bridalDiamonds, slug: "#", image: "https://images.unsplash.com/photo-1596944924616-7b38e7cfac36?w=500&h=600&fit=crop", description: "" },
-    { id: 1, name: t.specialCollections.royalSilver, slug: "#", image: "https://images.unsplash.com/photo-1610694955371-d4a3e0ce4b52?w=500&h=600&fit=crop", description: "" },
-    { id: 2, name: t.specialCollections.pearlSignature, slug: "#", image: "https://images.unsplash.com/photo-1573408301185-9146fe634ad0?w=500&h=600&fit=crop", description: "" },
-    { id: 3, name: t.specialCollections.modernFusion, slug: "#", image: "https://images.unsplash.com/photo-1611591437281-460bfbe1220a?w=500&h=600&fit=crop", description: "" },
-  ];
-
-  const items = featuredCategories.length > 0 ? featuredCategories.slice(0, 4) : fallback;
+  if (featuredCategories.length === 0) return null;
 
   return (
     <section className="w-full bg-warm-white py-16 lg:py-20">
@@ -219,8 +202,8 @@ function SpecialCollections({ featuredCategories }: { featuredCategories: Catego
           {t.specialCollections.title}
         </h2>
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-          {items.map((c) => (
-            <Link key={c.id} href={c.slug !== "#" ? `/shop/${c.slug}` : "#"} className="group relative rounded-2xl overflow-hidden aspect-3/4">
+          {featuredCategories.slice(0, 4).map((c) => (
+            <Link key={c.id} href={`/shop/${c.slug}`} className="group relative rounded-2xl overflow-hidden aspect-3/4">
               <Image
                 src={c.image}
                 alt={c.name}
