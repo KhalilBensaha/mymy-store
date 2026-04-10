@@ -69,16 +69,12 @@ function Hero() {
             </div>
             <div className="mt-14 flex gap-10">
               <div>
-                <p className="font-playfair text-2xl text-text-dark">2,400+</p>
-                <p className="mt-1 font-montserrat text-[0.58rem] uppercase tracking-[0.18em] text-[#a89c87]">Pieces Crafted</p>
+                <p className="font-playfair text-2xl text-text-dark">{t.hero.since2028}</p>
+                <p className="mt-1 font-montserrat text-[0.58rem] uppercase tracking-[0.18em] text-[#a89c87]">{t.hero.since2028Label}</p>
               </div>
               <div className="border-s border-[#d9cfbe] ps-10">
-                <p className="font-playfair text-2xl text-text-dark">925</p>
-                <p className="mt-1 font-montserrat text-[0.58rem] uppercase tracking-[0.18em] text-[#a89c87]">Sterling Silver</p>
-              </div>
-              <div className="border-s border-[#d9cfbe] ps-10">
-                <p className="font-playfair text-2xl text-text-dark">VS+</p>
-                <p className="mt-1 font-montserrat text-[0.58rem] uppercase tracking-[0.18em] text-[#a89c87]">Diamonds</p>
+                <p className="font-playfair text-2xl text-text-dark">{t.hero.clientsSatisfied}</p>
+                <p className="mt-1 font-montserrat text-[0.58rem] uppercase tracking-[0.18em] text-[#a89c87]">{t.hero.clientsSatisfiedLabel}</p>
               </div>
             </div>
           </div>

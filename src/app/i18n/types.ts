@@ -30,6 +30,10 @@ export type Messages = {
     description: string;
     exploreDiamonds: string;
     shopCollection: string;
+    since2028: string;
+    since2028Label: string;
+    clientsSatisfied: string;
+    clientsSatisfiedLabel: string;
   };
   /* ── Categories ── */
   categories: {
