@@ -3,7 +3,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import ScrollReveal from "./scroll-reveal";
-import { MymyLogo } from "./components/mymy-logo";
 import { useI18n } from "./i18n/provider";
 import { Navbar } from "./components/navbar";
 
