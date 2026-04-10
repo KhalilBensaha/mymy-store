@@ -67,7 +67,7 @@ const ar: Messages = {
     modernFusion: "مزيج علاجي عصري",
   },
   lifestyle: {
-    eyebrow: "نمط الحياة / طقوس الطاقة",
+    eyebrow: "نمط الحياة / الطاقة",
   },
   testimonials: {
     title: "آراء العملاء",

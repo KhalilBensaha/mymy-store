@@ -3,21 +3,21 @@ import Image from "next/image";
 import Link from "next/link";
 import { getCategories } from "@/lib/actions/categories";
 
-const SITE_URL = "https://mymy-store.vercel.app";
+const SITE_URL = "https://mymy-store.com";
 
 export const metadata: Metadata = {
   title: "Categories — Mymy Atelier",
-  description: "Browse product categories.",
+  description: "Browse natural healing stone categories and find the right crystal for your needs.",
   alternates: { canonical: `${SITE_URL}/shop/categories` },
   openGraph: {
     title: "Categories — Mymy Atelier",
-    description: "Browse product categories.",
+    description: "Browse natural healing stone categories.",
     url: `${SITE_URL}/shop/categories`,
     type: "website",
   },
 };
 
-export const revalidate = 0;
+export const revalidate = 300;
 
 export default async function ShopCategoriesPage() {
   const categories = await getCategories();

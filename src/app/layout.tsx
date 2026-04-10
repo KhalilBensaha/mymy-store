@@ -53,7 +53,7 @@ const nunito = Nunito({
   display: "swap",
 });
 
-const SITE_URL = "https://mymy-store.vercel.app";
+const SITE_URL = "https://mymy-store.com";
 const OG_IMAGE = `${SITE_URL}/bg-image.jpg?v=20260410`;
 
 export const metadata: Metadata = {

@@ -4,9 +4,9 @@ import { getProducts } from "@/lib/actions/products";
 import { getCategories } from "@/lib/actions/categories";
 import ProductsCatalog from "../products-catalog";
 
-const SITE_URL = "https://mymy-store.vercel.app";
+const SITE_URL = "https://mymy-store.com";
 
-export const revalidate = 0;
+export const revalidate = 300;
 
 type Props = { params: Promise<{ category: string }> };
 

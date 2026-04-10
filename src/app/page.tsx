@@ -4,7 +4,7 @@ import { getBestSellers } from "@/lib/actions/orders";
 import { getLifestyleImages } from "@/lib/actions/products";
 import HomeClient, { CategoryData } from "./home-client";
 
-export const revalidate = 0;
+export const revalidate = 300;
 
 export default async function HomePage() {
   const [allCats, featuredIds, bestSellers, lifestyleImages] = await Promise.all([

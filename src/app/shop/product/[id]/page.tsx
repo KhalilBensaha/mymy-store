@@ -3,9 +3,9 @@ import { notFound } from "next/navigation";
 import { getProductById, getProducts } from "@/lib/actions/products";
 import ProductDetailClient from "./product-detail-client";
 
-const SITE_URL = "https://mymy-store.vercel.app";
+const SITE_URL = "https://mymy-store.com";
 
-export const revalidate = 0;
+export const revalidate = 300;
 
 type Props = { params: Promise<{ id: string }> };
 
